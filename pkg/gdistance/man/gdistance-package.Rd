@@ -18,9 +18,13 @@ License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }
 Distances can be calculated following these steps. 
+
 1. Read spatial grid data into the R environment, using the raster package. The resulting object can either be a RasterLayer or a RasterStack. All data have to be read into memory to be used by gdistance.
+
 2. Construct from grid data an object of the class Transition. This object holds basic geographic information about the grid and a matrix with transition values for movements between grid cells. 
-3. If necessary, correct the transition matrix for projection distortions. This is important in the case of geographic projections that cover large areas.
+
+3. Correct the transition matrix for different distances between the cells due to diagonal movements and projection distortions.
+
 4. Calculate distances from the Transition object. Outputs include matrices of mutual distances between spatial points or rasters with distance surfaces from one or more points.
 }
 \author{

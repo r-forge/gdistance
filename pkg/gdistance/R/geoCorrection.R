@@ -4,12 +4,12 @@
 # Version beta
 # Licence GPL v3
 
-setGeneric("projectionCorrection", function(transition, ...) standardGeneric("projectionCorrection"))
+setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
 
 #a simple diagonal correction should be added: sqrt(2*d) for bishop moves; function name  becomes geographicCorrection
 #this wont work for Transition with transitionCells not 1:n
 
-setMethod("projectionCorrection", signature(transition = "Transition"), def = function(transition, type)
+setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type)
 	{
 		if(isLatLon(transition)){}
 		else{warning("projection not geographic; are you sure you want to do this?")}

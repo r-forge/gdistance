@@ -1,6 +1,6 @@
 Package: gdistance
 Type: Package
-Title: Calculate graph-based distances between localities from raster data
+Title: Calculate graph-based distances from raster data
 Version: 1.0
 Date: 2008-09-26
 Author: Jacob van Etten

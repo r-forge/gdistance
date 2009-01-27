@@ -19,7 +19,7 @@ Resistance distance is equivalent to the expected random-walk commute time betwe
 
 The function implements the algorithm given by Fouss et al. (2007).
 
-In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{projectionCorrection}}). 
+In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
 }
 \value{
 distance matrix
@@ -36,7 +36,7 @@ McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561.
 \note{ 
 
 }
-\seealso{ \code{\link{projectionCorrection}}, ~~~ }
+\seealso{ \code{\link{geoCorrection}}, ~~~ }
 \examples{
 #create a new raster and set all its values to unity.
 raster <- newRaster(nrows=18, ncols=36) 

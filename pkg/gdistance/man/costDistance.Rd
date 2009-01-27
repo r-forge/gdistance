@@ -18,7 +18,7 @@ Cost units between cells are defined as the reciprocal of the values in the tran
 
 The function uses Dijkstra's algorithm, as implemented in the igraph package.
 
-In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{projectionCorrection}}). 
+In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
 }
 \value{
 distance matrix
@@ -32,7 +32,7 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 
  ~Make other sections like Warning with \section{Warning }{....} ~
 }
-\seealso{ \code{\link{projectionCorrection}}, ~~~ }
+\seealso{ \code{\link{geoCorrection}}, ~~~ }
 \examples{
 #create a new raster and set all its values to unity.
 raster <- newRaster(nrows=18, ncols=36) 

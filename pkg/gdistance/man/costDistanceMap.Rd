@@ -18,7 +18,7 @@ The function uses Dijkstra's algorithm, as implemented in the igraph package if 
 
 It uses a slower iterative algorithm when an object of the class RasterLayer is provided.
 
-If the Transition object is based on grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{projectionCorrection}}). 
+If the Transition object is based on grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
 }
 \value{
 RasterLayer
@@ -31,7 +31,7 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 
  ~Make other sections like Warning with \section{Warning }{....} ~
 }
-\seealso{ \code{\link{projectionCorrection}}, \code{\link{costDistance}} }
+\seealso{ \code{\link{geoCorrection}}, \code{\link{costDistance}} }
 \examples{
 r1 <- newRaster(ncol=36,nrow=18)
 r2 <- r1
@@ -40,7 +40,7 @@ data[50] <- 1
 r1 <- setValues(r1,data)
 r2 <- setValues(r2,rep(1,times=ncell(r2)))
 tr <- TransitionFromRaster(r2,mean,directions=4,outerMeridianConnect=FALSE)
-tr <- projectionCorrection(tr,type="cost")
+tr <- geoCorrection(tr,type="cost")
 cmd <- costDistanceMap(tr,r1)
 }
 \keyword{ spatial }
