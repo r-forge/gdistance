@@ -1,0 +1,46 @@
+# Author: Jacob van Etten jacobvanetten@yahoo.com
+# International Rice Research Institute
+# Date :  January 2009
+# Version 1.0
+# Licence GPL v3
+
+setGeneric("TransitionFromRaster", function(object, transitionFunction, directions) standardGeneric("TransitionFromRaster"))
+
+setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = function(object, transitionFunction, directions)
+		{
+			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
+			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
+			transition.dsC <- as(transition,"dsCMatrix")
+			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
+			transition.values <- apply(cbind(values(object)[adj[,1]],values(object)[adj[,2]]),1,transitionFunction)
+			transition.dsC[adj] <- as.vector(transition.values)
+			transitionMatrix(transition) <- transition.dsC
+			return(transition) 
+		}
+)
+
+setMethod("TransitionFromRaster", signature(object = "RasterStack"), def = function(object, transitionFunction="mahal", directions)
+		{
+			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
+			if(transitionFunction != "mahal")
+			{
+				stop("only Mahalanobis distance method implemented for RasterStack")
+			}
+			x <- cbind(1:ncells(object),values(object))
+			dataCells <- na.omit(x)[,1]
+			adj <- adjacency(object,dataCells,dataCells,directions=directions)
+			x.minus.y <- x[match(adj[,1],x[,1]),-1]-x[match(adj[,2],x[,1]),-1]
+			cov.inv <- solve(cov(x[,-1]))
+			mahaldistance <- apply(x.minus.y,1,function(x){sqrt((x%*%cov.inv)%*%x)})
+			mahaldistance <- mean(mahaldistance)/(mahaldistance+mean(mahaldistance))
+			transition.dsC <- new("dsCMatrix", 
+					p = as.integer(rep(0,object@ncells+1)),
+					Dim = as.integer(c(ncells(object),ncells(object))),
+					Dimnames = list(as.character(1:ncells(object)),as.character(1:ncells(object)))
+			)
+			transition.dsC[adj] <- mahaldistance
+			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
+			transitionMatrix(transition) <- transition.dsC
+			return(transition)
+		}
+)

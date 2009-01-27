@@ -43,7 +43,7 @@ echo $contents; } ?>
 
 <!-- end of project description -->
 
-<p> No content added. </p>
+<p> The package gdistance implements geographic distance calculations on grids. Implemented measures include cost distance, resistance distance and joint-flow distance (a new similarity measure). Calculations are made in different steps allowing full flexibility. It uses classes and functionality from the <a href="http://r-forge.r-project.org/projects/raster/">raster</a> package.</p>
 
 <p> The <strong>project summary page</strong> you can find <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>here</strong></a>. </p>
 

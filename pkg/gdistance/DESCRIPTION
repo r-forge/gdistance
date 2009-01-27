@@ -1,0 +1,12 @@
+Package: gdistance
+Type: Package
+Title: Calculate graph-based distances between localities from raster data
+Version: 1.0
+Date: 2008-09-26
+Author: Jacob van Etten
+Depends: raster, igraph, Matrix, methods 
+Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
+Description: 
+License: GPL-3
+Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R costDistanceMap.R distanceFromLevel.R flowMap.R jointTrajectory.R projectionCorrection.R resistanceDistance.R TransitionMap.R
+LazyLoad: yes
