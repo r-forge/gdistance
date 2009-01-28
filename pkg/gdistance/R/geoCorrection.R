@@ -19,7 +19,7 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		correctionValues <- 1/apply(correction,1,function(x){distanceGreatcircle(x[1:2],x[3:4])})
 		if (type=="resistance")
 		{
-			rows <- rowFromCell(adjacency[,1]) != rowFromCell(adjacency[,2])
+			rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
 			correctionValues[rows] <- 1/(correctionValues[rows] * cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4])))) 
 		}
 		i <- as.integer(adjacency[,1] - 1)

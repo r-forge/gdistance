@@ -39,7 +39,7 @@ data <- rep(NA,length=ncell(r1))
 data[50] <- 1
 r1 <- setValues(r1,data)
 r2 <- setValues(r2,rep(1,times=ncell(r2)))
-tr <- TransitionFromRaster(r2,mean,directions=4,outerMeridianConnect=FALSE)
+tr <- TransitionFromRaster(r2,mean,directions=8)
 tr <- geoCorrection(tr,type="cost")
 cmd <- costDistanceMap(tr,r1)
 }
