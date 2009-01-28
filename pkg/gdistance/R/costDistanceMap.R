@@ -37,16 +37,16 @@ setMethod("costDistanceMap", signature(transition = "Transition", object = "Rast
 		fromCells <- which(!is.na(values(object)))
 		toCells <- which(is.na(values(object)))
 		accCostDist <- rep(0,times=n)
-		while(length(toCells)>0)
+		accCostDist[toCells] <- Inf
+		while(length(fromCells)>0)
 		{			
 			adj <- adjacency(transition,fromCells=fromCells,toCells=toCells,directions=directions)
 			transitionValues <- accCostDist[adj[,1]] + 1/transition[adj]
 			transitionValues <- tapply(transitionValues,adj[,2],min)
 			transitionValues <- transitionValues[transitionValues < Inf]
-			fromCells <- as.integer(names(transitionValues))
-			accCostDist[fromCells] <- transitionValues 
-			toCells <- toCells[!(toCells %in% fromCells)]
-			
+			index <- as.integer(names(transitionValues))
+			fromCells <- index[transitionValues < accCostDist[index]]
+			accCostDist[index] <- pmin(transitionValues,accDist[index])
 		}
 		result <- as(transition, "RasterLayer")
 		result <- setValues(result, accCostDist)	

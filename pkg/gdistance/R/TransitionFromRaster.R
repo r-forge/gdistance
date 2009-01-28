@@ -26,17 +26,18 @@ setMethod("TransitionFromRaster", signature(object = "RasterStack"), def = funct
 			{
 				stop("only Mahalanobis distance method implemented for RasterStack")
 			}
-			x <- cbind(1:ncells(object),values(object))
-			dataCells <- na.omit(x)[,1]
+			x <- cbind(1:ncell(object),values(object))
+			x <- na.omit(x)
+			dataCells <- x[,1]
 			adj <- adjacency(object,dataCells,dataCells,directions=directions)
 			x.minus.y <- x[match(adj[,1],x[,1]),-1]-x[match(adj[,2],x[,1]),-1]
 			cov.inv <- solve(cov(x[,-1]))
 			mahaldistance <- apply(x.minus.y,1,function(x){sqrt((x%*%cov.inv)%*%x)})
 			mahaldistance <- mean(mahaldistance)/(mahaldistance+mean(mahaldistance))
 			transition.dsC <- new("dsCMatrix", 
-					p = as.integer(rep(0,object@ncells+1)),
-					Dim = as.integer(c(ncells(object),ncells(object))),
-					Dimnames = list(as.character(1:ncells(object)),as.character(1:ncells(object)))
+					p = as.integer(rep(0,ncell(object)+1)),
+					Dim = as.integer(c(ncell(object),ncell(object))),
+					Dimnames = list(as.character(1:ncell(object)),as.character(1:ncell(object)))
 			)
 			transition.dsC[adj] <- mahaldistance
 			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
