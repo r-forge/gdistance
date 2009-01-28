@@ -46,7 +46,7 @@ setMethod("costDistanceMap", signature(transition = "Transition", object = "Rast
 			transitionValues <- transitionValues[transitionValues < Inf]
 			index <- as.integer(names(transitionValues))
 			fromCells <- index[transitionValues < accCostDist[index]]
-			accCostDist[index] <- pmin(transitionValues,accDist[index])
+			accCostDist[index] <- pmin(transitionValues,accCostDist[index])
 		}
 		result <- as(transition, "RasterLayer")
 		result <- setValues(result, accCostDist)	

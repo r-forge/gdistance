@@ -119,6 +119,25 @@ setMethod("[<-", signature(x = "Transition", i="index", j="missing", value="dsCM
 		}
 )
 
+setMethod("[<-", signature(x = "Transition", i="matrix", j="missing", value="ANY"),
+		function(x, i, value){
+			if (!all(i[,1] %in% x@transitionCells) || !all(i[,2] %in% x@transitionCells)){stop("wrong cell numbers")}
+			else
+			{
+				if (!all(i %in% x@transitionCells))
+				{
+					ind1 <- match(i[,1],x@transitionCells)
+					ind2 <- match(i[,2],x@transitionCells)
+					ind <- cbind(ind1,ind2)
+					tm <- as(x,"dsCMatrix")
+					tm[ind] <- value
+					x@transitionMatrix <- tm
+				}
+			}
+			return(x)
+		}
+)
+
 setMethod("[<-", signature(x = "Transition", i="index", j="index", value="ANY"),
 		function(x, i, j, value){
 		stop("not yet implemented; request package author to implement this method")

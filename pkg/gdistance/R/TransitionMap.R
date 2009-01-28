@@ -7,7 +7,7 @@
 TransitionMap <- function(transition)
 {
 	rs <- as(transition,"RasterLayer")
-	dataVector <- vector(length=ncells(transition))
+	dataVector <- vector(length=ncell(transition))
 	dataVector[transitionCells(transition)] <- colSums(as(transition,"dsCMatrix"))
 	rs <- setValues(rs, dataVector) 
 	return(rs)
