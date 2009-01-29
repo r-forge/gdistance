@@ -18,18 +18,20 @@ jointTrajectory (transition, originCoord, fromCoords, toCoords)
 \details{
   The joint-trajectory distance is a similarity measure of the trajectories of flow from a common origin to two different locations.
   
-  For each point the function calculates a flow trajectory from the origin (see function flowMap). Subsequently it calculates the similarity of the trajectories for each pair of points. The trajectory similarity is defined as the normalized dot product (cosine similarity) of the two vectors with flow intensity values.
+  For each point the function calculates a flow trajectory from the origin (see function flowMap). Subsequently it calculates the similarity of the trajectories for each pair of points. 
+  
+  The trajectory similarity is defined as the normalized dot product (cosine similarity) of the two vectors with flow intensity values.
 }
 \value{
   distance matrix (if only fromCoords is supplied) or matrix (if both fromCoords and toCoords are supplied).
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ jacobvanetten@yahoo.com \email{jacobvanetten@yahoo.com} }
-\note{ ~~further notes~~ 
+\references{ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
 }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ jacobvanetten@yahoo.com \email{jacobvanetten@yahoo.com} }
+\note{ 
+}
+\seealso{ The function \code{\link{flowMap}} demonstrates the calculation of flow trajectories. }
 \examples{
 
 }
