@@ -23,7 +23,7 @@ setMethod("costDistanceMap", signature(transition = "Transition", object = "Spat
 			shortestPaths <- pmin(shortestPaths,shortest.paths(adjacencyGraph, match(fromCells[i],transitionCells(transition))))
 		}
 		result <- as(transition, "RasterLayer")
-		dataVector <- vector(length=ncells(result)) 
+		dataVector <- vector(length=ncell(result)) 
 		dataVector[transitionCells(transition)] <- shortestPaths
 		result <- setValues(result, dataVector)	
 		return(result)
