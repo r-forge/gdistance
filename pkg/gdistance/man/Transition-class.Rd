@@ -7,7 +7,7 @@
 \alias{show,Transition-method}
 
 \title{Class "Transition" }
-\description{The class transition contains a transition matrix with transition values between connected cells in a raster. It also contains the geographic references of the underlying raster (bounding box, number of rows and columns). }
+\description{An object of the class Transition contains a transition matrix with transition values between connected cells in a raster. It also contains information on the extent, resolution and projection of the underlying raster. }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Transition", nrows, ncols, xmin, xmax, ymin, ymax)}.
 }
@@ -37,12 +37,8 @@ Class \code{"\linkS4class{Raster}"}.
     \item{show}{\code{signature(object = "Transition")}: ... }
 	 }
 }
-\references{ ~put references to the literature/web site here ~ }
+
 \author{ Jacob van Etten <jacobvanetten@yahoo.com> }
-\note{ ~~further notes~~ }
-
- 
-
 \seealso{
 	~~objects to See Also as \code{\link{~~fun~~}}, ~~~
 	or \code{\linkS4class{CLASSNAME}} for links to other classes
