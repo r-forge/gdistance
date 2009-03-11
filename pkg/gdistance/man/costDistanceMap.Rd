@@ -12,13 +12,13 @@ costDistanceMap(transition, object)
   \item{object}{ origin point locations (SpatialPoints class) or surface (RasterLayer class) }
 }
 \details{
-If more than more coordinate is supplied in fromCoords, the function calculates the minimum cost distance from any origin point.
+If more than one coordinate is supplied in fromCoords, the function calculates the minimum least-cost distance from any origin point.
 
-The function uses Dijkstra's algorithm, as implemented in the igraph package if an object of the class SpatialPoints is provided.
+The function uses Dijkstra's algorithm (as implemented in the igraph package) if an object of the class SpatialPoints is provided.
 
-It uses a slower iterative algorithm when an object of the class RasterLayer is provided.
+It uses an iterative algorithm implemented in this package, when an object of the class RasterLayer is provided.
 
-If the Transition object is based on grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
+A projection correction is needed for accuracy, if the Transition object is based on grid data for a large area in a geographic (latlon) projection (see function \code{\link{geoCorrection}}). 
 }
 \value{
 RasterLayer
@@ -27,10 +27,6 @@ RasterLayer
 E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Numerische Mathematik} 1, 269–271.
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
 \seealso{ \code{\link{geoCorrection}}, \code{\link{costDistance}} }
 \examples{
 r1 <- newRaster(ncol=36,nrow=18)

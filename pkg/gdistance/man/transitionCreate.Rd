@@ -1,9 +1,8 @@
 \name{transitionCreate }
 \alias{transitionCreate }
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Create an object of the class Transition }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  Transition objects are created from Raster* objects. Conductance values will be calculated based on the grid values with a user-defined function.
 }
 \usage{
 transitionCreate (object, transition.function, outer.meridian.connect)
@@ -11,28 +10,12 @@ transitionCreate (object, transition.function, outer.meridian.connect)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ RasterLayer or RasterStack }
-  \item{transition.function}{ ~~Describe \code{transition.function} here~~ }
-  \item{outer.meridian.connect}{ ~~Describe \code{outer.meridian.connect} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
+  \item{transition.function}{ Function to calculate conductance values from grid values}
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
+Transition
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \examples{}
+\keyword{ spatial }
 
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

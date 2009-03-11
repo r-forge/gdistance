@@ -1,13 +1,12 @@
 \name{resistanceDistance}
 \alias{ resistanceDistance }
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Resistance distance }
 \description{
 Calculates the resistance distance between points. }
 \usage{
 resistanceDistance (transition, fromCoords, toCoords)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{transition}{ transition object (Transition class) }
   \item{fromCoords}{ first set of point locations (of SpatialPoints class)}  
@@ -22,7 +21,7 @@ The function implements the algorithm given by Fouss et al. (2007).
 In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
 }
 \value{
-distance matrix
+distance matrix (dist) or matrix
 }
 \references{ 
 Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.

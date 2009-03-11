@@ -1,7 +1,7 @@
 \name{costDistance}
 \alias{costDistance}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Cost distance }
+\title{ Cost distance (least-cost distance) }
 \description{
 Calculates the least-cost distance between points. }
 \usage{
@@ -18,7 +18,7 @@ Cost units between cells are defined as the reciprocal of the values in the tran
 
 The function uses Dijkstra's algorithm, as implemented in the igraph package.
 
-In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
+A projection correction is needed for accuracy in the case of grid data for a large area in a geographic (latlon) projection (see function \code{\link{geoCorrection}}). 
 }
 \value{
 distance matrix

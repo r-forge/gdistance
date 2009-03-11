@@ -10,7 +10,7 @@
 
 \title{ Extracting and replacing: class Transition}
 \description{
-Methods for function \code{[} in Package `base' ~~
+Methods for functions \code{[} and \code{[<-} for object of the class Transition
 }
 \section{Methods}{
 \describe{
