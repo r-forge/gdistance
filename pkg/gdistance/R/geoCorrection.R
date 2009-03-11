@@ -6,9 +6,6 @@
 
 setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
 
-#a simple diagonal correction should be added: sqrt(2*d) for bishop moves; function name  becomes geographicCorrection
-#this wont work for Transition with transitionCells not 1:n
-
 setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type)
 	{
 		if(isLatLon(transition)){}
