@@ -1,0 +1,10 @@
+Package: gdistanalyst
+Type: Package
+Title: Methods to analyze distance matrices
+Version: 1.0
+Date: 2009-04-01
+Author: Jacob van Etten
+Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
+Description: 
+License: GPL-3
+LazyLoad: yes
