@@ -56,7 +56,7 @@ setAs("Transition", "dsCMatrix", function(from){from@transitionMatrix})
 
 setAs("Transition", "RasterLayer", function(from)
 	{
-		newRaster(xmn=xmin(from), xmx=xmax(from), ymn=ymin(from), ymx=ymax(from), nrows=nrow(from), ncols=ncol(from), projstring=projection(from))
+		raster(xmn=xmin(from), xmx=xmax(from), ymn=ymin(from), ymx=ymax(from), nrows=nrow(from), ncols=ncol(from), projstring=projection(from))
 	}
 )
 

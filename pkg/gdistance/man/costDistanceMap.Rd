@@ -29,7 +29,7 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \seealso{ \code{\link{geoCorrection}}, \code{\link{costDistance}} }
 \examples{
-r1 <- newRaster(ncol=36,nrow=18)
+r1 <- raster(ncol=36,nrow=18)
 r2 <- r1
 data <- rep(NA,length=ncell(r1))
 data[50] <- 1

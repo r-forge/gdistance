@@ -38,7 +38,7 @@ McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561.
 \seealso{ \code{\link{geoCorrection}}, ~~~ }
 \examples{
 #create a new raster and set all its values to unity.
-raster <- newRaster(nrows=18, ncols=36) 
+raster <- raster(nrows=18, ncols=36) 
 raster <- setValues(raster,rep(1,ncell(raster)))
 
 #create a Transition object from the raster
