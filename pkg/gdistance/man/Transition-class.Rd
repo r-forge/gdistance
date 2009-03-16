@@ -26,7 +26,7 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
   }
 }
 \section{Extends}{
-Class \code{"\linkS4class{Raster}"}.
+Class \code{"\linkS4class{BasicRaster}"}.
 }
 \section{Methods}{
   \describe{
