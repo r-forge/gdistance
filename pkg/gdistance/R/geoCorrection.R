@@ -13,7 +13,7 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		if (type== "resistance" | type=="cost"){}else{stop("unknown type of projection correction; only 'cost' and 'resistance' are defined")}
 		adjacency <- .adjacency.from.transition(transition)
 		correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-		correctionValues <- 1/pointDistance(x[1:2],x[3:4],type='GreatCircle')
+		correctionValues <- 1/pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')
 		if (type=="resistance")
 		{
 			rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
