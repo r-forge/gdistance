@@ -28,6 +28,5 @@ See resistanceDistance, jointTrajectory
 \examples{
 
   }
-}
 
 \keyword{ spatial }
