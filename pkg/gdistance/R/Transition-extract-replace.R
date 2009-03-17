@@ -33,7 +33,7 @@ setMethod ("transitionCells", signature(transition = "Transition"),
 setMethod("[", signature(x = "Transition", i="index", j="missing", drop="missing"), function(x,i)
 	{
 		i <- as.integer(i)
-		if (all(i %in% x@transitionCells) || all(-i %in% x@transitionCells)){stop("wrong cell numbers")}
+		if (!(all(i %in% x@transitionCells) || all(-i %in% x@transitionCells))){stop("wrong cell numbers")}
 		else
 		{
 			if (all(i %in% x@transitionCells))

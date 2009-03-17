@@ -29,14 +29,18 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \seealso{ \code{\link{geoCorrection}}, \code{\link{costDistance}} }
 \examples{
-r1 <- raster(ncol=36,nrow=18)
+r1 <- raster(ncol=360,nrow=180)
 r2 <- r1
 data <- rep(NA,length=ncell(r1))
-data[50] <- 1
+data[500] <- 1
 r1 <- setValues(r1,data)
 r2 <- setValues(r2,rep(1,times=ncell(r2)))
-tr <- TransitionFromRaster(r2,mean,directions=8)
+tr <- TransitionFromRaster(r2,mean,directions=16)
 tr <- geoCorrection(tr,type="cost")
 cmd <- costDistanceMap(tr,r1)
+
+# should be the same as:
+spObj <- SpatialPoints(xyFromCell(tr,500))
+cmd <- costDistanceMap(tr,spObj)
 }
 \keyword{ spatial }

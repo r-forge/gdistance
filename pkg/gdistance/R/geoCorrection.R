@@ -6,7 +6,8 @@
 
 setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type)
+setMethod("geoCorrection", signature(transition = "Transition"), def = 
+gc<- function(transition, type)
 	{
 		if(isLatLon(transition)){}
 		else{warning("projection not geographic; are you sure you want to do this?")}
@@ -23,7 +24,7 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		j <- as.integer(adjacency[,2] - 1)
 		x <- as.vector(correctionValues)
 		dims <- ncell(transition)
-		correctionMatrix <- new("dgTMatrix", i = as.integer(i), j = as.integer(j), x = as.numeric(x), Dim = as.integer(c(dims,dims)))
+		correctionMatrix <- new("dgTMatrix", i = i, j = j, x = x, Dim = as.integer(c(dims,dims)))
 		correctionMatrix <- (as(correctionMatrix,"symmetricMatrix"))
 		correctionMatrix <- (as(correctionMatrix,"dsCMatrix"))
 		transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")

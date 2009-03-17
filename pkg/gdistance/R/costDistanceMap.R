@@ -30,23 +30,23 @@ setMethod("costDistanceMap", signature(transition = "Transition", object = "Spat
 	}
 )
 
-setMethod("costDistanceMap", signature(transition = "Transition", object = "RasterLayer"), def = function(transition, object)
+setMethod("costDistanceMap", signature(transition = "Transition", object = "RasterLayer"), def =
+cmd <- function(transition, object)
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))
 		fromCells <- which(!is.na(values(object)))
 		toCells <- which(is.na(values(object)))
-		accCostDist <- rep(0,times=n)
-		accCostDist[toCells] <- Inf
+		accCostDist <- rep(Inf,times=n)
+		accCostDist[fromCells] <- 0
 		while(length(fromCells)>0)
 		{			
 			adj <- adjacency(transition,fromCells=fromCells,toCells=toCells,directions=directions)
 			transitionValues <- accCostDist[adj[,1]] + 1/transition[adj]
-			transitionValues <- tapply(transitionValues,adj[,2],min)
-			transitionValues <- transitionValues[transitionValues < Inf]
-			index <- as.integer(names(transitionValues))
-			fromCells <- index[transitionValues < accCostDist[index]]
-			accCostDist[index] <- pmin(transitionValues,accCostDist[index])
+			tValSmaller <- transitionValues < accCostDist[adj[,2]]
+			fromCells <- adj[tValSmaller,2]
+			accCostDist <- igroupMins(c(transitionValues[tValSmaller],accCostDist),c(fromCells,1:n))
+			fromCells <- unique(fromCells)
 		}
 		result <- as(transition, "RasterLayer")
 		result <- setValues(result, accCostDist)	

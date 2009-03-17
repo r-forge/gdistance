@@ -56,4 +56,3 @@ resistanceDistance(tr,sP1,sP2)
 
 }
 \keyword{ spatial }
-
