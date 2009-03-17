@@ -4,9 +4,9 @@
 # Version 1.0
 # Licence GPL v3
 
-setGeneric("costDistanceMap", function(transition, object) standardGeneric("costDistanceMap"))
+setGeneric("accCost", function(transition, object) standardGeneric("accCost"))
 
-setMethod("costDistanceMap", signature(transition = "Transition", object = "SpatialPoints"), def = function(transition, object)
+setMethod("accCost", signature(transition = "Transition", object = "SpatialPoints"), def = function(transition, object)
 	{
 		fromCoords <- coordinates(object)
 		fromCoordsCells <- cellFromXY(transition, fromCoords)
@@ -30,8 +30,7 @@ setMethod("costDistanceMap", signature(transition = "Transition", object = "Spat
 	}
 )
 
-setMethod("costDistanceMap", signature(transition = "Transition", object = "RasterLayer"), def =
-cmd <- function(transition, object)
+setMethod("accCost", signature(transition = "Transition", object = "RasterLayer"), def = function(transition, object)
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))

@@ -1,10 +1,10 @@
-\name{costDistanceMap}
-\alias{costDistanceMap}
-\title{ Cost-distance map }
+\name{accCost}
+\alias{accCost}
+\title{ Accumulated Cost Surface }
 \description{
-Calculates the shortest cost-distance from one or more origins to each cell of a raster. }
+Calculates the accumulated cost surface from one or more origins. }
 \usage{
-costDistanceMap(transition, object)
+accCost(transition, object)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,10 +37,10 @@ r1 <- setValues(r1,data)
 r2 <- setValues(r2,rep(1,times=ncell(r2)))
 tr <- TransitionFromRaster(r2,mean,directions=16)
 tr <- geoCorrection(tr,type="cost")
-cmd1 <- costDistanceMap(tr,r1)
+cmd1 <- accCost(tr,r1)
 
 # Is not exactly the same as:
 spObj <- SpatialPoints(xyFromCell(tr,500))
-cmd2 <- costDistanceMap(tr,spObj)
+cmd2 <- accCost(tr,spObj)
 }
 \keyword{ spatial }
