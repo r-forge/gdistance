@@ -7,9 +7,9 @@
 #TODO check if coordinate systems are equal.
 #TODO check if bounding box of coordinates falls inside bb of transition
 
-setGeneric("jointTrajectory", function(transition, originCoord, fromCoords, toCoords) standardGeneric("jointTrajectory"))
+setGeneric("jointFlow", function(transition, originCoord, fromCoords, toCoords) standardGeneric("jointFlow"))
 
-setMethod("jointTrajectory", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, originCoord, fromCoords)
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, originCoord, fromCoords)
 	{
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)
@@ -89,7 +89,7 @@ setMethod("jointTrajectory", signature(transition = "Transition", originCoord = 
 	}
 )
 
-setMethod("jointTrajectory", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints"), def = function(transition, originCoord, fromCoords, toCoords)
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints"), def = function(transition, originCoord, fromCoords, toCoords)
 	{
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)

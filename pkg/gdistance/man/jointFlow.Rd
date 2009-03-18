@@ -1,12 +1,12 @@
-\name{jointTrajectory}
-\alias{ jointTrajectory }
+\name{jointFlow}
+\alias{ jointFlow }
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Joint-trajectory distance }
 \description{
-  Calculates the joint-trajectory distance between points.
+  Calculates the joint-flow distance between points.
 }
 \usage{
-jointTrajectory (transition, originCoord, fromCoords, toCoords)
+jointFlow (transition, originCoord, fromCoords, toCoords)
 }
 
 \arguments{
@@ -16,7 +16,7 @@ jointTrajectory (transition, originCoord, fromCoords, toCoords)
   \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)}  
 }
 \details{
-  The joint-trajectory distance is a similarity measure of the trajectories of flow from a common origin to two different locations.
+  The joint-flow distance is a similarity measure of the trajectories of flow from a common origin to two different locations.
   
   For each point the function calculates a flow trajectory from the origin (see function flowMap). Subsequently it calculates the similarity of the trajectories for each pair of points. 
   
@@ -26,7 +26,7 @@ jointTrajectory (transition, originCoord, fromCoords, toCoords)
   distance matrix (if only fromCoords is supplied) or matrix (if both fromCoords and toCoords are supplied).
 }
 \references{ 
-
+J. van Etten & R.J. Hijmans. forthcoming.
 }
 \author{ jacobvanetten@yahoo.com \email{jacobvanetten@yahoo.com} }
 \note{ 
