@@ -231,6 +231,8 @@ function (data,                             # the input dataframe
 
 # set up the selector variable either with or without prevalence stratification
 
+fold.vector <- NULL
+
   if (is.null(fold.vector)) {
 
     if (prev.stratify & family == "bernoulli") {

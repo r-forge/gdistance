@@ -1,6 +1,6 @@
 WeitzmanUtility <- function(distObject,iters, popSize)
 {
-	size <- attr(distObj, "Size")-1
+	size <- attr(distObject, "Size")-1
 	return(max(.rbga.bin(distObject=distObject, size=size, popSize=popSize, iters=iters, evalFunc=WeitzmanCalc, mutationChance=.3, zeroToOneRatio=1)$best))
 }
 

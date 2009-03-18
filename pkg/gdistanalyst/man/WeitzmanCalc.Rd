@@ -14,7 +14,7 @@ WeitzmanCalc(binarySeq, distObject)
 \details{
 The binary string determines which are the 'link species'. Given a sequence of link species it calculates Weitzman's utility index. The true index is the maximum value that can be attained by changing the binary sequence. 
 
-The function is provided here separately for users who want to optimize it using parallel processing. The package rgenoud can be used to do this. 
+The function is provided here separately for users who want to use it in parallel processing. For instance, the package rgenoud provides a genetic algorithm that can be automatically parallelized in R. 
 
 For small matrices, use the function WeitzmanUtility.
 }
@@ -36,7 +36,7 @@ Weitzman, M.L. 1992. On diversity. Quarterly Journal of Economics 107(2), 363-40
 distObj <- dist(matrix(nrow=4,ncol=4))
 distObj[] <- c(357,532,498,477,488,126)
 
-WeitzmanUtility(distObj)
+WeitzmanCalc(c(1,0,1),distObj)
 
   }
 

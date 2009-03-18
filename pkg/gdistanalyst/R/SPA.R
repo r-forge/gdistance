@@ -2,7 +2,7 @@ SPA <- function(data,null.alleles="missing")
 {
 	data <- na.omit(data)
 	if(null.alleles=="missing"){data <- subset(data,data[,3]!=0)}
-	if(null.alleles=="unlike"){data[,3][data[,3]==0] <- seq(from=max(data[,3])+1,to=max(data[,3])+length(data[,3][genedata[,3]==0]))}
+	if(null.alleles=="unlike"){data[,3][data[,3]==0] <- seq(from=max(data[,3])+1,to=max(data[,3])+length(data[,3][data[,3]==0]))}
 	if(null.alleles=="alike"){}
 	accession.index <- unique(data[,1])
 	marker.fragment <- paste(data[,2],data[,3],sep="-")
