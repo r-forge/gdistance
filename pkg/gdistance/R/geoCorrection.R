@@ -6,8 +6,7 @@
 
 setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition"), def = 
-gc<- function(transition, type)
+setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type)
 	{
 		if(isLatLon(transition)){}
 		else{warning("projection not geographic; are you sure you want to do this?")}
