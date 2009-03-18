@@ -39,6 +39,5 @@ distObj[] <- c(357,532,498,477,488,126)
 WeitzmanUtility(distObj)
 
   }
-}
 
 \keyword{ spatial }
