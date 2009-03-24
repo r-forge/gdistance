@@ -4,7 +4,7 @@
 # Version 1.0
 # Licence GPL v3
 
-flowMap <- function(originCoord,goalCoord,transition)
+flowMap <- function(transition,originCoord,goalCoord)
 {
 	originCell <- cellFromXY(transition, originCoord)
 	goalCell <- cellFromXY(transition, goalCoord)
@@ -17,7 +17,7 @@ flowMap <- function(originCoord,goalCoord,transition)
 	indexOrigin <- match(originCell,transitionCells(transition))
 	Current <- .current(L, Lr, A, n, indexOrigin, indexGoal)
 	result <- as(transition,"RasterLayer")
-	dataVector <- rep(NA,times=ncells(result))
+	dataVector <- rep(NA,times=ncell(result))
 	dataVector[transitionCells(transition)] <- Current
 	result <- setValues(result, dataVector)
 	return(result)

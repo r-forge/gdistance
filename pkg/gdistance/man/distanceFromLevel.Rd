@@ -5,7 +5,7 @@
   Convenience function to create a distance matrix from a vector of levels, using a function specified by the user
 }
 \usage{
-distanceFromLevel(levels, fun, diag=TRUE)
+distanceFromLevel(levels, fun, diag=FALSE)
 }
 
 \arguments{
@@ -21,8 +21,8 @@ distanceFromLevel(levels, fun, diag=TRUE)
 \author{Jacob van Etten \email{jacobvanetten@yahoo.com} }
 \examples{
 lv <- 1:5
-dst <- distanceFromLevel(lv,function(x){abs(x[1]-x[2])},diag=FALSE)
-  }
+dst <- distanceFromLevel(lv,function(x){abs(x[1]-x[2])})
+dst
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

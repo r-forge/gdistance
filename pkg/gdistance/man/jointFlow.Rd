@@ -33,7 +33,23 @@ J. van Etten & R.J. Hijmans. forthcoming.
 }
 \seealso{ The function \code{\link{flowMap}} demonstrates the calculation of flow trajectories. }
 \examples{
+#create a new raster and set all its values to unity.
+raster <- raster(nrows=18, ncols=36) 
+raster <- setValues(raster,rep(1,ncell(raster)))
 
+#create a Transition object from the raster
+tr <- TransitionFromRaster(raster,mean,4)
+
+#create origin coordinate and two sets of coordinates
+sPorg <- SpatialPoints(t(matrix(c(0,0))))
+sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
+sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
+
+#from and to identical
+jointFlow(tr, sPorg, sP1)
+
+#from and to different -- to be implemented
+#jointFlow(tr,sPorg, sP1, sP2)
 }
 
 \keyword{ spatial }

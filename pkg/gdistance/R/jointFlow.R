@@ -64,7 +64,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		}
 		else
 		{
-			Current <- matrix(nrow=n,ncol=length(fromCells))
+			Current <- matrix(nrow=n+1,ncol=length(fromCells))
 			for(i in 1:(length(fromCells)))
 			{
 				Current[,i] <- .current(L, Lr, A, n, indexOrigin, indexCoords[i])
@@ -76,7 +76,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 				jtDistance[j,] <- colMeans(Current[,j]*Current)
 			}
 		}
-		jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(fromCells),nrow=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),nrow=length(fromCells)))) #this is to normalize the dot product to get a cosine similarity
+		jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))) #this is to normalize the dot product to get a cosine similarity
 		cat("|","\n")
 		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
 		rownames(jtDist) <- rownames(fromCoords)
@@ -91,6 +91,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 
 setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints"), def = function(transition, originCoord, fromCoords, toCoords)
 	{
+		stop("not yet implemented")
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)
 		toCoords <- coordinates(toCoords)
@@ -129,13 +130,13 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 			warning(length(toCells)," out of ",length(toCoordsCells[,1])," locations (toCoords) were found inside the transition matrix and in the same connected component as the origin.")
 		}
 		else{}
-		uniqueCells <- unique(c(fromCells,toCells))
+		uniqueCells <- unique(c(fromCells,toCells)) #This should be optimized; from and to should be kept separate throughout
 		L <- .Laplacian(transition)
 		Lr <- L[-dim(L)[1],-dim(L)[1]]
 		A <- as(L,"lMatrix")
 		A <- as(A,"dMatrix")
 		n <- max(Lr@Dim)
-		jtDistance <- matrix(nrow=length(fromCells),ncol=length(toCells))
+		jtDistance <- matrix(nrow=length(uniqueCells),ncol=length(uniqueCells))
 		cat("Progress Bar", "\n")
 		cat("---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|","\n")
 		onePercent <- ((length(fromCells)^2)-length(fromCells))/200
@@ -158,7 +159,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		}
 		else
 		{
-			Current <- matrix(nrow=n,ncol=length(uniqueCells))
+			Current <- matrix(nrow=n+1,ncol=length(uniqueCells))
 			for(i in 1:(length(uniqueCells)))
 			{
 				Current[,i] <- .current(L, Lr, A, n, indexOrigin, indexCoords[i])
@@ -172,9 +173,9 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		}
 		jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(uniqueCells),ncol=length(uniqueCells)) * t(matrix(diag(jtDistance),nrow=length(uniqueCells),ncol=length(uniqueCells)))) #this is to normalize the dot product to get a cosine similarity
 		cat("|","\n")
-		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
+		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(toCoordsCells[,1]))
 		rownames(jtDist) <- rownames(fromCoords)
-		colnames(jtDist) <- rownames(fromCoords)
+		colnames(jtDist) <- rownames(toCoords)
 		index1 <- which(fromCoordsCells[,3] %in% uniqueCells)
 		index2 <- which(toCoordsCells[,3] %in% uniqueCells)
 		index3 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% uniqueCells],uniqueCells)

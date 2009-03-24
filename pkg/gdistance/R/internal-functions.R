@@ -33,6 +33,7 @@
 	Current <- colSums(abs(V)*-L)/2
 	Current[indexFrom] <- 1
 	Current[indexTo] <- 1
+	return(Current)
 }
 
 .Laplacian <- function(transition) 
