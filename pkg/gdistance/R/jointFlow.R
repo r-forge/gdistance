@@ -13,23 +13,24 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 	{
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)
+
+		transition <- .transitionSolidify(transition)
 		originCell <- cellFromXY(transition, originCoord)
 		if (originCell %in% transitionCells(transition)) {} 
 		else 
 		{
 			stop("the origin was not found in the transition matrix")
 		}
-		transition <- .transitionSolidify(transition)
 		fromCoordsCells <- cbind(fromCoords,cellFromXY(transition, fromCoords))
 		fromCells <- fromCoordsCells[,3][fromCoordsCells[,3] %in% transitionCells(transition)]
-		cc <- .connected.components(transition)
-		ccOrigin <- subset(cc,cc[,1] %in% originCell)
-		fromCells <- subset(fromCells, fromCells %in% cc[,1][cc[,2]==ccOrigin[,2]])
-		if (length(fromCells) <= 1) 
-		{
-			stop("no locations in the connected component of the origin")
-		}
-		else{}
+		#cc <- .connected.components(transition)
+		#ccOrigin <- subset(cc,cc[,1] %in% originCell)
+		#fromCells <- subset(fromCells, fromCells %in% cc[,1][cc[,2]==ccOrigin[,2]])
+		#if (length(fromCells) <= 1) 
+		#{
+		#	stop("no locations in the connected component of the origin")
+		#}
+		#else{}
 		if (length(fromCells) < length(fromCoordsCells[,1])) 
 		{
 			warning(length(fromCells)," out of ",length(fromCoordsCells[,1])," locations were found inside the transition matrix and in the same connected component as the origin.")
@@ -42,10 +43,6 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		A <- as(A,"dMatrix")
 		n <- max(Lr@Dim)
 		jtDistance <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-		cat("Progress Bar", "\n")
-		cat("---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|","\n")
-		onePercent <- ((length(fromCells)^2)-length(fromCells))/200
-		count <- 0
 		indexCoords <- match(fromCells,transitionCells(transition))
 		indexOrigin <- match(originCell,transitionCells(transition))
 		if( ((n * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
@@ -57,8 +54,6 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 				{
 					Currentj <- .current(L, Lr, A, n, indexOrigin, indexCoords[j])
 					jtDistance[j,i] <- mean(Currenti*Currentj) #alternative, which represents the relative overlap: sum((pmin(Currenti,Currentj)))/sum(Currenti,Currentj) 
-					count <- count+1
-					if(count>=onePercent) {cat("|"); count<-count-onePercent}
 				}
 			}
 		}
@@ -68,8 +63,6 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 			for(i in 1:(length(fromCells)))
 			{
 				Current[,i] <- .current(L, Lr, A, n, indexOrigin, indexCoords[i])
-				count <- count+1
-				if(count>=onePercent) {cat("|"); count<-count-onePercent}
 			}
 			for(j in 1:(length(fromCells)))
 			{
@@ -85,7 +78,8 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		index2 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% fromCells],fromCells)
 		jtDist[index1,index1] <- jtDistance[index2,index2]
 		jtDist <- as.dist(jtDist)
-		return(jtDist) #TODO as.dist, check which half is filled.
+		attr(jtDist, "method") <- "jointFlow"
+		return(jtDist)
 	}
 )
 

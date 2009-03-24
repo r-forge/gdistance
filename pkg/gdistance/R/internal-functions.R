@@ -45,7 +45,7 @@
 .transitionSolidify <- function(transition)
 {
 	transition.dsC <- as(transition,"dsCMatrix")
-	selection <- which(rowSums(transition.dsC)>0)
+	selection <- which(rowMeans(transition.dsC)>0)
 	transition@transitionCells <- transition@transitionCells[selection]
 	transition.dsC <- transition.dsC[selection,selection]
 	transitionMatrix(transition) <- transition.dsC

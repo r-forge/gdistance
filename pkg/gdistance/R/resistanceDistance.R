@@ -12,6 +12,7 @@ setGeneric("resistanceDistance", function(transition, fromCoords, toCoords) stan
 
 setMethod("resistanceDistance", signature(transition = "Transition", fromCoords = "SpatialPoints", toCoords = "SpatialPoints"), def = function(transition, fromCoords, toCoords)
 	{
+		stop("not yet implemented")
 		fromCoords <- coordinates(fromCoords)
 		toCoords <- coordinates(toCoords)
 		transition <- .transitionSolidify(transition)
@@ -88,57 +89,40 @@ setMethod("resistanceDistance", signature(transition = "Transition", fromCoords 
 	{
 		fromCoords <- coordinates(fromCoords)
 		transition <- .transitionSolidify(transition)
-		rd <- matrix(Inf,nrow=length(fromCoords[,1]),ncol=length(fromCoords[,1]))
+		rd <- matrix(NA,nrow=length(fromCoords[,1]),ncol=length(fromCoords[,1]))
 		rownames(rd) <- rownames(fromCoords)
 		colnames(rd) <- rownames(fromCoords)
-		fromCoordsCells <- cbind(fromCoords, cellFromXY(transition, fromCoords))
-		fromCells <- fromCoordsCells[,3][fromCoordsCells[,3] %in% transitionCells(transition)]
-		if (length(fromCells) < length(fromCoordsCells[,1])) 
+		allFromCells <- cellFromXY(transition, fromCoords)
+		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
+		if (length(fromCells) < length(allFromCells)) 
 		{
-			warning(length(fromCells)," out of ",length(fromCoordsCells[,1])," locations were found in the transition matrix. NAs introduced.")
+			warning(length(fromCells)," out of ",length(allFromCells)," locations were found in the transition matrix. NAs introduced.")
 		}
 		else{}
-		cc <- .connected.components(transition)
-		ccSubset <- subset(cc,cc[,1] %in% fromCells)
-		ccWithFromCoords <- which(tabulate(ccSubset[,2])>1)
-		if(length(which(tabulate(ccSubset[,2])>0)) > 1)
+		fromCells <- unique(fromCells)
+		Lr <- .Laplacian(transition)
+		n <- max(Lr@Dim)
+		Lr <- Lr[-n,-n]
+		n <- max(Lr@Dim)
+		C <- 1/(n*max(Lr@x))
+		Lplus <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+		index <- match(fromCells,transitionCells(transition))
+		for (i in 1:length(fromCells))
 		{
-			warning(length(which(tabulate(ccSubset[,2])>0)), " unconnected components; infinite distances introduced.")
+			ei <- matrix((-C/(n+1)), ncol=1, nrow=n)
+			ei[index[i],] <- C-(C/(n+1))
+			xi <- solve(Lr,ei) 
+			#xi <- as.vector(xi)
+			#Lplusallrows <- c(xi-sum(xi/(n+1)),(sum(xi)/(n+1))) This is not necessary and with big floating points it may break
+			#Lplus[,i] <- Lplusallrows[index]
+			Lplus[,i] <- as.vector(xi)[index]
 		}
-		else{}
-		if(length(ccWithFromCoords)<=0)
-		{
-			warning("no connected components with more than one location")
-			return(rd)
-		}
-		else
-		{
-			for (i in 1:length(ccWithFromCoords))
-			{
-				subsetCells <- unique(fromCells[fromCells %in% cc[,1][cc[,2] == ccWithFromCoords[i]]])
-				tm <- transition[cc[,1][cc[,2]==ccWithFromCoords[i]]]
-				Lr <- .Laplacian(tm)[-dim(tm)[1],-dim(tm)[1]]
-				n <- max(Lr@Dim)
-				Lstarplus <- matrix(ncol=1,nrow=length(subsetCells))
-				Lplus <- matrix(ncol=length(subsetCells),nrow=length(subsetCells))
-				index <- match(subsetCells,transitionCells(tm))
-				for (i in 1:length(subsetCells))
-				{
-					ei <- matrix((-1/(n+1)), ncol=1, nrow=n)
-					ei[index[i],] <- 1-(1/(n+1))
-					xi <- solve(Lr,ei) 
-					xi <- as.vector(xi)
-					Lplusallrows <- c(xi-sum(xi/(n+1)),(sum(xi)/(n+1)))
-					Lplus[,i] <- Lplusallrows[index]
-				}
-				rd.subset <- -2*Lplus + matrix(diag(Lplus),nrow=length(subsetCells),ncol=length(subsetCells)) + t(matrix(diag(Lplus),nrow=length(subsetCells),ncol=length(subsetCells)))
-				index1 <- which(fromCoordsCells[,3] %in% subsetCells)
-				index2 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% subsetCells],subsetCells)
-				rd[index1,index1] <- rd.subset[index2,index2]
-			}	
-			rd <- as.dist(rd)
-			attr(rd, "method") <- "resistance"
-			return(rd)
-		}
+		rdSS <- -2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) + t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))
+		index1 <- which(allFromCells %in% fromCells)
+		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
+		rd[index1,index1] <- rdSS[index2,index2]
+		rd <- as.dist(rd)
+		attr(rd, "method") <- "resistance"
+		return(rd)
 	}
 )

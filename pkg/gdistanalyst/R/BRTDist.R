@@ -351,10 +351,10 @@ fold.vector <- NULL
 
   for (i in 1:n.folds) {
 
-    model.mask <- selector.matrix[i] == "I"  #used to fit model on majority of data
-    pred.mask <- selector.matrix[i] == "O"   #used to identify the with-held subset
+    model.mask <- selector.matrix[,i] == "I"  #used to fit model on majority of data
+    pred.mask <- selector.matrix[,i] == "O"   #used to identify the with-held subset
 
-    y.subset <- y.data[model.mask]
+    y.subset <- y.data[model.mask,]
     x.subset <- x.data[model.mask,]
     weight.subset <- site.weights[model.mask]
 
