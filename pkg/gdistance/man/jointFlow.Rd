@@ -13,14 +13,15 @@ jointFlow (transition, originCoord, fromCoords, toCoords)
   \item{transition}{ object of class Transition }
   \item{originCoord}{ origin of flow point location (of SpatialPoints class)} 
   \item{fromCoords}{ first set of point locations (of SpatialPoints class)}  
-  \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)}  
+  \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)} 
+  \item{type}{ type of coefficient to be calculated: normalized dot product ("ndp") or Jaccard-Tanimoto ("JT")  
 }
 \details{
   The joint-flow distance is a similarity measure of the trajectories of flow from a common origin to two different locations.
   
   For each point the function calculates a flow trajectory from the origin (see function flowMap). Subsequently it calculates the similarity of the trajectories for each pair of points. 
   
-  The trajectory similarity is defined as the normalized dot product (cosine similarity) of the two vectors with flow intensity values.
+  The trajectory similarity can be calculated as the normalized dot product (cosine similarity) or the Jaccard-Tanimoto coefficient of the two vectors with flow intensity values.
 }
 \value{
   distance matrix (if only fromCoords is supplied) or matrix (if both fromCoords and toCoords are supplied).

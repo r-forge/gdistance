@@ -7,9 +7,9 @@
 #TODO check if coordinate systems are equal.
 #TODO check if bounding box of coordinates falls inside bb of transition
 
-setGeneric("jointFlow", function(transition, originCoord, fromCoords, toCoords) standardGeneric("jointFlow"))
+setGeneric("jointFlow", function(transition, originCoord, fromCoords, toCoords, type) standardGeneric("jointFlow"))
 
-setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, originCoord, fromCoords)
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", type = "character"), def = function(transition, originCoord, fromCoords, type="JT")
 	{
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)
@@ -69,7 +69,8 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 				jtDistance[j,] <- colMeans(Current[,j]*Current)
 			}
 		}
-		jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))) #this is to normalize the dot product to get a cosine similarity
+		if(type="ndp") {jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))))} #this is to normalize the dot product to get a cosine similarity
+		if(type="JT") {jtDistance <- jtDistance / ((sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))))) - jtDistance)} #Jaccard-Tanimoto
 		cat("|","\n")
 		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
 		rownames(jtDist) <- rownames(fromCoords)
