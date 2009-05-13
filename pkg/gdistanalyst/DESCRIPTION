@@ -4,7 +4,7 @@ Title: Methods to analyze distance matrices
 Version: 1.0
 Date: 2009-04-01
 Author: Jacob van Etten
-Depends: Matrix, gbm, quantreg, distr, distrEx
+Depends: Matrix, gbm, quantreg, distr
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: 
 License: GPL-3
