@@ -1,4 +1,4 @@
-SPA <- function(data,null.alleles="missing")
+PSA <- function(data,null.alleles="missing")
 {
 	data <- na.omit(data)
 	if(null.alleles=="missing"){data <- subset(data,data[,3]!=0)}
