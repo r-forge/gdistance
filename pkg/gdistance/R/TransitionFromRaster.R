@@ -13,6 +13,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 			transition.dsC <- as(transition,"dsCMatrix")
 			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
 			transition.values <- apply(cbind(values(object)[adj[,1]],values(object)[adj[,2]]),1,transitionFunction)
+			if(!all(transition.values>=0){warning("transition function gives negative values")})
 			transition.dsC[adj] <- as.vector(transition.values)
 			transitionMatrix(transition) <- transition.dsC
 			return(transition) 
