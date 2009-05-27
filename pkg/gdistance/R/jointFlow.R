@@ -84,7 +84,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 	}
 )
 
-setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints", type=character), def = function(transition, originCoord, fromCoords, toCoords)
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints", type="character"), def = function(transition, originCoord, fromCoords, toCoords)
 	{
 		stop("not yet implemented")
 		originCoord <- coordinates(originCoord)
