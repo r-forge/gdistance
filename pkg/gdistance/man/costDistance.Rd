@@ -27,10 +27,8 @@ distance matrix
 E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Numerische Mathematik} 1, 269–271.
 
 }
-\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
+\author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
+\note{ 
 }
 \seealso{ \code{\link{geoCorrection}}, ~~~ }
 \examples{

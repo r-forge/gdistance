@@ -6,10 +6,11 @@
 
 #TODO check if coordinate systems are equal.
 #TODO check if bounding box of coordinates falls inside bb of transition
+#TODO change order of arguments, so that toCoords is last
 
 setGeneric("jointFlow", function(transition, originCoord, fromCoords, toCoords, type) standardGeneric("jointFlow"))
 
-setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", type = "character"), def = function(transition, originCoord, fromCoords, type="JT")
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", type = "character"), def = function(transition, originCoord, fromCoords, type)
 	{
 		originCoord <- coordinates(originCoord)
 		fromCoords <- coordinates(fromCoords)
@@ -84,7 +85,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 	}
 )
 
-setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints", type="character"), def = function(transition, originCoord, fromCoords, toCoords)
+setMethod("jointFlow", signature(transition = "Transition", originCoord = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "SpatialPoints", type="character"), def = function(transition, originCoord, fromCoords, toCoords, type)
 	{
 		stop("not yet implemented")
 		originCoord <- coordinates(originCoord)

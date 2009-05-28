@@ -37,7 +37,7 @@ setMethod ("initialize", "Transition",
 		function(.Object,nrows,ncols,xmin,xmax,ymin,ymax,projection)
 		{
 			ncells <- as.integer(nrows*ncols)
-			bbox <- newBbox(xmin, xmax, ymin, ymax)
+			bbox <- newExtent(xmin, xmax, ymin, ymax)
 			.Object@bbox <- bbox
 			.Object@nrows <- as.integer(nrows)
 			.Object@ncols <- as.integer(ncols)

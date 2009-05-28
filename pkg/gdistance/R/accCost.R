@@ -38,15 +38,15 @@ setMethod("accCost", signature(transition = "Transition", object = "RasterLayer"
 		toCells <- which(is.na(values(object)))
 		accCostDist <- rep(Inf,times=n)
 		accCostDist[fromCells] <- 0
-		while(length(fromCells)>0)
-		{			
-			adj <- adjacency(transition,fromCells=fromCells,toCells=toCells,directions=directions)
-			transitionValues <- accCostDist[adj[,1]] + 1/transition[adj]
-			tValSmaller <- transitionValues < accCostDist[adj[,2]]
-			fromCells <- adj[tValSmaller,2]
-			accCostDist <- igroupMins(c(transitionValues[tValSmaller],accCostDist),c(fromCells,1:n))
-			fromCells <- unique(fromCells)
-		}
+		#while(length(fromCells)>0)
+		#{			
+		#	adj <- adjacency(transition,fromCells=fromCells,toCells=toCells,directions=directions)
+		#	transitionValues <- accCostDist[adj[,1]] + 1/transition[adj]
+		#	tValSmaller <- transitionValues < accCostDist[adj[,2]]
+		#	fromCells <- adj[tValSmaller,2]
+		#	#accCostDist <- igroupMins(c(transitionValues[tValSmaller],accCostDist),c(fromCells,1:n))
+		#	fromCells <- unique(fromCells)
+		#}
 		result <- as(transition, "RasterLayer")
 		result <- setValues(result, accCostDist)	
 		return(result)

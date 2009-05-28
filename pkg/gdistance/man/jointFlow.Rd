@@ -14,7 +14,7 @@ jointFlow (transition, originCoord, fromCoords, toCoords)
   \item{originCoord}{ origin of flow point location (of SpatialPoints class)} 
   \item{fromCoords}{ first set of point locations (of SpatialPoints class)}  
   \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)} 
-  \item{type}{ type of coefficient to be calculated: normalized dot product ("ndp") or Jaccard-Tanimoto ("JT")  
+  \item{type}{ type of coefficient to be calculated: normalized dot product ("ndp") or Jaccard-Tanimoto ("JT")}
 }
 \details{
   The joint-flow distance is a similarity measure of the trajectories of flow from a common origin to two different locations.
@@ -47,7 +47,7 @@ sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
 sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
 
 #from and to identical
-jointFlow(tr, sPorg, sP1)
+jointFlow(tr, sPorg, sP1, type="ndp")
 
 #from and to different -- to be implemented
 #jointFlow(tr,sPorg, sP1, sP2)

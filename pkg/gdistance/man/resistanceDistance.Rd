@@ -51,8 +51,8 @@ sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
 #from and to identical
 resistanceDistance(tr,sP1)
 
-#from and to different
-resistanceDistance(tr,sP1,sP2)
+#from and to different -- to be implemented
+#resistanceDistance(tr,sP1,sP2)
 
 }
 \keyword{ spatial }
