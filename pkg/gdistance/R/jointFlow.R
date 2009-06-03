@@ -46,6 +46,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		jtDistance <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 		indexCoords <- match(fromCells,transitionCells(transition))
 		indexOrigin <- match(originCell,transitionCells(transition))
+		#Lr <- Cholesky(Lr)
 		if( ((n * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 		{
 			for (i in 1:(length(fromCells)))
@@ -67,12 +68,11 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 			}
 			for(j in 1:(length(fromCells)))
 			{
-				jtDistance[j,] <- colMeans(Current[,j]*Current)
+				jtDistance[j,] <- colSums(Current[,j]*Current)
 			}
 		}
-		if(type=="ndp") {jtDistance <- jtDistance * sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))))} #this is to normalize the dot product to get a cosine similarity
-		if(type=="JT") {jtDistance <- jtDistance / ((sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) * t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))))) - jtDistance)} #Jaccard-Tanimoto
-		cat("|","\n")
+		if(type=="ndp") {jtDistance <- jtDistance / (sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))) * sqrt(t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))))}
+		if(type=="JT") {jtDistance <- jtDistance / ((matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) + t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))) - jtDistance)}
 		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
 		rownames(jtDist) <- rownames(fromCoords)
 		colnames(jtDist) <- rownames(fromCoords)
@@ -80,7 +80,7 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 		index2 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% fromCells],fromCells)
 		jtDist[index1,index1] <- jtDistance[index2,index2]
 		jtDist <- as.dist(jtDist)
-		attr(jtDist, "method") <- "jointFlow"
+		attr(jtDist, "method") <- paste("jointFlow-",type)
 		return(jtDist)
 	}
 )
