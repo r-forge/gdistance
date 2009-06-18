@@ -39,6 +39,7 @@
 .Laplacian <- function(transition) 
 {
 	Laplacian <- Diagonal(x = colSums(transitionMatrix(transition))) - transitionMatrix(transition)
+	Laplacian <- as(Laplacian, "symmetricMatrix")
 	return(Laplacian)
 }
 

@@ -1,44 +1,54 @@
-PSA <- function(data,null.alleles="missing")
+PSA <- function(data, nullAlleles="missing", correction=TRUE)
 {
 	data <- na.omit(data)
-	if(null.alleles=="missing"){data <- subset(data,data[,3]!=0)}
-	if(null.alleles=="unlike"){data[,3][data[,3]==0] <- seq(from=max(data[,3])+1,to=max(data[,3])+length(data[,3][data[,3]==0]))}
-	if(null.alleles=="alike"){}
-	accession.index <- unique(data[,1])
-	marker.fragment <- paste(data[,2],data[,3],sep="-")
-	marker.fragment.index <- unique(marker.fragment)
-	i <- match(marker.fragment,marker.fragment.index)-1
-	j <- match(data[,1],accession.index)-1
-	x <- rep(1,times=length(data[,1]))
-	Dim1 <- length(marker.fragment.index)
-	Dim2 <- length(accession.index)
-	data.matrix <- new("dgTMatrix", i = as.integer(i), j = as.integer(j), x = as.numeric(x), Dim = as.integer(c(Dim1,Dim2)))
-	data.matrix <- as(data.matrix,"dgCMatrix")
-	marker.index <- unlist(strsplit(marker.fragment.index,"-"))[seq(from=1,to=length(marker.fragment.index)*2,by=2)]
-	distance.matrix <- matrix(0,ncol=length(accession.index),nrow=length(accession.index))
-	sum.total <- apply(data.matrix,2,function(x){tapply(x,marker.index,sum)})
-	data.matrix.logical <- Matrix(as.integer(as.logical(data.matrix)),ncol=ncol(data.matrix))
-	n.accessions <- length(accession.index)
-	onepercent <- n.accessions/100
-	count <- 0
-	cat("Progress Bar", "\n")
-	cat("---------|---------|---------|---------|---------|---------|---------|---------|---------|---------|","\n")	
-	for (i in 1:(n.accessions-1))
+	if(nullAlleles=="missing"){data <- subset(data,data[,3]!=0)}
+	if(nullAlleles=="unlike"){data[,3][data[,3]==0] <- seq(from=max(data[,3])+1,to=max(data[,3])+length(data[,3][data[,3]==0]))}
+	if(nullAlleles=="alike"){}
+	accessionIndex <- unique(data[,1])
+	n <- length(accessionIndex)
+
+	markerFragment <- paste(data[,2],data[,3],sep="&")
+	markerFragmentIndex <- unique(markerFragment)
+	accMarkerFragment <- paste(data[,1],markerFragment,sep="_")
+	markerFragmentTable <- table(accMarkerFragment)
+	
+	acc <- unlist(strsplit(names(markerFragmentTable),"_"))[seq(from=1,to=length(markerFragmentTable)*2,by=2)]
+	markerFr <- unlist(strsplit(names(markerFragmentTable),"_"))[seq(from=2,to=length(markerFragmentTable)*2,by=2)]
+
+	i <- match(acc,accessionIndex)-1
+	j <- match(markerFr,markerFragmentIndex)-1
+	x <- as.vector(markerFragmentTable)
+	Dim1 <- n
+	Dim2 <- length(markerFragmentIndex)
+	dataMatrix <- new("dgTMatrix", i = as.integer(i), j = as.integer(j), x = as.numeric(x), Dim = as.integer(c(Dim1,Dim2)))
+	dataMatrix <- as(dataMatrix,"dgCMatrix")
+
+	markerIndex <- unlist(strsplit(markerFragmentIndex, "&"))[seq(from=1,to=length(markerFragmentIndex)*2,by=2)]
+	noFragmentsPerMarker <- t(apply(dataMatrix, 1, function(x) tapply(x, markerIndex, sum)))
+	nms <- names(tapply(dataMatrix[1,], markerIndex, sum))
+	noFragmentsPerMarker <- noFragmentsPerMarker[,match(markerIndex,nms)] #This defeats the purpose of sparse matrices of course. For big files, this should be done in chunks with a loop.
+	noFragmentsPerMarker[noFragmentsPerMarker == 0] <- Inf
+	dataMatrix <- dataMatrix / noFragmentsPerMarker
+
+	genDist <- as.dist(matrix(0,ncol=n,nrow=n))
+	index <- cbind(rep(1:n,times=n), rep(1:n,each=n))
+	for(i in 1:length(genDist))
 	{
-		from <- data.matrix.logical[,i:n.accessions] * data.matrix[,i] 
-		to <- data.matrix[,i:n.accessions] * data.matrix.logical[,i] #as.numeric(as.logical(data.matrix[,i])) 
-		sum.from <- apply(from,2,function(x){tapply(x,marker.index,sum)})
-		sum.to <- apply(to,2,function(x){tapply(x,marker.index,sum)})
-		sum.total.selection <- sum.total[,i:n.accessions]
-		distance.matrix[i,i:n.accessions] <- apply(pmin(sum.from/(sum.total.selection+0.0000001),sum.to/(sum.total.selection+0.0000001)),2,mean) #TODO subset
-		count <- count+1
-		if(count>=onepercent) {cat("|"); count<-count-onepercent}
+		genDist[i] <- mean(tapply(pmin(dataMatrix[matrIndex(i,n)[1],], dataMatrix[matrIndex(i,n)[2],]), markerIndex, sum))
 	}
-	distance.matrix[n.accessions,n.accessions] <- mean(as.logical(tapply(data.matrix.logical[,n.accessions],marker.index,sum)))
-	cat("|","\n")
-	distance.matrix <- t(distance.matrix * sqrt(1/diag(distance.matrix))) * sqrt(1/diag(distance.matrix))
-	distance.matrix <- 1-distance.matrix
-	rownames(distance.matrix) <- as.character(accession.index)
-	colnames(distance.matrix) <- as.character(accession.index)
-	return(as.dist(distance.matrix))
+	selfSim <- vector(length=n)
+	if (correction)
+	{
+		for(i in 1:n)
+		{
+			selfSim[i] <- sqrt(mean(tapply(pmin(dataMatrix[i,], dataMatrix[i,]), markerIndex, sum)))
+		}
+		selfSim <- matrix(selfSim, nrow=n,ncol=n)
+		genDist <- genDist / as.dist(selfSim * t(selfSim))
+	}
+	return(1-genDist)
 }
+
+#f <- url("http://hpgl.stanford.edu/projects/microsat/data/test.dat2")
+#testData <- read.delim(f, sep=" ", skip=5,header=FALSE)
+#ssr(testData)

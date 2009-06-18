@@ -28,7 +28,7 @@ ASD <- function(ssr,repeats=2)
 	ASDDist <- as.dist(matrix(nrow=nacc,ncol=nacc))
 	index1 <- cbind(rep(1:nacc,each=nacc),rep(1:nacc,times=nacc))
 	index1 <- index1[index1[,1] > index1[,2],]
-	index2 <- .distIndex(index1[,1],index1[,2],nacc)
+	index2 <- distIndex(index1[,1],index1[,2],nacc)
 	for(i in 1:length(index1[,1]))
 	{
 		dif <- (AlleleMeanMatrix[index1[i,1],] - AlleleMeanMatrix[index1[i,2],]) 

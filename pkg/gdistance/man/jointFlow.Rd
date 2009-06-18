@@ -21,7 +21,7 @@ jointFlow (transition, originCoord, fromCoords, toCoords)
   
   For each point the function calculates a flow trajectory from the origin (see function flowMap). Subsequently it calculates the similarity of the trajectories for each pair of points. 
   
-  The trajectory similarity can be calculated as the normalized dot product (cosine similarity) or the Jaccard-Tanimoto coefficient of the two vectors with flow intensity values.
+  The trajectory similarity can be calculated as the dot product, normalized dot product (cosine similarity) or the Jaccard-Tanimoto coefficient of the two vectors with flow intensity values.
 }
 \value{
   distance matrix (if only fromCoords is supplied) or matrix (if both fromCoords and toCoords are supplied).
