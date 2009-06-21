@@ -1,9 +1,9 @@
-robMantelRegr <- function(distObjectY, distObjectX, p, verbose=FALSE)
+robMantelRegr <- function(distObjectY, distObjectX, p, iter=100, verbose=FALSE)
 {
-	.rbga.bin2(distObjectY, distObjectX, evalFunc = .evalFunc)
+	.rbga.bin2(distObjectY, distObjectX, p=p, iter=iter, evalFunc = .evalFunc, verbose=verbose)
 }
 
-.evalFunc <- function(chromosome, distObjectY, distobjectX)
+.evalFunc <- function(chromosome, distObjectY, distObjectX)
 {
 	distObjectY <- as.dist(as.matrix(distObjectY)[chromosome,chromosome])
 	distObjectX <- as.dist(as.matrix(distObjectX)[chromosome,chromosome])
@@ -42,14 +42,15 @@ robMantelRegr <- function(distObjectY, distObjectX, p, verbose=FALSE)
 	
 	#initiate population
 	population <- matrix(FALSE, nrow=popSize, ncol=n)
+	Start <- 0
 	if (!is.null(suggestions)) 
 	{
-		population[1:start,] <- suggestions
-		start <- dim(suggestions)[1]
+		population[1:Start,] <- suggestions
+		Start <- dim(suggestions)[1]
 	}
-	for (child in (start+1):popSize) 
+	for (child in (Start+1):popSize) 
 	{
-		population[child,sample(1:n, p, rep=FALSE)] <- TRUE
+		population[child,sample(1:n, p, replace=FALSE)] <- TRUE
 	}
 
 	#prepare results vectors and matrix
@@ -59,12 +60,12 @@ robMantelRegr <- function(distObjectY, distObjectX, p, verbose=FALSE)
 	evalPars <- matrix(NA, nrow=popSize, ncol=vars+1)
 		
 	# calculate evalVal of initial population
-	if (verbose) cat("Calculating evaluation values... ")
+	if (verbose) cat("Calculating evaluation values ")
 	for (object in 1:popSize) 
 	{
 		if (is.na(evalVals[object])) 
 		{
-			evalVal <- .evalFunc(population[object,],distObject)
+			evalVal <- .evalFunc(population[object,], distObjectY, distObjectX)
 			evalVals[object] <- evalVal[[1]]
 			evalPars[object,] <- evalVal[[2]]
 			if (verbose) cat(".")
@@ -78,11 +79,11 @@ robMantelRegr <- function(distObjectY, distObjectX, p, verbose=FALSE)
 		meanEvals[iter] <- mean(evalVals)
 		if (verbose) cat("iteration ", iter, ", R2: ", bestEvals[iter], "\n")
  
-		if (verbose) cat("Creating next generation...\n")
+		if (verbose) cat("Creating next generation ")
 		newPopulation <- matrix(FALSE, nrow=popSize, ncol=n)
 		newEvalVals <- rep(NA, popSize)
-		sortedEvaluations <- sort(evalVals, index.return=TRUE)
-		sortedPopulation  <- matrix(population[sortedEvaluations$ix,], ncol=n)
+		sortedEvaluations <- sort(evalVals, index.return=TRUE, decreasing=TRUE)
+		sortedPopulation  <- population[sortedEvaluations$ix,]
                 
 		# keep the best
 		newPopulation[1:elite,] <- sortedPopulation[1:elite,]
@@ -91,59 +92,64 @@ robMantelRegr <- function(distObjectY, distObjectX, p, verbose=FALSE)
 		#do residual based calculations
 		for(child in (elite+1):(2*elite))
 		{
-			index <- sort(abs((evalPars[1,child] + evalPars[2,child] * distObjectX) - distObjectY), index.return = T)$xi[p]
+			resdls <- abs((evalPars[child-elite,1] + evalPars[child-elite,2] * distObjectX) - distObjectY)
+			resdls <- colSums(as.matrix(resdls))
+			index <- sort(resdls, index.return = TRUE)$ix[1:p]
 			newPopulation[child,index] <- TRUE
+			if (verbose) cat(".")
 		}
 
 		# swapping by crossover
 		for (child in (2*elite+1):(3*elite)) 
 		{
-			minL <- NULL
-			while (length(minL<3))
+			minL <- 0
+			while (minL<3)
 			{
 				parentIDs <- sample(1:popSize, 2, prob=parentProb)
-				parent1 <- sortedPopulation[parentIDs[1],]
-				parent2 <- sortedPopulation[parentIDs[2],]
+				parent1 <- as.vector(sortedPopulation[parentIDs[1],])
+				parent2 <- as.vector(sortedPopulation[parentIDs[2],])
 				candidates1 <- which(parent1 & !parent2)
 				candidates2 <- which(!parent1 & parent2)
-				minL <- min(length(candidates1)>0, length(candidates2>0))
+				minL <- min(length(candidates1), length(candidates2))
 			}
 			swapNo <- sample(2:(minL-1),1)
 			newChild <- parent1
 			newChild[sample(candidates1, swapNo)] <- FALSE
-			newChild[sample(candidates2, (minL - swapNo))] <- TRUE
+			newChild[sample(candidates2, swapNo)] <- TRUE
 			newPopulation[child,] <- newChild
+			if (verbose) cat(".")
 		}
 
 		# swapping by mutation
-		parentIDs <- sample(1:popSize, length((3 * elite + 1):popSize), prob=parentProb)
+		parentIDs <- sample(1:popSize, size = length((3 * elite + 1):popSize), prob=parentProb)
 		for (child in (3 * elite + 1):popSize) 
 		{
-			newChild <- sortedPopulation[parentsIDs[child - 3 * elite]]
-			index1 <- sample(which(newChild),mutationNo)
-			index2 <- sample(which(!newChild),mutationNo)
+			newChild <- sortedPopulation[parentIDs[child - 3 * elite],]
+			index1 <- sample(which(newChild), mutationNo, replace=FALSE)
+			index2 <- sample(which(!newChild), mutationNo, replace=FALSE)
 			newChild[index1] <- FALSE
 			newChild[index2] <- TRUE
 			newPopulation[child,] <- newChild
+			if (verbose) cat(".")
 		}
                 
 		population <- newPopulation
 		evalVals   <- newEvalVals
 
-		if (verbose) cat("Calculating evaluation values... ")
+		if (verbose) cat("\n","Calculating evaluation values... ")
 		for (object in (elite+1):popSize) 
 		{
 			evalVal <- .evalFunc(population[object,],distObjectY, distObjectX)
 			evalVals[object] <- evalVal[[1]]
 			evalPars[object,] <- evalVal[[2]]
-			if (verbose) cat("|")
+			if (verbose) cat(".")
 		}
 	}
 
 	#result
     result = list(type="binary chromosome", size=size,
                   popSize=popSize, iters=iters, suggestions=suggestions,
-                  population=population, elite=elite, mutationChance=mutationChance,
+                  population=population, elite=elite, mutationNo=mutationNo,
                   evaluations=evalVals, best=bestEvals, mean=meanEvals)
     class(result) = "rbga"
 
