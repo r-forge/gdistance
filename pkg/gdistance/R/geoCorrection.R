@@ -6,18 +6,18 @@
 
 setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type)
+setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type, multiplicationMatrix)
 	{
 		if(isLatLon(transition)){}
-		else{warning("projection not geographic; are you sure you want to do this?")}
-		if (type== "resistance" | type=="cost"){}else{stop("unknown type of projection correction; only 'cost' and 'resistance' are defined")}
+		if (type != 1 & type != 2){stop("type can only be 1 or 2")}
 		adjacency <- .adjacency.from.transition(transition)
 		correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
 		correctionValues <- 1/pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')
-		if (type=="resistance")
+		if (type==2)
 		{
 			rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
-			correctionValues[rows] <- 1/(correctionValues[rows] * cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4])))) 
+			corrFactor <- cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4]))) #low near the poles
+			correctionValues[rows] <- correctionValues[rows] * corrFactor #makes conductance lower in N-S direction towards the poles
 		}
 		i <- as.integer(adjacency[,1] - 1)
 		j <- as.integer(adjacency[,2] - 1)
@@ -26,8 +26,16 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		correctionMatrix <- new("dgTMatrix", i = i, j = j, x = x, Dim = as.integer(c(dims,dims)))
 		correctionMatrix <- (as(correctionMatrix,"symmetricMatrix"))
 		correctionMatrix <- (as(correctionMatrix,"dsCMatrix"))
-		transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")
-		transitionMatrix(transition) <- transitionCorrected
-		return(transition)
+		if(!multiplicationMatrix) 
+		{
+			transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")}
+			transitionMatrix(transition) <- transitionCorrected
+			return(transition)
+		}	
+		if(multiplicationMatrix)
+		{
+			transitionMatrix(transition) <- correctionMatrix
+			return(transition)
+		}
 	}
 )
