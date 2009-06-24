@@ -126,7 +126,7 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 			parentIDs <- sample(1:popSize, size = elite, prob=parentProb)
 			for(child in (elite+1):(2*elite))
 			{
-				resdls <- abs((evalPars[parentIDs[child-elite],1] + evalPars[parentIDs[child-elite],2] * distObjectX) - distObjectY)
+				resdls <- ((evalPars[parentIDs[child-elite],1] + evalPars[parentIDs[child-elite],2] * distObjectX) - distObjectY)^2
 				resdls <- colSums(as.matrix(resdls))
 				index <- sort(resdls, index.return = TRUE)$ix[1:p]
 				newPopulation[child,index] <- TRUE
