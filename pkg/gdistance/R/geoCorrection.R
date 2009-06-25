@@ -28,7 +28,7 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		correctionMatrix <- (as(correctionMatrix,"dsCMatrix"))
 		if(!multiplicationMatrix) 
 		{
-			transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")}
+			transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")
 			transitionMatrix(transition) <- transitionCorrected
 			return(transition)
 		}	
