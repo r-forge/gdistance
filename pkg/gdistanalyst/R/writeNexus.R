@@ -1,6 +1,3 @@
-# This function is based on the write.nexus function in the ape package, written by Emmanuel Paradis and released under the GNU licence >=2
-# It was modified to be able to store distance matrices in Nexus format
-
 writeNexus <- function(distObject, file = "")
 {
     Diag <- attr(distObject, "Diag")
