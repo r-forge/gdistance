@@ -34,7 +34,7 @@ MRD <- function(data, nullAlleles="missing")
 	index <- cbind(rep(1:n,times=n), rep(1:n,each=n))
 	for(i in 1:length(genDist))
 	{
-		genDist[i] <- sum(tapply((dataMatrix[matrIndex(i,n)[1],] - dataMatrix[matrIndex(i,n)[2],])^2, markerIndex, sum))
+		genDist[i] <- sqrt(sum(tapply((dataMatrix[matrIndex(i,n)[1],] - dataMatrix[matrIndex(i,n)[2],])^2, markerIndex, sum)))
 	}
 
 	return(genDist)
