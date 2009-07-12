@@ -36,9 +36,10 @@ PSA <- function(data, nullAlleles="missing", correction=TRUE)
 	{
 		genDist[i] <- mean(tapply(pmin(dataMatrix[matrIndex(i,n)[1],], dataMatrix[matrIndex(i,n)[2],]), markerIndex, sum))
 	}
-	selfSim <- vector(length=n)
+	
 	if (correction)
 	{
+		selfSim <- vector(length=n)
 		for(i in 1:n)
 		{
 			selfSim[i] <- sqrt(mean(tapply(pmin(dataMatrix[i,], dataMatrix[i,]), markerIndex, sum)))

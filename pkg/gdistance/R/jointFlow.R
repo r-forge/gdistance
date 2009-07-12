@@ -70,18 +70,23 @@ setMethod("jointFlow", signature(transition = "Transition", originCoord = "Spati
 				jtDistance[j,] <- colSums(Current[,j]*Current)
 			}
 		}
-		if(type=="ndp") {jtDistance <- jtDistance / (sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))) * sqrt(t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))))}
-		if(type=="JT") {jtDistance <- jtDistance / ((matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) + t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))) - jtDistance)}
-		if(type=="prod") {}
-		jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
-		rownames(jtDist) <- rownames(fromCoords)
-		colnames(jtDist) <- rownames(fromCoords)
-		index1 <- which(fromCoordsCells[,3] %in% fromCells)
-		index2 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% fromCells],fromCells)
-		jtDist[index1,index1] <- jtDistance[index2,index2]
-		jtDist <- as.dist(jtDist)
-		attr(jtDist, "method") <- paste("jointFlow -",type)
-		return(jtDist)
+		jtDistList <- vector(length=length(type),mode="list")
+		for (i in 1:length(type))
+		{
+			if(type[i] == "ndp") {jtDistType <- jtDistance / (sqrt(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells))) * sqrt(t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))))}
+			if(type[i] == "JT") {jtDistType <- jtDistance / ((matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)) + t(matrix(diag(jtDistance),nrow=length(fromCells),ncol=length(fromCells)))) - jtDistance)}
+			if(type[i] == "prod") {jtDistType <- jtDistance}
+			jtDist <- matrix(nrow=length(fromCoordsCells[,1]),ncol=length(fromCoordsCells[,1]))
+			rownames(jtDist) <- rownames(fromCoords)
+			colnames(jtDist) <- rownames(fromCoords)
+			index1 <- which(fromCoordsCells[,3] %in% fromCells)
+			index2 <- match(fromCoordsCells[,3][fromCoordsCells[,3] %in% fromCells],fromCells)
+			jtDist[index1,index1] <- jtDistType[index2,index2]
+			jtDist <- as.dist(jtDist)
+			attr(jtDist, "method") <- paste("jointFlow -",type[i])
+			jtDistList[[i]] <- jtDist
+		}
+		return(jtDistList)
 	}
 )
 

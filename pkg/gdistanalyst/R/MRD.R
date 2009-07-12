@@ -9,7 +9,7 @@ MRD <- function(data, nullAlleles="missing")
 
 	markerFragment <- paste(data[,2],data[,3],sep="&")
 	markerFragmentIndex <- unique(markerFragment)
-	accMarkerFragment <- paste(data[,1],markerFragment,sep="_")
+	accMarkerFragment <- unique(paste(data[,1],markerFragment,sep="_"))
 	markerFragmentTable <- table(accMarkerFragment)
 	
 	acc <- unlist(strsplit(names(markerFragmentTable),"_"))[seq(from=1,to=length(markerFragmentTable)*2,by=2)]
@@ -24,17 +24,12 @@ MRD <- function(data, nullAlleles="missing")
 	dataMatrix <- as(dataMatrix,"dgCMatrix")
 
 	markerIndex <- unlist(strsplit(markerFragmentIndex, "&"))[seq(from=1,to=length(markerFragmentIndex)*2,by=2)]
-	noFragmentsPerMarker <- t(apply(dataMatrix, 1, function(x) tapply(x, markerIndex, sum)))
-	nms <- names(tapply(dataMatrix[1,], markerIndex, sum))
-	noFragmentsPerMarker <- noFragmentsPerMarker[,match(markerIndex,nms)] #This defeats the purpose of sparse matrices of course. For big files, this should be done in chunks with a loop.
-	noFragmentsPerMarker[noFragmentsPerMarker == 0] <- Inf
-	dataMatrix <- dataMatrix / noFragmentsPerMarker
 
 	genDist <- as.dist(matrix(0,ncol=n,nrow=n))
 	index <- cbind(rep(1:n,times=n), rep(1:n,each=n))
 	for(i in 1:length(genDist))
 	{
-		genDist[i] <- sqrt(sum(tapply((dataMatrix[matrIndex(i,n)[1],] - dataMatrix[matrIndex(i,n)[2],])^2, markerIndex, sum)))
+		genDist[i] <- sqrt(sum(tapply(abs(dataMatrix[matrIndex(i,n)[1],] - dataMatrix[matrIndex(i,n)[2],]), markerIndex, sum)))
 	}
 
 	return(genDist)
