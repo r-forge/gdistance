@@ -30,6 +30,27 @@ setMethod ("transitionCells", signature(transition = "Transition"),
 	}
 )
 
+setGeneric("matrixValues", function(transition = "Transition") standardGeneric("matrixValues"))
+
+setMethod ("matrixValues", signature(transition = "Transition"),
+	function(transition){
+		transition@matrixValues
+	}
+)
+
+setGeneric("matrixValues<-", function(transition, value) standardGeneric("matrixValues<-"))
+
+setReplaceMethod ("matrixValues", signature(transition = "Transition", value = "character"),
+	function(transition, value){
+		if (value == "resistance" | value == "conductance") 
+		{
+			transition@matrixValues <- value
+			return(transition)
+		}
+		else {stop("matrixValues can only be set to resistance or conductance")}
+	}
+)
+
 setMethod("[", signature(x = "Transition", i="index", j="missing", drop="missing"), function(x,i)
 	{
 		i <- as.integer(i)

@@ -8,10 +8,12 @@ setClass(Class="Transition",
 		contains = "Raster",
 		representation = representation(
 			transitionMatrix = "dsCMatrix",
-			transitionCells = "integer"
+			transitionCells = "integer",
+			matrixValues = "character"
 		),
 		validity = function(object){
-			cond <- (nrow(object) * ncol(object)) >= object@transitionMatrix@Dim[1]
+			cond1 <- (nrow(object) * ncol(object)) >= object@transitionMatrix@Dim[1]
+			cond2 <- (object@matrixValues == "resistance" | object@matrixValues == "conductance")
 			return(cond)
 	}
 )
@@ -29,6 +31,7 @@ setMethod ("show" , "Transition",
 			cat("xres      :" , (xmax(object) - xmin(object)) / ncol(object) , "\n")
 			cat("yres      :" , (ymax(object) - ymin(object)) / nrow(object)  , "\n")
 			cat("projection:", projection(object))
+			cat("values:", matrixValues(object))
 			cat ("\n")
 		}
 )

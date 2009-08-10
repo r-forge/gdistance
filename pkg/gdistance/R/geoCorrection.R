@@ -4,16 +4,17 @@
 # Version beta
 # Licence GPL v3
 
-setGeneric("geoCorrection", function(transition, ...) standardGeneric("geoCorrection"))
+setGeneric("geoCorrection", function(transition, type, multpl) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition"), def = function(transition, type, multiplicationMatrix)
+setMethod("geoCorrection", signature(transition = "Transition", type="character", multpl="logical"), def = function(transition, type, multpl)
 	{
 		if(isLatLon(transition)){}
-		if (type != 1 & type != 2){stop("type can only be 1 or 2")}
+		if (type != "c" & type != "r"){stop("type can only be c or r")}
 		adjacency <- .adjacency.from.transition(transition)
 		correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-		correctionValues <- 1/pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')
-		if (type==2)
+		if(matrixValues(transition) == "conductance") {correctionValues <- 1/pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')}
+		if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')}
+		if (type=="r")
 		{
 			rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
 			corrFactor <- cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4]))) #low near the poles
@@ -26,13 +27,13 @@ setMethod("geoCorrection", signature(transition = "Transition"), def = function(
 		correctionMatrix <- new("dgTMatrix", i = i, j = j, x = x, Dim = as.integer(c(dims,dims)))
 		correctionMatrix <- (as(correctionMatrix,"symmetricMatrix"))
 		correctionMatrix <- (as(correctionMatrix,"dsCMatrix"))
-		if(!multiplicationMatrix) 
+		if(!multpl) 
 		{
 			transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")
 			transitionMatrix(transition) <- transitionCorrected
 			return(transition)
 		}	
-		if(multiplicationMatrix)
+		if(multpl)
 		{
 			transitionMatrix(transition) <- correctionMatrix
 			return(transition)

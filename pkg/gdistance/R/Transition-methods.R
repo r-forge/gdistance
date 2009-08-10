@@ -4,6 +4,8 @@
 # Version 1.0
 # Licence GPL v3
 
+#TODO matrixValues == "resistance"
+
 setMethod("Arith", signature(e1 = "Transition", e2 = "Transition"),
 		function(e1, e2){
 			if(as(e1, "BasicRaster") == as(e2, "BasicRaster"))

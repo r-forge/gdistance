@@ -16,6 +16,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 			if(!all(transition.values>=0)){warning("transition function gives negative values")}
 			transition.dsC[adj] <- as.vector(transition.values)
 			transitionMatrix(transition) <- transition.dsC
+			matrixValues(transition) <- "conductance"
 			return(transition) 
 		}
 )
@@ -41,7 +42,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterStack"), def = funct
 					Dimnames = list(as.character(1:ncell(object)),as.character(1:ncell(object)))
 			)
 			transition.dsC[adj] <- mahaldistance
-			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
+			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE), matrixValues="conductance")
 			transitionMatrix(transition) <- transition.dsC
 			return(transition)
 		}
