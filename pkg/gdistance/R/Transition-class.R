@@ -28,9 +28,9 @@ setMethod ("show" , "Transition",
 			cat("xmax      :" , xmax(object), "\n")
 			cat("ymin      :" , ymin(object), "\n")
 			cat("ymax      :" , ymax(object), "\n")
-			cat("xres      :" , (xmax(object) - xmin(object)) / ncol(object) , "\n")
-			cat("yres      :" , (ymax(object) - ymin(object)) / nrow(object)  , "\n")
-			cat("projection:", projection(object))
+			cat("xres      :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
+			cat("yres      :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
+			cat("projection:", projection(object), "\n")
 			cat("values:", matrixValues(object))
 			cat ("\n")
 		}

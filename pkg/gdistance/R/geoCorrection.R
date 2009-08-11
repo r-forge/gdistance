@@ -17,7 +17,9 @@ setMethod("geoCorrection", signature(transition = "Transition", type="character"
 		if (type=="r")
 		{
 			rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
-			corrFactor <- cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4]))) #low near the poles
+			
+			if(matrixValues(transition) == "conductance") {corrFactor <- cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4])))} #low near the poles
+			if(matrixValues(transition) == "resistance") {corrFactor <- 1 / (cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4]))))} #high near the poles
 			correctionValues[rows] <- correctionValues[rows] * corrFactor #makes conductance lower in N-S direction towards the poles
 		}
 		i <- as.integer(adjacency[,1] - 1)
