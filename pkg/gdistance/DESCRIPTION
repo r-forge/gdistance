@@ -8,5 +8,5 @@ Depends: raster, igraph, Matrix, methods
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: 
 License: GPL-3
-Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R accCost.R flowMap.R geoCorrection.R resistanceDistance.R TransitionMap.R flowDivergence.R sumT.R
+Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R accCost.R flowMap.R geoCorrection.R resistanceDistance.R TransitionMap.R flow.R sumT.R
 LazyLoad: yes

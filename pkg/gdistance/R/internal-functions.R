@@ -28,10 +28,10 @@
 	x <- solve(Lr,e)
 	x <- as.vector(x)
 	Lplusallrows <- c(x,x[length(x)]) / C
-	V <- A * Lplusallrows
-	d <- t(t(A) * diag(V))
-	V <- - V + d
-	Current <- colSums(abs(V)*-L)/2 #I = V * R
+	V1 <- A * Lplusallrows
+	V2 <- t(t(A) * Lplusallrows)
+	V <- abs(V1 - V2)
+	Current <- colSums(V * -L)/2 #I = V * Conductance
 	Current[indexFrom] <- 1
 	Current[indexTo] <- 1
 	return(Current)
@@ -46,26 +46,10 @@
 	x <- solve(Lr,e)
 	x <- as.vector(x)
 	Lplusallrows <- c(x,x[length(x)]) / C
-	V <- A * Lplusallrows
-	d <- t(t(A) * diag(V))
-	V <- - V + d
+	V1 <- A * Lplusallrows
+	V2 <- t(t(A) * Lplusallrows)
+	V <- abs(V1 - V2)
 	return(V)
-}
-
-.currentSqrtR <- function(L, Lr, A, n, indexFrom, indexTo, index, RSqrtR) 
-{
-	C <- 1e-300 * n #This should avoid too big floating points as "Voltage differences"
-	e <- matrix(0, ncol=1, nrow=n)
-	e[indexFrom,] <- C
- 	e[indexTo,] <- -C
-	x <- solve(Lr,e)
-	x <- as.vector(x)
-	Lplusallrows <- c(x,x[length(x)]) / C
-	V <- A * Lplusallrows
-	d <- t(t(A) * diag(V))
-	V <- - V + d
-	ISqrtR <- abs(V)* RSqrtR
-	return(ISqrtR[index])
 }
 
 .currentM <- function(L, Lr, A, n, indexFrom, indexTo, index) 
@@ -77,11 +61,11 @@
 	x <- solve(Lr,e)
 	x <- as.vector(x)
 	Lplusallrows <- c(x,x[length(x)]) / C
-	V <- A * Lplusallrows
-	d <- t(t(A) * diag(V))
-	V <- - V + d
-	Current <- abs(V)*-L #I = V * R
-	return(Current[index])
+	V1 <- A * Lplusallrows
+	V2 <- t(t(A) * Lplusallrows)
+	V <- abs(V1 - V2)
+	Current <- V[index] * -L[index] #I = V * Conductance
+	return(Current)
 }
 
 .Laplacian <- function(transition) 

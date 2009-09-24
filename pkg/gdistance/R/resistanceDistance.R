@@ -39,7 +39,7 @@ setMethod("resistanceDistance", signature(transition = "Transition", fromCoords 
 			warning(length(fromCells)," out of ",length(allFromCells)," locations were found in the transition matrix. NAs introduced.")
 		}
 		else{}
-		fromCells <- unique(fromCells)
+		fromCells <- unique(allFromCells)
 		Lr <- .Laplacian(transition)
 		n <- max(Lr@Dim)
 		Lr <- Lr[-n,-n]

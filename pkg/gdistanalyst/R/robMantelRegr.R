@@ -1,14 +1,30 @@
-RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImprove=0, mutationNo=2, verbose=FALSE)
+#TODO remove ij
+
+RMReg <- function(forml, dat=NULL, p=0, iter=100, popSize=100, maxNoImprove=0, mutationNo=2, verbose=FALSE)
 {
-	.rbga.bin2(distObjectY, distObjectX, p=p, iter=iter, maxNoImprove=maxNoImprove, mutationNo=mutationNo, popSize=popSize, evalFunc = .evalFunc, verbose=verbose)
+	forml <- as.formula(forml)
+	nc <- length(dat[,1])
+	n <- round(optimize(function(n) ( abs(n^2 -n - 2*nc)), interval = c(0, nc*3))[[1]])
+	formterms <- rownames(attr(terms(forml,keep.order = TRUE), "factors"))[1:length(rownames(attr(terms(forml), "factors")))] 
+	dat <- dat[formterms]
+	.rbga.bin2(forml, formterms, dat, p=p, iter=iter, maxNoImprove=maxNoImprove, mutationNo=mutationNo, popSize=popSize, evalFunc = .evalFunc, verbose=verbose, n=n)
 }
 
-.evalFunc <- function(chromosome, distObjectY, distObjectX)
+.evalFunc <- function(chromosome, forml, formterms, dat, n)
 {
-	distObjectY <- as.dist(as.matrix(distObjectY)[chromosome,chromosome])
-	distObjectX <- as.dist(as.matrix(distObjectX)[chromosome,chromosome])
-	summ <- summary(lm(distObjectY ~ distObjectX))
-	return(list(r.squared = summ$r.squared, coeff = abs(summ$coefficients[,1])))
+	if(!is.null(dat))
+	{
+		environment(forml) <- environment()
+		for(i in 1:length(formterms))
+		{
+			value <- as.dist(matrix(nrow=n,ncol=n))
+			value[] <- unlist(dat[formterms[i]])
+			value <- as.dist(as.matrix(as.dist(value))[chromosome,chromosome])
+			assign(formterms[i], value)
+		}
+	}
+	summ <- summary(lm(forml))
+	return(list(r.squared = summ$r.squared, coeff = summ$coefficients[,1]))
 }
 
 #adapted from genalg package by Egon Willighagen <e.willighagen@science.ru.nl>
@@ -16,10 +32,10 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 #drastically rewritten to implement a version of Nunkesser & Morell 
 #the algorithm is specific for distance matrices and deletes row/column combinations (i.e. samples) rather than individual distances
 #wo other major differences with Nunkesser & Morell are that (1) operators are applies in fixed fractions (1/3 each) and that (2) after iteration 1 mutation of existing individuals is done instead creation of new individuals. If mutationNo is set very high, the same effect achieved, however.
-#TODO adapt the function for more than one explanatory variable
 
-.rbga.bin2 <- function(distObjectY, 
-					distObjectX,
+.rbga.bin2 <- function(forml,
+					formterms,
+					dat,
 					p=0,
                     suggestions=NULL,
 					popSize=100, 
@@ -27,10 +43,10 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 					maxNoImprove=0,
                     mutationNo=2,
                     evalFunc=NULL,
-					verbose=FALSE) 
+					verbose=FALSE,
+					n) 
 {
-	vars <- 1 
-    n <- dim(as.matrix(distObjectY))[1]
+	vars <- length(formterms) 
 	parentProb <- dnorm(1:popSize, mean=0, sd=(popSize/3))
 	elite <- floor(popSize/4)
 	
@@ -44,8 +60,7 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 	
     # sanity checks
     if (is.null(evalFunc)) stop("an evaluation function (evalFunc) must be provided")
-	if(n<2) stop("distObjectY too small; algorithm intended for larger problems") 
-	if (!(n == dim(as.matrix(distObjectX))[1])) stop("distObjectX and distObjectY have different dimensions")
+	if(n<2) stop("n too small; algorithm intended for larger problems") 
 	if(p >= n) stop ("p should be smaller than dimension of distObjects (n=",n,")")
 	if(mutationNo<1) stop("mutationNo should be at least 1")
 	if(mutationNo>p) stop("mutationNo cannot be bigger than p (",p,")")
@@ -70,13 +85,13 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 	bestEvals <- rep(NA, iters)
 	meanEvals <- rep(NA, iters)
 	evalVals <- rep(NA, popSize)
-	evalPars <- matrix(NA, nrow=popSize, ncol=vars+1)
+	evalPars <- matrix(NA, nrow=popSize, ncol=vars)
 		
 	# calculate evalVal of initial population
 	if (verbose) cat("Calculating evaluation values of initial population ")
 	for (object in 1:elite) 
 	{
-		evalVal <- .evalFunc(population[object,], distObjectY, distObjectX)
+		evalVal <- .evalFunc(population[object,], forml, formterms, dat, n)
 		evalVals[object] <- evalVal[[1]]
 		evalPars[object,] <- evalVal[[2]]
 		if (verbose) cat(".")
@@ -88,7 +103,7 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 		if (verbose & iter != 1) cat("\nCalculating evaluation values ")
 		for (object in (elite+1):popSize) 
 		{
-			evalVal <- .evalFunc(population[object,],distObjectY, distObjectX)
+			evalVal <- .evalFunc(population[object,], forml, formterms, dat, n)
 			evalVals[object] <- evalVal[[1]]
 			evalPars[object,] <- evalVal[[2]]
 			if (verbose) cat(".")
@@ -126,8 +141,10 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 			parentIDs <- sample(1:popSize, size = elite, prob=parentProb)
 			for(child in (elite+1):(2*elite))
 			{
-				resdls <- ((evalPars[parentIDs[child-elite],1] + evalPars[parentIDs[child-elite],2] * distObjectX) - distObjectY)^2
-				resdls <- colSums(as.matrix(resdls))
+				resdls <- ((evalPars[parentIDs[child-elite],1] + rowSums(t(evalPars[parentIDs[child-elite],2:vars] * t(as.matrix(dat[,2:length(dat[1,])]))))) - dat[,1])^2
+				resdlsDist <- as.dist(matrix(nrow=n,ncol=n))
+				resdlsDist[] <- resdls
+				resdls <- rowSums(as.matrix(resdlsDist), na.rm=TRUE)
 				index <- sort(resdls, index.return = TRUE)$ix[1:p]
 				newPopulation[child,index] <- TRUE
 				if (verbose) cat(".")
@@ -176,10 +193,19 @@ RMReg <- function(distObjectY, distObjectX, p=0, iter=100, popSize=100, maxNoImp
 	}
 
 	#result
-    result = list(type="binary chromosome", size=size,
-                  popSize=popSize, iters=iter, suggestions=suggestions,
-                  population=population, elite=elite, mutationNo=mutationNo,
-                  evaluations=evalVals, best=bestEvals, mean=meanEvals, finalEval=max(bestEvals, na.rm=TRUE))
+    result <- list(type="binary chromosome", 
+				size=size,
+                popSize=popSize, 
+				iters=iter, 
+				suggestions=suggestions,
+				population=population,
+				elite=elite, 
+				mutationNo=mutationNo,
+				evaluations=evalVals,
+				best=bestEvals,
+				mean=meanEvals,
+				finalEval=max(bestEvals, na.rm=TRUE))
+				
     class(result) = "rbga"
 
     return(result)
