@@ -1,4 +1,4 @@
-permRegDist <- function (forml, perms = 99, method="residual", dat=NULL) 
+permReg <- function (forml, perms = 99, method="residual", dat=NULL) 
 {
 	forml <- as.formula(forml)
 	formterms <- rownames(attr(terms(forml,keep.order = TRUE), "factors"))[1:length(rownames(attr(terms(forml), "factors")))] 

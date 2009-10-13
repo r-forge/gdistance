@@ -1,6 +1,4 @@
-#TODO remove ij
-
-RMReg <- function(forml, dat=NULL, p=0, iter=100, popSize=100, maxNoImprove=0, mutationNo=2, verbose=FALSE)
+RobustReg <- function(forml, dat=NULL, p=0, iter=100, popSize=100, maxNoImprove=0, mutationNo=2, verbose=FALSE)
 {
 	forml <- as.formula(forml)
 	nc <- length(dat[,1])
