@@ -17,5 +17,6 @@ sumT <- function(transition1, transition2)
 		warning("Inf values introduced. Set to 0.")
 		newTransition@transitionMatrix@x[newTransition@transitionMatrix@x == Inf] <- 0
 	}
+	matrixValues(newTransition) <- "conductance"
 	return(newTransition)
 }

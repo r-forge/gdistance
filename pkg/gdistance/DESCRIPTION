@@ -4,7 +4,7 @@ Title: Calculate graph-based distances from raster data
 Version: 1.0
 Date: 2008-09-26
 Author: Jacob van Etten
-Depends: raster, igraph, Matrix, methods 
+Depends: raster, igraph, Matrix, methods, sp 
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: 
 License: GPL-3

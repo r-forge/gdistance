@@ -47,6 +47,7 @@ PSA <- function(data, nullAlleles="missing", correction=TRUE)
 		selfSim <- matrix(selfSim, nrow=n,ncol=n)
 		genDist <- genDist / as.dist(selfSim * t(selfSim))
 	}
+	attr(genDist, "Labels") <- accessionIndex
 	return(1-genDist)
 }
 
