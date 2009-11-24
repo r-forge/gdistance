@@ -31,10 +31,10 @@ Distances can be calculated following these steps.
 Jacob van Etten \email{jacobvanetten@yahoo.com}
 }
 \references{
-Ray, N. 2005. PATHMATRIX: a geographical information system tool to compute effective distances among samples. Molecular Ecology Notes 5, 177–180.
+Ray, N. 2005. PATHMATRIX: a geographical information system tool to compute effective distances among samples. Molecular Ecology Notes 5, 177 - 180.
 \url{http://cmpg.unibe.ch/software/pathmatrix/}
 
-McRae, B.H. 2006. Isolation by resistance. Evolution 60(8), 1551-1561.
+McRae, B.H. 2006. Isolation by resistance. Evolution 60(8), 1551 - 1561.
 \url{http://www.circuitscape.org}
 }
 \keyword{package}
