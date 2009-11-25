@@ -14,15 +14,13 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
 \section{Slots}{
 	\describe{
     \item{\code{transitionMatrix}:}{Object of class \code{"dsCMatrix"} ~~ }
-    \item{\code{transitioncells}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{projection}:}{Object of class \code{"character"} ~~ }
+    \item{\code{transitionCells}:}{Object of class \code{"integer"} ~~ }
+    \item{\code{matrixValues}:}{Object of class \code{"character"} ~~ }
     \item{\code{ncols}:}{Object of class \code{"integer"} ~~ }
     \item{\code{nrows}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{xmin}:}{Object of class \code{"numeric"} ~~ }
-    \item{\code{xmax}:}{Object of class \code{"numeric"} ~~ }
-    \item{\code{ymin}:}{Object of class \code{"numeric"} ~~ }
-    \item{\code{ymax}:}{Object of class \code{"numeric"} ~~ }
     \item{\code{crs}:}{Object of class \code{"CRS"} ~~ }	
+    \item{\code{extent}:}{Object of class \code{"Extent"} ~~ }
+	\item{\code{layernames}:}{Object of class \code{"vector"} ~~ }
   }
 }
 \section{Extends}{

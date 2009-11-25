@@ -1,4 +1,4 @@
-\name{accCost}
+ \name{accCost}
 \alias{accCost}
 \title{ Accumulated Cost Surface }
 \description{
@@ -24,7 +24,7 @@ A projection correction is needed for accuracy, if the Transition object is base
 RasterLayer
 }
 \references{
-E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Numerische Mathematik} 1, 269–271.
+E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Numerische Mathematik} 1, 269 - 271.
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \seealso{ \code{\link{geoCorrection}}, \code{\link{costDistance}} }
