@@ -24,7 +24,7 @@ See resistanceDistance, jointTrajectory
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \note{ In the future, also flows from areas to areas will be implemented.
 }
-\seealso{ ~~objects to See Also as \code{\link{resistanceDistance}}, ~~~ }
+\seealso{ \code{\link[gdistance]{resistanceDistance}} }
 \examples{
 
   }

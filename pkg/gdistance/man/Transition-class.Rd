@@ -37,10 +37,6 @@ Class \code{"\linkS4class{BasicRaster}"}.
 }
 
 \author{ Jacob van Etten <jacobvanetten@yahoo.com> }
-\seealso{
-	~~objects to See Also as \code{\link{~~fun~~}}, ~~~
-	or \code{\linkS4class{CLASSNAME}} for links to other classes
-}
 \examples{
 showClass("Transition")
 }

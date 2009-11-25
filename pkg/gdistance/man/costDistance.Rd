@@ -30,7 +30,7 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
 \note{ 
 }
-\seealso{ \code{\link{geoCorrection}}, ~~~ }
+\seealso{ \code{\link{geoCorrection}} }
 \examples{
 #create a new raster and set all its values to unity.
 raster <- raster(nrows=18, ncols=36) 
