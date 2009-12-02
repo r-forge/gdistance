@@ -34,7 +34,7 @@ Optimization code adapted from genalg package by Egon Willighagen }
    distObj[] <- c(357,532,498,477,488,126)
    WeitzmanUtility(distObj,iters=10,popSize=10)
 
-#Having too few iterations and a small population can give suboptimal (e.g. too low) results
+#Having too few iterations and a small population can give suboptimal (too low) results
    a <- vector(length=100)
    for(i in 1:100){a[i] <- WeitzmanUtility(distObj,iters=1,popSize=5)}
    hist(a)

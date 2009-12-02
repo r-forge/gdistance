@@ -12,7 +12,7 @@ WeitzmanCalc(binarySeq, distObject)
   \item{distObject}{ dist object } 
 }
 \details{
-The binary string determines which are the 'link species'. Given a sequence of link species it calculates Weitzman's utility index. The true index is the maximum value that can be attained by changing the binary sequence. 
+The binary string determines which are the 'link species'. Given a sequence of link species it calculates a diversity index. The Weitzman index is defined as the maximum value that can be attained by changing the binary sequence. 
 
 The function is provided here separately for users who want to use it in parallel processing. For instance, the package rgenoud provides a genetic algorithm that can be automatically parallelized in R. 
 
