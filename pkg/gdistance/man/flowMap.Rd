@@ -2,7 +2,7 @@
 \alias{ flowMap }
 \title{ Flow map }
 \description{
-  Calculates for each cell the retrospective probability of passage of a random-walk particle originating from a single source cell and detected in a single goal cell.
+  Calculates for each cell the retrospective probability of passage of a random-walk originating from a single source cell and detected in a single goal cell.
 }
 \usage{
 flowMap (transition, originCoord, goalCoord)
@@ -19,7 +19,7 @@ flowMap (transition, originCoord, goalCoord)
   RasterLayer object
 }
 \references{ 
-See resistanceDistance, jointTrajectory
+McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
  }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \note{ In the future, also flows from areas to areas will be implemented.
