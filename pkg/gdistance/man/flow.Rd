@@ -1,5 +1,6 @@
 \name{flow}
 \alias{flow}
+\alias{Transition,SpatialPoints,SpatialPoints,missing,logical,character-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Flow: path overlap and non-overlap}
 \description{
@@ -11,7 +12,7 @@ flow(transition, originCoord, fromCoords, toCoords, norml, type)
 \arguments{
   \item{transition}{transition matrix (class Transition)}
   \item{originCoord}{coordinates of the origin (one point location, SpatialPoints class)}  
-  \item{fromCoords}{coordinates of the destinations (SpatialPoints class}
+  \item{fromCoords}{coordinates of the destinations (SpatialPoints class)}
   \item{toCoords}{second set of coordinates of the destinations (optional, SpatialPoints class)}
   \item{norml}{normalisation to values between 0 and 1}
   \item{type}{a vector of one or two calculation types c("divergent","joint")}  

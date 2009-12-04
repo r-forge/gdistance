@@ -1,5 +1,7 @@
 \name{costDistance}
 \alias{costDistance}
+\alias{costDistance,Transition,SpatialPoints,missing-method}
+\alias{costDistance,Transition,SpatialPoints,SpatialPoints-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Cost distance (least-cost distance) }
 \description{

@@ -1,5 +1,7 @@
- \name{accCost}
+\name{accCost}
 \alias{accCost}
+\alias{accCost,Transition,RasterLayer-method}
+\alias{accCost,Transition,SpatialPoints-method}
 \title{ Accumulated Cost Surface }
 \description{
 Calculates the accumulated cost surface from one or more origins. }
