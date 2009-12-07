@@ -14,7 +14,7 @@ robustReg(forml, dat, p, iter, popSize, maxNoImprove mutationNo, verbose)
   \item{iter}{number of iterations}
   \item{popSize}{population size}
   \item{maxNoImprove}{maximum number of iterations without improvement}
-  \item{mutationNo} {number of mutations}
+  \item{mutationNo}{number of mutations}
   \item{verbose}{detailed reporting of progress}  
 }
 \details{
