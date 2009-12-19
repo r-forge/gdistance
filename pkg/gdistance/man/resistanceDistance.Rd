@@ -1,5 +1,7 @@
 \name{resistanceDistance}
 \alias{ resistanceDistance }
+\alias{resistanceDistance,Transition,SpatialPoints,missing-method}
+\alias{resistanceDistance,Transition,SpatialPoints,SpatialPoints-method}
 \title{ Resistance distance }
 \description{
 Calculates the resistance distance between points. }

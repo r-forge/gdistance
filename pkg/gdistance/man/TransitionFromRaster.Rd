@@ -1,5 +1,7 @@
 \name{TransitionFromRaster }
 \alias{TransitionFromRaster }
+\alias{TransitionFromRaster,RasterLayer-method}
+\alias{TransitionFromRaster,RasterStack-method}
 \title{ Create an object of the class Transition }
 \description{
   Transition objects are created from Raster* objects. Conductance values will be calculated based on the grid values with a user-defined function.

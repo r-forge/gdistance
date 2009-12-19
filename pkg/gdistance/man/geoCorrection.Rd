@@ -10,7 +10,7 @@ geoCorrection(transition, type, multpl)
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}
-  \item{type}{type of correction: ´c´ or ´r´, see below)}  
+  \item{type}{type of correction: "c" or "r" (see below)}  
   \item{multpl}{matrix with correction factor (TRUE) or corrected values (FALSE)}
 
 }

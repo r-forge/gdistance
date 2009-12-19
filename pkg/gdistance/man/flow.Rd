@@ -1,6 +1,6 @@
 \name{flow}
 \alias{flow}
-\alias{Transition,SpatialPoints,SpatialPoints,missing,logical,character-method}
+\alias{flow,Transition,SpatialPoints,SpatialPoints,missing,logical,character-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Flow: path overlap and non-overlap}
 \description{
