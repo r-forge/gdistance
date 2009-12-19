@@ -6,11 +6,7 @@
 \alias{[<-,Transition,matrix,missing,ANY-method}
 \alias{[<-,Transition,index,missing,dsCMatrix-method}
 \alias{[<-,Transition,index,index,ANY-method}
-\alias{transitionMatrix,Transition-method}
-\alias{transitionMatrix<-,Transition,dsCMatrix-method}
-\alias{transitionCells,Transition-method}
-\alias{matrixValues,Transition-method}
-\alias{matrixValues<-,Transition,character-method}
+
 
 \title{ Extracting and replacing: class Transition}
 \description{
