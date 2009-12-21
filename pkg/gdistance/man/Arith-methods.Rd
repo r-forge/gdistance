@@ -7,10 +7,10 @@
 \alias{Arith,Transition,ANY-method}
 \alias{Arith,Transition,Transition-method}
 
-\title{Arithmic with objects of class Transition}
+\title{Arithmetic with objects of class Transition}
 
 \description{
-  Standard arithmic operators for computations with Transition objects and numeric values. 
+  Standard arithmetic operators for computations with Transition objects and numeric values. 
   Transition objects must have the same extent and resolution.
   All operations that work on the sparse (dsC) matrices are available. 
 }

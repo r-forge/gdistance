@@ -6,7 +6,9 @@
 \alias{[<-,Transition,matrix,missing,ANY-method}
 \alias{[<-,Transition,index,missing,dsCMatrix-method}
 \alias{[<-,Transition,index,index,ANY-method}
-
+\alias{==,Transition,Transition-method}
+\alias{coerce,RasterLayer,Transition-method}
+\alias{coerce,Transition,RasterLayer-method}
 
 \title{ Extracting and replacing: class Transition}
 \description{

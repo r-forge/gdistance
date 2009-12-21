@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{natbib}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\cov}{cov}
+
+% \VignetteIndexEntry{gdistance package}
+
+\begin{document}
+
+<<foo,include=FALSE,echo=FALSE>>=
+options(keep.source = TRUE, width = 60)
+foo <- packageDescription("gdistance")
+@
+
+\title{The "gdistance" package (Version \Sexpr{foo$Version})}
+\author{Jacob van Etten}
+\maketitle
+
+
+\section{Introduction}
+
+This vignette describes the R package '\verb@gdistance@'. This package serves to calculate different distance measures in geographic space. Distances are based on different types of route finding in geographic grids or rasters, including shortest paths and random walks. It also calculates probabilities of passage for random walks.
+
+To make distance calculations as flexible as possible, gdistance implements the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from a Raster* object from the ´raster´ package. Also, different arithmetic operations can be done with Transition objects. Distance and other measures are then calculated from Transition objects.
+
+This approach opens interesting possibilities of modelling the resistance of the environment to movement. Transition objects can be updated quickly and flexibly. Conceptually, working with Transition objects allows for a much less map-centric approach, concentrating on spatial connections and movements. 
+
+\section{Raster* objects}
+
+\section{Creating an object of class Transition}
+
+\section{Calculating distances and other measures}
+
+\end{document}
