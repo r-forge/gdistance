@@ -33,9 +33,16 @@ matrix (when toCoords is given)
 
 The function needs to be optimized and requires much calculation time when Transition objects are large.
 }
-\seealso{ }
 \examples{
-
+r1 <- raster(ncol=36,nrow=18)
+r2 <- r1
+data <- rep(NA,length=ncell(r1))
+data[500] <- 1
+r1 <- setValues(r1,data)
+r2 <- setValues(r2,rep(1,times=ncell(r2)))
+tr <- TransitionFromRaster(r2,mean,directions=16)
+tr <- geoCorrection(tr, type="r", multpl=FALSE)
+#concrete example...
 }
 \keyword{ spatial }
 

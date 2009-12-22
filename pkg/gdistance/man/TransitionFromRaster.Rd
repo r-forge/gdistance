@@ -16,9 +16,16 @@ TransitionFromRaster (object, transitionFunction, directions)
   \item{directions}{ Directions in which cells are connected (4, 8, 16) }
 }
 \value{
-Transition
+Transition object
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
-\examples{}
+\examples{
+#create a new raster and set all its values to unity.
+raster <- raster(nrows=18, ncols=36) 
+raster <- setValues(raster,rep(1,ncell(raster)))
+
+#create a Transition object from the raster
+tr <- TransitionFromRaster(raster,mean,4)
+}
 \keyword{ spatial }
 
