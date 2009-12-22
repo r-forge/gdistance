@@ -12,9 +12,6 @@ flowMap (transition, originCoord, goalCoord)
   \item{originCoord}{ coordinates of the origin cell }
   \item{goalCoord}{ coordinates of the goal cell }
 }
-\details{
-
-}
 \value{
   RasterLayer object
 }
@@ -26,7 +23,7 @@ McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561.
 }
 \seealso{ \code{\link[gdistance]{resistanceDistance}} }
 \examples{
-
+#example
   }
 
 \keyword{ spatial }

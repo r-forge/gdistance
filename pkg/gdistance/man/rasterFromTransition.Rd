@@ -19,6 +19,6 @@ RasterLayer
 
 \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
-
+#example
 }
 \keyword{ spatial }

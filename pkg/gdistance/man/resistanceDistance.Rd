@@ -34,9 +34,6 @@ McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561.
 \url{http://www.circuitscape.org}
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
-\note{ 
-
-}
 \seealso{ \code{\link{geoCorrection}}, ~~~ }
 \examples{
 #create a new raster and set all its values to unity.

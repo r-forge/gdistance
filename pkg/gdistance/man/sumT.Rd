@@ -23,11 +23,8 @@ Transition object
 }
 
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
-\note{ 
-}
-\seealso{ }
 \examples{
-
+#example
 }
 \keyword{ spatial }
 
