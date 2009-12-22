@@ -10,11 +10,14 @@
 \alias{matrixValues,Transition-method}
 \alias{matrixValues<-,Transition,character-method}
 \title{Extract or change elements of Transition objects}
-\decription{
-Extract or change elements from slots of a Transition object.
+\description{
+These functions are to be used to access slots of Transition objects directly.
 }
 \usage{
 transitionMatrix(transition)
 transitionCells(transition)
 matrixValues(transition)
+}
+\arguments{
+  \item{transition}{object of class Transition}
 }
