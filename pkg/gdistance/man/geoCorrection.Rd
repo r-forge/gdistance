@@ -34,7 +34,7 @@ r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
 tr <- TransitionFromRaster(r, mean, directions=8)
 tr1 <- geoCorrection(tr, type="c", multpl=FALSE)
-trCorr <- geoCorrection(tr, type="c", mulpl=TRUE)
+trCorr <- geoCorrection(tr, type="c", multpl=TRUE)
 tr2 <- tr * trCorr
 }
 \keyword{methods}
