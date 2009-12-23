@@ -1,7 +1,7 @@
-import("Matrix") #S4 package
-import("raster") #S4 package
-import("igraph") #S3 package.
-importFrom("methods", Ops, Arith, Compare, Logic)
-exportClasses("Transition")
+import(Matrix) 
+importClassesFrom(raster, Raster, RasterLayer, RasterBrick)
+import(igraph) 
+importFrom(methods, Ops, Arith, Compare, Logic)
+exportClasses(Transition)
 exportPattern("^[^\\.]")
-exportMethods("initialize", "show", "coerce", "Ops", "Arith", "Compare", "Logic","[", "[<-")
+exportMethods(initialize, show, coerce, Ops, Arith, Compare, Logic, "[", "[<-")
