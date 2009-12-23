@@ -1,5 +1,5 @@
 import(Matrix) 
-importClassesFrom(raster, Raster, RasterLayer, RasterBrick)
+import(raster)
 import(igraph) 
 importFrom(methods, Ops, Arith, Compare, Logic)
 exportClasses(Transition)
