@@ -13,14 +13,14 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
 }
 \section{Slots}{
 	\describe{
-    \item{\code{transitionMatrix}:}{Object of class \code{"dsCMatrix"} ~~ }
-    \item{\code{transitionCells}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{matrixValues}:}{Object of class \code{"character"} ~~ }
-    \item{\code{ncols}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{nrows}:}{Object of class \code{"integer"} ~~ }
-    \item{\code{crs}:}{Object of class \code{"CRS"} ~~ }	
-    \item{\code{extent}:}{Object of class \code{"Extent"} ~~ }
-	\item{\code{layernames}:}{Object of class \code{"vector"} ~~ }
+    \item{\code{transitionMatrix}:}{Object of class \code{"dsCMatrix"}}
+    \item{\code{transitionCells}:}{Object of class \code{"integer"}}
+    \item{\code{matrixValues}:}{Object of class \code{"character"}}
+    \item{\code{ncols}:}{Object of class \code{"integer"}}
+    \item{\code{nrows}:}{Object of class \code{"integer"}}
+    \item{\code{crs}:}{Object of class \code{"CRS"}}	
+    \item{\code{extent}:}{Object of class \code{"Extent"}}
+	\item{\code{layernames}:}{Object of class \code{"vector"}}
   }
 }
 \section{Extends}{

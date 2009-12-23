@@ -37,11 +37,11 @@ data <- rep(NA,length=ncell(r1))
 data[500] <- 1
 r1 <- setValues(r1,data)
 r2 <- setValues(r2,rep(1,times=ncell(r2)))
-tr <- TransitionFromRaster(r2,mean,directions=16)
+tr <- TransitionFromRaster(r2, mean, directions=4)
 tr <- geoCorrection(tr, type="c", multpl=FALSE)
-cmd1 <- accCost(tr,r1)
+cmd1 <- accCost(tr, r1)
 
-# Is not exactly the same as:
+# Or directly
 spObj <- SpatialPoints(xyFromCell(tr,500))
 cmd2 <- accCost(tr, spObj)
 }
