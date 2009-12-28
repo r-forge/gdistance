@@ -10,18 +10,7 @@ setMethod("flowMap", signature(transition = "Transition", origin = "SpatialPoint
 	{
 		originCell <- cellFromXY(transition, origin)
 		goalCell <- cellFromXY(transition, goal)
-		L <- .Laplacian(transition)
-		Lr <- L[-dim(L)[1],-dim(L)[1]]
-		A <- as(L,"lMatrix")
-		A <- as(A,"dMatrix")
-		n <- max(dim(Lr))
-		indexGoal <- match(goalCell,transitionCells(transition))
-		indexOrigin <- match(originCell,transitionCells(transition))
-		Current <- .current(L, Lr, A, n, indexOrigin, indexGoal)
-		result <- as(transition,"RasterLayer")
-		dataVector <- rep(NA,times=ncell(result))
-		dataVector[transitionCells(transition)] <- Current
-		result <- setValues(result, dataVector)
+		result <- .flowMap(transition, originCell, goalCell)
 		return(result)
 	}
 )
@@ -30,18 +19,24 @@ setMethod("flowMap", signature(transition = "Transition", origin = "RasterLayer"
 	{
 		originCell <- which(values(origin))
 		goalCell <- which(values(goal))
-		L <- .Laplacian(transition)
-		Lr <- L[-dim(L)[1],-dim(L)[1]]
-		A <- as(L,"lMatrix")
-		A <- as(A,"dMatrix")
-		n <- max(dim(Lr))
-		indexGoal <- match(goalCell,transitionCells(transition))
-		indexOrigin <- match(originCell,transitionCells(transition))
-		Current <- .current(L, Lr, A, n, indexOrigin, indexGoal)
-		result <- as(transition,"RasterLayer")
-		dataVector <- rep(NA,times=ncell(result))
-		dataVector[transitionCells(transition)] <- Current
-		result <- setValues(result, dataVector)
+		result <- .flowMap(transition, originCell, goalCell)
 		return(result)
 	}
 )
+
+.flowMap <- function(transition, originCell, goalCell)
+{
+	L <- .Laplacian(transition)
+	Lr <- L[-dim(L)[1],-dim(L)[1]]
+	A <- as(L,"lMatrix")
+	A <- as(A,"dMatrix")
+	n <- max(dim(Lr))
+	indexGoal <- match(goalCell,transitionCells(transition))
+	indexOrigin <- match(originCell,transitionCells(transition))
+	Current <- .currentR(L, Lr, A, n, indexOrigin, indexGoal)
+	result <- as(transition,"RasterLayer")
+	dataVector <- rep(NA,times=ncell(result))
+	dataVector[transitionCells(transition)] <- Current
+	result <- setValues(result, dataVector)
+	return(result)
+}
