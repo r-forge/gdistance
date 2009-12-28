@@ -16,25 +16,29 @@ resistanceDistance (transition, fromCoords, toCoords)
 
 }
 \details{
-Resistance distance is equivalent to the expected random-walk commute time between nodes in a graph (Chandra et al. 1997).
+  Resistance distance is equivalent to the expected random-walk commute time between nodes in a graph (Chandra et al. 1997).
 
-The function implements the algorithm given by Fouss et al. (2007).
+  The function implements the algorithm given by Fouss et al. (2007).
 
-In the case of grid data for a large area in a geographic (latlon) projection, a projection correction is needed for accuracy (see function \code{\link{geoCorrection}}). 
+  Before calculating resistance distances from a Transition object, see if you need to apply the function \code{\link{geoCorrection}}. 
 }
 \value{
 distance matrix (dist) or matrix
 }
+\note{
+  Before calculating resistance distances from a Transition object, see if you need to apply the function \code{\link{geoCorrection}}).
+}
 \references{ 
-Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.
+  Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.
 
-Fouss, F., Pirotte, A., Renders, J.-M. & Saerens, M. 2007. Random-walk computation of similarities between nodes of a graph with application to collaborative recommendation. \emph{IEEE Transactions on Knowledge and Data Engineering}, 19(3), 355-369.
+  Fouss, F., Pirotte, A., Renders, J.-M. & Saerens, M. 2007. Random-walk computation of similarities between nodes of a graph with application to collaborative recommendation. \emph{IEEE Transactions on Knowledge and Data Engineering}, 19(3), 355-369.
 
-McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
-\url{http://www.circuitscape.org}
+  McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
+  
+  \url{http://www.circuitscape.org}
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
-\seealso{ \code{\link{geoCorrection}}, ~~~ }
+\seealso{ \code{\link{geoCorrection}} }
 \examples{
 #create a new raster and set all its values to unity.
 raster <- raster(nrows=18, ncols=36) 
@@ -50,8 +54,8 @@ sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
 #from and to identical
 resistanceDistance(tr,sP1)
 
-#from and to different -- to be implemented
-#resistanceDistance(tr,sP1,sP2)
+#from and to different 
+resistanceDistance(tr,sP1,sP2)
 
 }
 \keyword{ spatial }

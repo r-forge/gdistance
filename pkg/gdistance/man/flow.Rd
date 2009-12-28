@@ -24,8 +24,7 @@ This function calculates the overlap and non-overlap in the random walk trajecto
 Probabilities of joint passage or divergence are calculated for each cell-to-cell connection. These are multiplied by the resistance (1/conductance) of each connection and summed.
 }
 \value{
-dist object (when toCoords lacks)
-matrix (when toCoords is given)
+dist object (when toCoords lacks) or matrix (when toCoords is given)
 }
 
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }

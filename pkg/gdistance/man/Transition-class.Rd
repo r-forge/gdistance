@@ -1,4 +1,4 @@
-\name{Transition-class}
+\name{Transition class}
 \docType{class}
 \alias{Transition-class}
 \alias{Arith,Transition,transition-method}
@@ -24,7 +24,7 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
   }
 }
 \section{Extends}{
-Class \code{"\linkS4class{BasicRaster}"}.
+Class \code{"\linkS4class{Raster}"}.
 }
 \section{Methods}{
   \describe{

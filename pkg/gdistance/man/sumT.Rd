@@ -14,8 +14,8 @@ sumT(transition1, transition2)
 }
 \details{
 This function is meant to sum Transition objects taking the resistance values instead of the conductance values. In other words, the function calculates the reciprocal of the summed reciprocals.
-If matrixValues(transition) is equal to "conductance" the reciprocal of the values is taken (1/C), if it is equal to "resistance", the values are used. Zero values are ignored.
-To treat a Transition object as containing resistance values instead of conductance values, use matrixValues()<-.
+If matrixValues(transition) is equal to "conductance" the reciprocal of the values is taken (1 / conductance), if it is equal to "resistance", the values are used. Zero values are ignored.
+To treat a Transition object as containing resistance values instead of conductance values, use \code{matrixValues()<-}.
 The result is always a Transition object containing conductance values.
 }
 \value{

@@ -21,12 +21,12 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 		}
 )
 
-setMethod("TransitionFromRaster", signature(object = "RasterStack"), def = function(object, transitionFunction="mahal", directions)
+setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{
 			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
 			if(transitionFunction != "mahal")
 			{
-				stop("only Mahalanobis distance method implemented for RasterStack")
+				stop("only Mahalanobis distance method implemented for RasterBrick")
 			}
 			x <- cbind(1:ncell(object),values(object))
 			x <- na.omit(x)

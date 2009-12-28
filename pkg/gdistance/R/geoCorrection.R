@@ -6,10 +6,11 @@
 
 setGeneric("geoCorrection", function(transition, type, multpl) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition", type="character", multpl="logical"), def = function(transition, type, multpl)
+setMethod("geoCorrection", signature(transition = "Transition", type="character", multpl="logical"), def = function(transition, type, multpl=FALSE)
 	{
 		if(isLatLon(transition)){}
 		if (type != "c" & type != "r"){stop("type can only be c or r")}
+		if (type == "r" & matrixValues(transition) != "conductance"){stop("matrix of Transition object must have conductance values")}
 		adjacency <- .adjacency.from.transition(transition)
 		correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
 		if(matrixValues(transition) == "conductance") {correctionValues <- 1/pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')}

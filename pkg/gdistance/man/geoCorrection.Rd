@@ -16,14 +16,14 @@ geoCorrection(transition, type, multpl)
 }
 \details{
 Geographic correction is necessary for all objects of the class Transition that are either:
-(1) based on a grid in a geographic projection (latlon) and covering a large area
+(1) based on a grid in a geographic (latlon) (non)projection and covering a large area; 
 (2) made with directions > 4.
 
 The function will correct for map distortion, as well as for diagonal connections between grid cells (which cover a longer distance than vertical or horizontal connections).
 
-When working with latlon grids, users should also anticipate whether they will use methods based on either least cost or random walks. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
+When working with latlon grids, users should also anticipate whether they will use methods based on either least cost or random walks, and set the \code{type} argument accordingly. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
 
-For repetitive correction of similar Transition objects, it is helpful to have a Transition matrix with just the correction factors. Set multpl to TRUE if you want the corrected values directly. Set multpl to FALSE if you want the correction factors. Correction is achieved by multiplying the original matrix with the matrix with correction factors. 
+For repetitive correction of similar Transition objects, it is helpful to have a Transition matrix with just the correction factors. To achieve this, set \code{multpl} to TRUE (the default is FALSE). Correction is achieved by multiplying the original matrix with the matrix with correction factors. 
 }
 \value{
   Transition object
@@ -33,7 +33,11 @@ For repetitive correction of similar Transition objects, it is helpful to have a
 r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
 tr <- TransitionFromRaster(r, mean, directions=8)
+
+#directly
 tr1 <- geoCorrection(tr, type="c", multpl=FALSE)
+
+#the same, but with a separate correction matrix
 trCorr <- geoCorrection(tr, type="c", multpl=TRUE)
 tr2 <- tr * trCorr
 }

@@ -17,7 +17,6 @@ RasterLayer
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 #example
 }

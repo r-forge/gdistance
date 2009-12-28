@@ -1,19 +1,19 @@
 \name{TransitionFromRaster }
 \alias{TransitionFromRaster }
 \alias{TransitionFromRaster,RasterLayer-method}
-\alias{TransitionFromRaster,RasterStack-method}
+\alias{TransitionFromRaster,RasterBrick-method}
 \title{ Create an object of the class Transition }
 \description{
-  Transition objects are created from Raster* objects. Conductance values will be calculated based on the grid values with a user-defined function.
+  Create a Transition object from a RasterLayer or RasterBrick object. Transition values are calculated with a user-defined function from the grid values.
 }
 \usage{
 TransitionFromRaster (object, transitionFunction, directions)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{object}{ RasterLayer or RasterStack }
-  \item{transitionFunction}{ Function to calculate conductance values from grid values}
-  \item{directions}{ Directions in which cells are connected (4, 8, 16) }
+  \item{object}{ RasterLayer or RasterBrick }
+  \item{transitionFunction}{ Function to calculate transition values from grid values}
+  \item{directions}{ Directions in which cells are connected (4, 8, 16, or other), see \code{\link[raster]{adjacency}} }
 }
 \value{
 Transition object

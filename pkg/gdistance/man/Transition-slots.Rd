@@ -1,4 +1,4 @@
-\name{Transition-extract-replace2}
+\name{Transition slots}
 \alias{transitionMatrix}
 \alias{transitionMatrix<-}
 \alias{matrixValues}
