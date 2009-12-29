@@ -6,7 +6,7 @@
 gdistance: geographic distance calculations
 }
 \description{
-The gdistance package calculates geographic distances based on graph theory and random-walk theory. These include cost distance, resistance distance, and joint-flow distance (a new distance measure).
+Calculate distances and other measures using models/algorithms for movements on geographic grids (least-cost, random walk, and more to come).
 }
 \details{
 \tabular{ll}{

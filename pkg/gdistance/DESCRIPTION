@@ -1,12 +1,12 @@
 Package: gdistance
 Type: Package
-Title: Calculate graph-based distances from raster data
+Title: Package gdistance: distances and movements on grids
 Version: 1.0
 Date: 2008-09-26
 Author: Jacob van Etten
 Depends: raster, igraph, Matrix, methods, sp 
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
-Description: 
+Description: Calculate distances and other measures using models/algorithms for movements on geographic grids (least-cost, random walk, and more to come).
 License: GPL-3
 Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R accCost.R flowMap.R geoCorrection.R resistanceDistance.R TransitionMap.R flow.R sumT.R
 LazyLoad: yes

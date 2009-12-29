@@ -19,14 +19,14 @@ options(keep.source = TRUE, width = 60)
 foo <- packageDescription("gdistance")
 @
 
-\title{The "gdistance" package (Version \Sexpr{foo$Version})}
+\title{R package gdistance: distances and movements on grids (Version \Sexpr{foo$Version})}
 \author{Jacob van Etten}
 \maketitle
 
 
 \section{Introduction}
 
-This vignette describes the R package '\verb@gdistance@'. This package serves to calculate different distance measures in geographic space. Distances are based on different types of route finding in geographic grids or rasters, including shortest paths and random walks. It also calculates probabilities of passage for random walks.
+This vignette describes the R package \verb@gdistance@. A main objective of this package is to provide functionality to calculate different geographic distance measures. Distances are based on different types of route finding in geographic grids or rasters, including shortest paths and random walks. The package also contains functionality to calculate other measures related to movement, such as probabilities of passage for random walks, and other measures derived from this (see below). Over time, the package should be enriched with route-finding algorithms and (distance and other) measures related to movements through grids.
 
 To make distance calculations as flexible as possible, gdistance implements the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from a Raster* object from the ´raster´ package. Also, different arithmetic operations can be done with Transition objects. Distance and other measures are then calculated from Transition objects.
 
