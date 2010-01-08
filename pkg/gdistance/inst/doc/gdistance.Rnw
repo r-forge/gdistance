@@ -29,23 +29,31 @@ This vignette describes the R package \verb@gdistance@. This package provides fu
 
 Similarity is related to the degree of interaction between geographical elements. Interaction depends on movement or communication in geographical space. Geographical distance indicates the cost of this movement or communication. A higher intensity of interaction is expected when this supposes less effort. 
 
-Different types of movement exist and each distance measure could be seen as related to a model of geographical movement. Great-circles distances are good models for goal-directed travel with no obstacles (`as the crow flies´). Other distances take into account obstacles and the `friction´ of the landscape, like the least-cost or shortest-path distance (`as the fox runs´). A very different form of movement in geographical space is the random walk, which has no predetermined destination. Resistance distance (McRae 2006) reflects (Brownian) random walks in geographical space. (Lévy flights/walks are non-Brownian random walks.) 'Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks (Saerens et al. 2009). In all cases, distances between locations A and B may be expressed as the average time needed to move from A to B (or to commute between A and B) using a particular model for movement. 
+Different types of movement exist and each distance measure could be seen as related to a model of geographical movement. Great-circles distances are good models for goal-directed travel with no obstacles (`as the crow flies'). The least-cost or shortest-path distance mimics route finding `as the fox runs', taking into account obstacles and the `friction' of the landscape. A very different form of movement in geographical space is the random walk, which has no predetermined destination (`drunkard´s walk'). Resistance distance (McRae 2006) reflects (Brownian) random walks in geographical space. `Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks (Saerens et al. 2009). In all cases, distances between locations A and B may be expressed as the average time needed to move from A to B (or to commute between A and B) using a particular model for movement. 
 
-Patterns of similarity may also arise from non-symmetric diffusion. Diffusion from a certain origin explains the current geographical patterns of genetic differences of humans, as well as certain domesticated plant species. In \verb@gdistance@ we implemented `distance´ measures reflecting joint and divergent random walk paths coming from a common origin. These measures are no longer to be considered as true distances, but do serve to predict mutual similarity of geographical elements from metrics derived from a spatial process model. In this case, not only a landscape with certain friction levels is used as input, but also a given location of the origin. This type of model is a step closer to the genesis of geographical difference as the interplay of geographical particularity and historical contingency. The package concentrates on 'distance' measures that can be calculated with deterministic algorithms.
+Patterns of similarity may also arise from non-symmetric diffusion. Diffusion from a certain origin explains the current geographical patterns of genetic differences of humans, as well as certain domesticated plant species. In \verb@gdistance@ we implemented `distance' measures reflecting joint and divergent random walk paths coming from a common origin (see below for an illustration). These measures are no longer to be considered as true distances, but do serve to predict mutual similarity of geographical elements from metrics derived from a spatial process model. In this case, not only a landscape with certain friction levels is used as input, but also a given location of the origin. This type of model is a step closer to the genesis of geographical difference as the interplay of geographical particularity and historical contingency. 
 
-To summarize, the main objective of package \verb@gdistance@ is to allow the user to model spatio-temporal processes with different degrees of abstraction through the lens of mutual similarities between geographical elements. Conceptually, the package illustrates the potential of R spatial software to move from a 'map-centric' approach in geo-information science to more data-centric and model-centric approach and alternative representations of geographical space (transition matrices rather than grid maps). 
+The package concentrates on `distance' measures that can be calculated with deterministic algorithms based on analytical solutions. The Lévy flight/walk, another important model of geographical movement, is more difficult to analyze. Approximate methods for Lévy-like models will be considered in future versions of \verb@gdistance@. 
 
-\section{Implementation}
+To summarize, the main objective of package \verb@gdistance@ is to allow the user to model spatio-temporal processes with different degrees of abstraction through the lens of mutual similarities between geographical elements. The package illustrates the potential of R spatial software to move from a map-centric approach in geo-information science to a more data-centric and model-centric approach. The package \verb@gdistance@ makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, and (with the help of other packages) to tree representations, regression, and diversity calculations. This overcomes the priviliged status of map-based data presentations and integrates geospatial analysis fully in a "programming with data" paradigm. Tailoring geographical analyses to relevant questions and problems is made easier, which should benefit the quality of quantitative geographical research.
+
+\section{Class Transition}
 To make distance calculations as flexible as possible, \verb@gdistance@ is build around the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from an object of class Raster*. This is a class from \verb@raster@, a package which contains all grid functionality expected from normal GIS software and more. Also, different arithmetic operations can be done with Transition objects. Distance and other measures are then calculated from Transition objects.
 
 This approach opens interesting possibilities of modelling the resistance of the environment to movement. Transition objects can be updated quickly and flexibly. 
-
-\section{Raster* objects}
 
 \section{Creating an object of class Transition}
 
 Transition objects should not contain isolated 'clumps'.
 
 \section{Calculating distances and other measures}
+
+\section{References}
+
+McRae
+
+Saerens
+
+Tobler
 
 \end{document}

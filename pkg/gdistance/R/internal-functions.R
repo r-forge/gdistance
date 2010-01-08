@@ -41,11 +41,12 @@
 {
 	lf <- length(indexFrom)
 	lt <- length(indexTo)
-	Cf <- (1e-300 * n) / lf #This should avoid too big floating points as "Voltage differences"
-	Ct <- (1e-300 * n) / lt
+	C <- 1e-300 * n
+	Cf <- C / lf #This should avoid too big floating points as "Voltage differences"
+	Ct <- C / lt
 	e <- matrix(0, ncol=1, nrow=n)
-	e[indexFrom,] <- C
- 	e[indexTo,] <- -C
+	e[indexFrom,] <- Cf
+ 	e[indexTo,] <- -Ct
 	x <- solve(Lr,e)
 	x <- as.vector(x)
 	Lplusallrows <- c(x,x[length(x)]) / C

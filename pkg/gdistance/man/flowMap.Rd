@@ -48,7 +48,7 @@ rSPraster <- probPassage(tr, sP1, sP2, 2)
 plot(rSPraster)
 
 #random walk
-rwraster <- probPassage(tr, sP1, sP2, 2)
+rwraster <- probPassage(tr, sP1, sP2)
 plot(rwraster)
 
   }
