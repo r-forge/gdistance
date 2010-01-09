@@ -54,7 +54,7 @@ This approach opens interesting possibilities of modelling the resistance of the
 
 \section{Creating an object of class Transition}
 
-Transition objects should not contain isolated 'clumps'. This can be checked visually.
+Transition objects should not contain isolated 'clumps'. This can be checked visually and avoided when creating Transition objects.
 
 \section{Calculating distances and other measures}
 
