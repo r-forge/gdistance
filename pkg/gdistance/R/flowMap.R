@@ -122,14 +122,18 @@ setMethod("probPassage", signature(transition = "Transition", origin = "RasterLa
     # Computation of the vector n, containing the number of visits in
     # each node
 	n <- rowSums(N)
-	
+	nIn <- colSums(N)
+
 	# Computation of the matrix Pr, containing the transition
     # probabilities
+	#rn <- rep(0, times=length(n))
+	#rn[n>0] <- 1 / n[n>0]
+	#Pr <- N * rn
 	#Pr <- N * (1 / n)
 	
 	result <- as(transition,"RasterLayer")
 	dataVector <- rep(NA,times=ncell(result))
-	dataVector[tc] <- n
+	dataVector[tc] <- pmax(n,nIn)
 	result <- setValues(result, dataVector)
 	return(result)
 }

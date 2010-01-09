@@ -40,17 +40,27 @@ raster <- setValues(raster,rep(1,ncell(raster)))
 tr <- TransitionFromRaster(raster,mean,4)
 
 #create two coordinates
-sP1 <- SpatialPoints(cbind(-100,50))
-sP2 <- SpatialPoints(cbind(100,-50))
+sP1 <- SpatialPoints(cbind(-105,55))
+sP2 <- SpatialPoints(cbind(105,-55))
 
 #randomised shortest paths with theta = 2
 rSPraster <- probPassage(tr, sP1, sP2, 2)
 plot(rSPraster)
+points(sP1)
+points(sP2)
+
+#randomised shortest paths with theta = 0.05
+#leaves the origin and often passes it again before arriving
+rSPraster <- probPassage(tr, sP1, sP2, 0.05)
+plot(rSPraster) 
+points(sP1)
+points(sP2)
 
 #random walk
 rwraster <- probPassage(tr, sP1, sP2)
 plot(rwraster)
-
+points(sP1)
+points(sP2)
   }
 
 \keyword{ spatial }
