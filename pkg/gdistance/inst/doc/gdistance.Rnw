@@ -19,7 +19,7 @@ options(keep.source = TRUE, width = 60)
 foo <- packageDescription("gdistance")
 @
 
-\title{R package gdistance: distances and movements on geographical grids (Version \Sexpr{foo$Version})}
+\title{R package gdistance: distances and movements on geographical grids (version \Sexpr{foo$Version})}
 \author{Jacob van Etten}
 \maketitle
 
