@@ -22,13 +22,11 @@ probPassage(transition, origin, goal, theta)
   RasterLayer object
 }
 \references{ 
-  McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
-  
   McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. \emph{Ecology} 89:2712-2724.
   
   Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. \emph{Neural Computation}, 21(8):2363-2404.
  }
-\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}, implementation of randomised shortest paths based on Matlab code by Marco Saerens}
+\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}. Implementation of randomised shortest paths based on Matlab code by Marco Saerens.}
 
 \seealso{ \code{\link[gdistance]{resistanceDistance}} }
 \examples{
