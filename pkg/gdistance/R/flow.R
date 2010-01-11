@@ -188,12 +188,15 @@ setMethod("flow", signature(transition = "Transition", origin = "SpatialPoints",
 	ej[cj] <- 1
 	zcj <- solve(IdMinusWj, ej)
 	zcij <- sum(ei*zcj)
-	
-	# Computation of the matrix N, containing the number of passages through
-    # each arc
-	N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
-	result <- N[index]
-	return(result)
+	if(zcij == 0){return(rep(NA,length=length(index)))}
+	else
+	{
+		# Computation of the matrix N, containing the number of passages through
+		# each arc
+		N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
+		result <- N[index]
+		return(result)
+	}
 }
 
 .finishFlow <- function(prepared, Flow)
