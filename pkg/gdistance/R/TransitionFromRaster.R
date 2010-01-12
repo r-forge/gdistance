@@ -18,7 +18,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 			if(symm){transitionMatr <- try(as(transitionMatr, "symmetricMatrix"))}
 			if(class(transitionMatr) != "dsCMatix")
 			{
-				warning("matrix does not seem symmetric. Applied forecedSymmetric()")
+				warning("matrix does not seem symmetric. Applied forcedSymmetric()")
 				forceSymmetric
 			}
 			transitionMatrix(transition) <- transitionMatr
