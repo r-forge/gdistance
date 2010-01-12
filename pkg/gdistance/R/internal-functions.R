@@ -6,8 +6,8 @@
 
 .adjacency.from.transition <- function(transition)
 {
-	transition.dsC <- as(transition,"dsCMatrix")
-	transition.dgT <- as(transition.dsC,"dgTMatrix")
+	transitionMatr <- as(transition,"sparseMatrix")
+	transition.dgT <- as(transitionMatr,"dgTMatrix")
 	adjacency <- cbind(transitionCells(transition)[transition.dgT@i+1],transitionCells(transition)[transition.dgT@j+1])
 	return(adjacency)
 }
@@ -99,10 +99,10 @@
 
 .transitionSolidify <- function(transition)
 {
-	transition.dsC <- as(transition,"dsCMatrix")
-	selection <- which(rowMeans(transition.dsC)>1e-40)
+	transitionMatr <- as(transition,"sparseMatrix")
+	selection <- which(rowMeans(transitionMatr)>1e-40)
 	transition@transitionCells <- transition@transitionCells[selection]
-	transition.dsC <- transition.dsC[selection,selection]
-	transitionMatrix(transition) <- transition.dsC
+	transitionMatr <- transitionMatr[selection,selection]
+	transitionMatrix(transition) <- transitionMatr
 	return(transition)
 }

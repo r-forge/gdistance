@@ -13,7 +13,7 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
 }
 \section{Slots}{
 	\describe{
-    \item{\code{transitionMatrix}:}{Object of class \code{"dsCMatrix"}}
+    \item{\code{transitionMatrix}:}{Object of class \code{"sparseMatrix"}}
     \item{\code{transitionCells}:}{Object of class \code{"integer"}}
     \item{\code{matrixValues}:}{Object of class \code{"character"}}
     \item{\code{ncols}:}{Object of class \code{"integer"}}
@@ -26,15 +26,15 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
 \section{Extends}{
 Class \code{"\linkS4class{Raster}"}.
 }
-\section{Methods}{
-  \describe{
-    \item{Arith}{\code{signature(e1 = "Transition", e2 = "Transition")}: ... }
-    \item{coerce}{\code{signature(from = "Transition", to = "dsCMatrix")}: ... }
-    \item{initialize}{\code{signature(.Object = "Transition")}: ... }
-    \item{Math}{\code{signature(x = "Transition")}: ... }
-    \item{show}{\code{signature(object = "Transition")}: ... }
-	 }
-}
+%\section{Methods}{
+%  \describe{
+%    \item{Arith}{\code{signature(e1 = "Transition", e2 = "Transition")} }
+%    \item{coerce}{\code{signature(from = "Transition", to = "sparseMatrix")}}
+%    \item{initialize}{\code{signature(.Object = "Transition")}}
+%    \item{Math}{\code{signature(x = "Transition")} }
+%    \item{show}{\code{signature(object = "Transition")} }
+%	 }
+%}
 
 \author{ Jacob van Etten <jacobvanetten@yahoo.com> }
 \examples{

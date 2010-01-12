@@ -1,4 +1,4 @@
-\name{Arith-methods}
+\name{ArithMath-methods}
 
 \docType{methods}
 
@@ -6,17 +6,19 @@
 \alias{Arith,ANY,Transition-method}
 \alias{Arith,Transition,ANY-method}
 \alias{Arith,Transition,Transition-method}
+\alias{Math-methods}
+\alias{Math,Transition-method}
 
-\title{Arithmetic with objects of class Transition}
+\title{Arithmetic and mathematical operations with objects of class Transition}
 
 \description{
   Standard arithmetic operators for computations with Transition objects and numeric values. 
   Transition objects must have the same extent and resolution.
-  All operations that work on the sparse (dsC) matrices are available. 
+  All arithmetic and mathematical operations that work on the sparse matrices are available for Transition objects. 
 }
 
 \value{
-A Transition object.
+Transition object or numeric.
 }
 
 \author{Jacob van Etten}

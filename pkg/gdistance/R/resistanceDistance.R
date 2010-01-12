@@ -27,6 +27,7 @@ setMethod("resistanceDistance", signature(transition = "Transition", fromCoords 
 
 setMethod("resistanceDistance", signature(transition = "Transition", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, fromCoords) 
 	{
+		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in Transition object")}
 		fromCoords <- coordinates(fromCoords)
 		transition <- .transitionSolidify(transition)
 		rd <- matrix(NA,nrow=length(fromCoords[,1]),ncol=length(fromCoords[,1]))

@@ -28,11 +28,11 @@ setMethod("geoCorrection", signature(transition = "Transition", type="character"
 		x <- as.vector(correctionValues)
 		dims <- ncell(transition)
 		correctionMatrix <- new("dgTMatrix", i = i, j = j, x = x, Dim = as.integer(c(dims,dims)))
-		correctionMatrix <- (as(correctionMatrix,"symmetricMatrix"))
-		correctionMatrix <- (as(correctionMatrix,"dsCMatrix"))
+		correctionMatrix <- (as(correctionMatrix,"sparseMatrix"))
+		if(class(transitionMatrix(transition)) == "dsCMatrix"){correctionMatrix <- forceSymmetric(correctionMatrix)}
 		if(!multpl) 
 		{
-			transitionCorrected <- correctionMatrix * as(transition, "dsCMatrix")
+			transitionCorrected <- correctionMatrix * as(transition, "sparseMatrix")
 			transitionMatrix(transition) <- transitionCorrected
 			return(transition)
 		}	

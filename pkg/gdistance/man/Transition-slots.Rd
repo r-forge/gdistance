@@ -5,7 +5,7 @@
 \alias{matrixValues<-}
 \alias{transitionCells}
 \alias{transitionMatrix,Transition-method}
-\alias{transitionMatrix<-,Transition,dsCMatrix-method}
+\alias{transitionMatrix<-,Transition,sparseMatrix-method}
 \alias{transitionCells,Transition-method}
 \alias{matrixValues,Transition-method}
 \alias{matrixValues<-,Transition,character-method}

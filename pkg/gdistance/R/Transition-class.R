@@ -7,7 +7,7 @@
 setClass(Class="Transition",
 		contains = "Raster",
 		representation = representation(
-			transitionMatrix = "dsCMatrix",
+			transitionMatrix = "sparseMatrix",
 			transitionCells = "integer",
 			matrixValues = "character"
 		),
@@ -20,18 +20,19 @@ setClass(Class="Transition",
 
 setMethod ("show" , "Transition", 
 		function(object) {
-			cat("class     :" , class(object), "\n")
-			cat("nrows     :" , nrow(object), "\n")
-			cat("ncols     :" , ncol(object), "\n")
-			cat("ncells    :" , nrow(object) * ncol(object), "\n")
-			cat("xmin      :" , xmin(object), "\n")
-			cat("xmax      :" , xmax(object), "\n")
-			cat("ymin      :" , ymin(object), "\n")
-			cat("ymax      :" , ymax(object), "\n")
-			cat("xres      :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
-			cat("yres      :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
-			cat("projection:", projection(object), "\n")
-			cat("values:", matrixValues(object))
+			cat("class       :" , class(object), "\n")
+			cat("nrows       :" , nrow(object), "\n")
+			cat("ncols       :" , ncol(object), "\n")
+			cat("ncells      :" , nrow(object) * ncol(object), "\n")
+			cat("xmin        :" , xmin(object), "\n")
+			cat("xmax        :" , xmax(object), "\n")
+			cat("ymin        :" , ymin(object), "\n")
+			cat("ymax        :" , ymax(object), "\n")
+			cat("xres        :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
+			cat("yres        :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
+			cat("projection  :", projection(object), "\n")
+			cat("values      :", matrixValues(object))
+			cat("matrix class:", class(transitionMatrix(object)))
 			cat ("\n")
 		}
 )
@@ -45,17 +46,13 @@ setMethod ("initialize", "Transition",
 			.Object@nrows <- as.integer(nrows)
 			.Object@ncols <- as.integer(ncols)
 			.Object@crs <- projection
-			.Object@transitionMatrix@uplo <- "U"
-			.Object@transitionMatrix@p <- as.integer(rep(0,ncells+1))
-			.Object@transitionMatrix@i <- integer(0)
-			.Object@transitionMatrix@Dim <- as.integer(c(ncells,ncells))
-			#.Object@transitionMatrix@x can stay this way?
+			.Object@transitionMatrix <- Matrix(0,ncells,ncells)
 			.Object@transitionCells <- 1:ncells
 			return(.Object)
 		}
 )
 
-setAs("Transition", "dsCMatrix", function(from){from@transitionMatrix})
+setAs("Transition", "sparseMatrix", function(from){from@transitionMatrix})
 
 setAs("Transition", "RasterLayer", function(from)
 	{

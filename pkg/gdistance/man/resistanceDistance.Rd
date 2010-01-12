@@ -29,11 +29,11 @@ distance matrix (dist) or matrix
   Before calculating resistance distances from a Transition object, see if you need to apply the function \code{\link{geoCorrection}}).
 }
 \references{ 
-  Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.
+Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.
 
-  Fouss, F., Pirotte, A., Renders, J.-M. & Saerens, M. 2007. Random-walk computation of similarities between nodes of a graph with application to collaborative recommendation. \emph{IEEE Transactions on Knowledge and Data Engineering}, 19(3), 355-369.
+Fouss, F., Pirotte, A., Renders, J.-M. & Saerens, M. 2007. Random-walk computation of similarities between nodes of a graph with application to collaborative recommendation. \emph{IEEE Transactions on Knowledge and Data Engineering}, 19(3), 355-369.
 
-  McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
+McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561. 
   
   \url{http://www.circuitscape.org}
 }

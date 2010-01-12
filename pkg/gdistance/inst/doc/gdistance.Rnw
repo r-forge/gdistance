@@ -25,14 +25,14 @@ foo <- packageDescription("gdistance")
 
 \section{Introduction}
 
-This vignette describes the R package \verb@gdistance@. This package provides functionality to calculate various geographic distance measures. Tobler´s First Law of Geography states that “everything is related to everything else, but near things are more related than distant things” (Tobler 1970). Mutual distances can be used to predict similarity and dissimilarity in geographical space, the main explanandum of geography. 
+This vignette describes the R package \verb@gdistance@. This package provides functionality to calculate various geographic distance measures. Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related than distant things” (Tobler 1970). Mutual distances can be used to predict similarity and dissimilarity in geographical space, the main explanandum of geography. 
 
 Similarity is related to the intensity of interaction between spatial elements. Interaction consists in movement or communication in geographical space. Geographical distance is indicative of the cost or time required to realize movement of organisms, material or information between a pair of locations. A higher intensity of interaction is expected when this supposes less effort or travel time. 
 
-However, travel time not only depends on the absolute distance between points. It depends on the mode of route-finding, the means of transport, and the characteristics of landscapes and infrastructure. Package \verb@gdistance@ provides the following distance measures.
+In reality, travel time not only depends on the absolute distance between points. It depends on the mode of route-finding, the means of transport, and the characteristics of landscapes and infrastructure. Package \verb@gdistance@ provides the following distance measures.
 \begin{itemize}
 \item{The great-circle distance reflects the travel time of goal-directed movement with no obstacles, `as the crow flies'.}
-\item{The least-cost path distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' of the landscape.}
+\item{The least-cost distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' of the landscape.}
 \item{A very different form of movement in geographical space is the random walk, which has no predetermined destination (`drunkard's walk'). Resistance distance reflects (Brownian) random walks in geographical space (McRae 2006).}
 \item{`Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks, recently introduced by Saerens et al. (2009).}
 \end{itemize} 
@@ -44,22 +44,51 @@ The package is currently limited to the distance measures and movement models li
 The package \verb@gdistance@ illustrates the potential of R spatial software to move from a map-centric approach in geo-information science to a more data-centric and model-centric approach. The package \verb@gdistance@ makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, and (with the help of other packages) to tree representations of distances, correlation and regression with distance matrices, and diversity calculations. This overcomes the privileged status of map-based data presentations common in dominant GIS software and integrates geo-spatial analysis fully in the `programming with data' paradigm. Tailoring analyses to different geo-spatial problems is made easier, which should benefit the quality of quantitative methodology in geographical research.
 
 \section{Class Transition}
-To make distance calculations as flexible as possible, \verb@gdistance@ is build around the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from an object of class Raster*. This is a class from \verb@raster@, a package which contains all grid functionality expected from normal GIS software and more. Also, different arithmetic operations can be done with Transition objects. Distance and other measures are then calculated from Transition objects.
+To make distance calculations as flexible as possible, \verb@gdistance@ is build around the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from an object of class Raster*. This is a class from \verb@raster@, a package which contains all grid functionality expected from normal GIS software and more. 
 
-This approach opens interesting possibilities of modelling the resistance of the environment to movement. Transition objects can be updated quickly and flexibly. 
+<<gdistance-1>>=
+library(gdistance)
+#create a new raster and set all its values to unity.
+raster <- raster(nrows=18, ncols=36) 
+raster <- setValues(raster,rep(1,ncell(raster)))
 
-\section{Creating an object of class Transition}
+#create a Transition object from the raster
+tr <- TransitionFromRaster(raster, mean, 4)
+tr
+@
 
-Transition objects should not contain isolated 'clumps'. This can be checked visually and avoided when creating Transition objects.
+This connects all adjacent cells in 4 directions. Cells can also be connected in 8 or 16 connections.
 
-\section{Calculating distances and other measures}
+Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model different components of landscape friction separately.
+
+<<gdistance-2>>=
+tr <- tr*tr
+tr <- tr+tr
+tr <- tr*3
+tr <- sqrt(tr)
+@
+
+Transition objects should not contain isolated 'clumps'. This can be checked visually and avoided when creating Transition objects. This can be done by plotting the original Raster* object. An alternative is to create a RasterLayer object from the Transition object and plot this.
+
+<<gdistance-2>>=
+r <- TransitionMap(tr)
+plot(r)
+@
+
+\section{Correcting inter-cell transition values}
+
+\section{Calculating distances}
+
+\section{Dispersal paths}
+
+\section{Path overlap and non-overlap}
 
 \section{References}
 
-McRae
+McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. \emph{Ecology} 89:2712-2724.
+  
+Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. \emph{Neural Computation}, 21(8):2363-2404.
 
-Saerens
-
-Tobler
+Tobler W. 1970.
 
 \end{document}

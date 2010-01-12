@@ -10,7 +10,7 @@ setMethod("Arith", signature(e1 = "Transition", e2 = "Transition"),
 		function(e1, e2){
 			if(as(e1, "BasicRaster") == as(e2, "BasicRaster"))
 				{
-					matrix.dsC <- callGeneric(as(e1,"dsCMatrix"),as(e2,"dsCMatrix"))
+					matrix.dsC <- callGeneric(as(e1,"sparseMatrix"),as(e2,"sparseMatrix"))
 					transitionMatrix(e1) <- matrix.dsC
 					return(e1)
 				}
@@ -20,7 +20,7 @@ setMethod("Arith", signature(e1 = "Transition", e2 = "Transition"),
 
 setMethod("Arith", signature(e1 = "Transition", e2 = "ANY"),
 		function(e1, e2){
-			matrix.dsC <- callGeneric(as(e1,"dsCMatrix"),e2)
+			matrix.dsC <- callGeneric(as(e1,"sparseMatrix"),e2)
 			transitionMatrix(e1) <- matrix.dsC
 			return(e1)
 		}
@@ -28,7 +28,7 @@ setMethod("Arith", signature(e1 = "Transition", e2 = "ANY"),
 
 setMethod("Arith", signature(e1 = "ANY", e2 = "Transition"),
 		function(e1, e2){
-			matrix.dsC <- callGeneric(e1,as(e2,"dsCMatrix"))
+			matrix.dsC <- callGeneric(e1,as(e2,"sparseMatrix"))
 			transitionMatrix(e1) <- matrix.dsC
 			return(e1)
 		}

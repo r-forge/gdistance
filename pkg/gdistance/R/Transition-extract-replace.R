@@ -14,7 +14,7 @@ setMethod ("transitionMatrix", signature(transition = "Transition"),
 
 setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("transitionMatrix<-"))
 
-setReplaceMethod ("transitionMatrix", signature(transition = "Transition", value = "dsCMatrix"),
+setReplaceMethod ("transitionMatrix", signature(transition = "Transition", value = "sparseMatrix"),
 	function(transition, value){
 		#if(dim(transitionMatrix(transtion) != dim(sparseMatrix)){warning(unequal dimensions)}
 		transition@transitionMatrix <- value
@@ -60,14 +60,14 @@ setMethod("[", signature(x = "Transition", i="index", j="missing", drop="missing
 			if (all(i %in% x@transitionCells))
 			{
 				ind <- match(i,x@transitionCells)
-				tm <- as(x,"dsCMatrix")
+				tm <- as(x,"sparseMatrix")
 				x@transitionMatrix <- tm[ind,ind]
 				x@transitionCells <- i
 			}
 			if (all(-i %in% x@transitionCells))
 			{
 				ind <- match(-i,x@transitionCells)
-				tm <- as(x,"dsCMatrix")
+				tm <- as(x,"sparseMatrix")
 				x@transitionMatrix <- tm[-ind,-ind]
 				x@transitionCells <- x@transitionCells[!(x@transitionCells %in% -i)]
 			}
@@ -86,14 +86,14 @@ setMethod("[", signature(x = "Transition", i="index", j="index", drop="missing")
 			{
 				indi <- match(i,x@transitionCells)
 				indj <- match(j,x@transitionCells)
-				tm <- as(x,"dsCMatrix")
+				tm <- as(x,"sparseMatrix")
 				tm <- tm[indi,indj]
 			}
 			if (all(-i %in% x@transitionCells))
 			{
 				indi <- match(-i,x@transitionCells)
 				indj <- match(-j,x@transitionCells)
-				tm <- as(x,"dsCMatrix")
+				tm <- as(x,"sparseMatrix")
 				tm <- tm[-indi,-indj]
 			}
 		}
@@ -109,14 +109,14 @@ setMethod("[", signature(x = "Transition", i="matrix", j="missing", drop="missin
 			indi <- match(i[,1],x@transitionCells)
 			indj <- match(i[,2],x@transitionCells)
 			ind <- cbind(indi,indj)
-			tm <- as(x,"dsCMatrix")
+			tm <- as(x,"sparseMatrix")
 			tm <- tm[ind]
 		}
 	return(tm)
 	}
 )
 
-setMethod("[<-", signature(x = "Transition", i="index", j="missing", value="dsCMatrix"),
+setMethod("[<-", signature(x = "Transition", i="index", j="missing", value="sparseMatrix"),
 		function(x, i, value){
 			if (!all(i %in% x@transitionCells) && !all(-i %in% x@transitionCells)){stop("wrong cell numbers")}
 			else
@@ -124,14 +124,14 @@ setMethod("[<-", signature(x = "Transition", i="index", j="missing", value="dsCM
 				if (!all(i %in% x@transitionCells))
 				{
 					ind <- match(i,x@transitionCells)
-					tm <- as(x,"dsCMatrix")
+					tm <- as(x,"sparseMatrix")
 					tm[ind,ind] <- value
 					x@transitionMatrix <- tm
 				}
 				if (!all(-i %in% x@transitionCells))
 				{
 					ind <- match(-i,x@transitionCells)
-					tm <- as(x,"dsCMatrix")
+					tm <- as(x,"sparseMatrix")
 					tm[-ind,-ind] <- value
 					x@transitionMatrix <- tm
 				}
@@ -150,7 +150,7 @@ setMethod("[<-", signature(x = "Transition", i="matrix", j="missing", value="ANY
 					ind1 <- match(i[,1],x@transitionCells)
 					ind2 <- match(i[,2],x@transitionCells)
 					ind <- cbind(ind1,ind2)
-					tm <- as(x,"dsCMatrix")
+					tm <- as(x,"sparseMatrix")
 					tm[ind] <- value
 					x@transitionMatrix <- tm
 				}
