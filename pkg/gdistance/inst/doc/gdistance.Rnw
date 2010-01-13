@@ -77,6 +77,10 @@ plot(r)
 
 \section{Correcting inter-cell transition values}
 
+<<gdistance-2>>=
+trCorr <- geoCorrection(tr, type="c", multpl=FALSE)
+@
+
 \section{Calculating distances}
 
 \section{Dispersal paths}

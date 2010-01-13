@@ -17,9 +17,9 @@ TransitionFromRaster (object, transitionFunction, directions, ...)
   \item{...}{ Additional arguments, see below }
 }
 \details{
-When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(a,b) = f(b,a) (a commutative function).
+When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(a,b) = f(b,a) (a commutative function). TransitionFromRaster() does no commutativity check.
 
-To obtain an asymmetric transition matrix, an additional argument `symm' should be set to FALSE. 
+To obtain an asymmetric transition matrix, an additional argument `symm' should be set to FALSE. Asymmetric matrices require more memory and don´t work with certain functions (e.g. random walk algorithms)
 }
 \value{
 Transition object

@@ -8,24 +8,28 @@ setGeneric("TransitionFromRaster", function(object, transitionFunction, directio
 
 setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = function(object, transitionFunction, directions, symm=TRUE)
 		{
+			return(.TfromR(object, transitionFunction, directions, symm))
+		}
+)
+
+.TfromR <- function(object, transitionFunction, directions, symm)
+{
 			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
 			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
-			transitionMatr <- as(transition,"sparseMatrix")
+			transitionMatr <- transitionMatrix(transition)
 			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
+			if(symm){adj <- adj[adj[,1] < adj[,2],]}
 			transition.values <- apply(cbind(values(object)[adj[,1]],values(object)[adj[,2]]),1,transitionFunction)
 			if(!all(transition.values>=0)){warning("transition function gives negative values")}
 			transitionMatr[adj] <- as.vector(transition.values)
-			if(symm){transitionMatr <- try(as(transitionMatr, "symmetricMatrix"))}
-			if(class(transitionMatr) != "dsCMatix")
+			if(symm)
 			{
-				warning("matrix does not seem symmetric. Applied forcedSymmetric()")
-				forceSymmetric
+				transitionMatr <- forceSymmetric(transitionMatr)
 			}
 			transitionMatrix(transition) <- transitionMatr
 			matrixValues(transition) <- "conductance"
-			return(transition) 
-		}
-)
+			return(transition)
+}
 
 setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{

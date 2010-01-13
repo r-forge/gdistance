@@ -31,20 +31,21 @@ setMethod ("show" , "Transition",
 			cat("xres        :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
 			cat("yres        :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
 			cat("projection  :", projection(object), "\n")
-			cat("values      :", matrixValues(object))
+			cat("values      :", matrixValues(object), "\n")
 			cat("matrix class:", class(transitionMatrix(object)))
 			cat ("\n")
 		}
 )
 
 setMethod ("initialize", "Transition",
-		function(.Object,nrows,ncols,xmin,xmax,ymin,ymax,projection)
+		function(.Object,nrows,ncols,xmin,xmax,ymin,ymax,projection="")
 		{
 			ncells <- as.integer(nrows*ncols)
 			extent <- newExtent(xmin, xmax, ymin, ymax)
 			.Object@extent <- extent
 			.Object@nrows <- as.integer(nrows)
 			.Object@ncols <- as.integer(ncols)
+			if(class(projection) != "CRS"){projection <- CRS(projection)}
 			.Object@crs <- projection
 			.Object@transitionMatrix <- Matrix(0,ncells,ncells)
 			.Object@transitionCells <- 1:ncells
