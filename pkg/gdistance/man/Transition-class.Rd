@@ -2,7 +2,7 @@
 \docType{class}
 \alias{Transition-class}
 \alias{Arith,Transition,transition-method}
-\alias{coerce,Transition,dsCMatrix-method}
+\alias{coerce,Transition,sparseMatrix-method}
 \alias{initialize,Transition-method}
 \alias{show,Transition-method}
 
@@ -14,8 +14,9 @@ An object of the class Transition contains two main elements:
 1. a transition matrix with transition values between connected cells in a raster - an object of class sparseMatrix (package Matrix); 
 2. information on the extent, resolution and projection of the underlying raster - an object of class Raster (package raster).
 
-Slot transitionCells contains cell numbers of cells included in the transition matrix. 
-Slot matrixValues indicates if the nonzero values of the transition matrix contains conductance or resistance values.
+All slots belong to these two elements from other package, except two additional slots:
+1. slot transitionCells, which contains the cell numbers of the cells included in the transition matrix;
+2. slot matrixValues indicates if the nonzero values of the transition matrix contains conductance or resistance values.
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Transition", nrows, ncols, xmin, xmax, ymin, ymax, projection)}.

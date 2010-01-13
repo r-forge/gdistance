@@ -9,7 +9,6 @@
 \alias{==,Transition,Transition-method}
 \alias{coerce,RasterLayer,Transition-method}
 \alias{coerce,Transition,RasterLayer-method}
-\alias{coerce,Transition,sparseMatrix-method}
 
 \title{ Extracting and replacing: class Transition}
 \description{
