@@ -49,19 +49,25 @@ To make distance calculations as flexible as possible, \verb@gdistance@ is build
 <<gdistance-1>>=
 library(gdistance)
 #create a new raster and set all its values to unity.
-raster <- raster(nrows=18, ncols=36) 
-raster <- setValues(raster,rep(1,ncell(raster)))
+r <- raster(nrows=18, ncols=36) 
+r <- setValues(r,rep(1,ncell(raster)))
+r
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(raster, mean, 4)
-tr
+tr <- TransitionFromRaster(r, mean, 4)
 @
 
 This connects all adjacent cells in 4 directions. Cells can also be connected in 8 or 16 connections.
 
-Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model different components of landscape friction separately.
+By inspecting the object, we see that the resulting Transition object shares much information with the original RasterLayer object.
 
 <<gdistance-2>>=
+tr
+@
+
+Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model different components of landscape friction separately.
+
+<<gdistance-3>>=
 tr <- tr*tr
 tr <- tr+tr
 tr <- tr*3
@@ -70,14 +76,14 @@ tr <- sqrt(tr)
 
 Transition objects should not contain isolated 'clumps'. This can be checked visually and avoided when creating Transition objects. This can be done by plotting the original Raster* object. An alternative is to create a RasterLayer object from the Transition object and plot this.
 
-<<gdistance-2>>=
+<<gdistance-4>>=
 r <- TransitionMap(tr)
 plot(r)
 @
 
 \section{Correcting inter-cell transition values}
 
-<<gdistance-2>>=
+<<gdistance-5>>=
 trCorr <- geoCorrection(tr, type="c", multpl=FALSE)
 @
 

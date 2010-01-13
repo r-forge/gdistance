@@ -8,7 +8,7 @@ TransitionMap <- function(transition)
 {
 	rs <- as(transition,"RasterLayer")
 	dataVector <- vector(length=ncell(transition))
-	dataVector[transitionCells(transition)] <- colSums(as(transition,"dsCMatrix")) #should be divided by the number of connections (non-zero values)
+	dataVector[transitionCells(transition)] <- colSums(as(transition,"sparseMatrix")) #should be divided by the number of connections (non-zero values)
 	rs <- setValues(rs, dataVector) 
 	return(rs)
 }
