@@ -6,9 +6,9 @@
 
 #TODO check if coordinate systems are equal (should throw warning)
 
-setGeneric("flow", function(transition, origin, fromCoords, toCoords, norml, type, theta) standardGeneric("flow"))
+setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta) standardGeneric("pathInc"))
 
-setMethod("flow", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type)
+setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type)
 	{
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomWalk(prepared)
@@ -17,7 +17,7 @@ setMethod("flow", signature(transition = "Transition", origin = "SpatialPoints",
 	}
 )
 
-setMethod("flow", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta)
+setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta)
 	{
 		if(theta<0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)

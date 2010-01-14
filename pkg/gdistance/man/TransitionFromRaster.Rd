@@ -35,7 +35,8 @@ raster <- setValues(raster,rep(1,ncell(raster)))
 tr <- TransitionFromRaster(raster,mean,4)
 
 #create an asymmetric transition matrix
-f <- function(x) max(x) - x[1] + x[2] #an arbitrary non-commutative function 
+#first, an arbitrary non-commutative function 
+f <- function(x) max(x) - x[1] + x[2] 
 tr <- TransitionFromRaster(raster,f,4,symm=FALSE)
 }
 \keyword{ spatial }

@@ -1,13 +1,13 @@
-\name{flow}
-\alias{flow}
-\alias{flow,Transition,SpatialPoints,SpatialPoints,missing,logical,character,missing-method}
-\alias{flow,Transition,SpatialPoints,SpatialPoints,missing,logical,character,numeric-method}
+\name{pathInc}
+\alias{pathInc}
+\alias{pathInc,Transition,SpatialPoints,SpatialPoints,missing,logical,character,missing-method}
+\alias{pathInc,Transition,SpatialPoints,SpatialPoints,missing,logical,character,numeric-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Flow: path overlap and non-overlap}
+\title{Incidence of paths from a common origin: overlap and non-overlap}
 \description{
-Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms are available: random walk and randomised shortest paths.}
+Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
 \usage{
-flow(transition, origin, fromCoords, toCoords, norml, type, theta)
+pathInc(transition, origin, fromCoords, toCoords, norml, type, theta)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -20,11 +20,19 @@ flow(transition, origin, fromCoords, toCoords, norml, type, theta)
   \item{theta}{value between 0 and 20 (randomised shortest paths) or missing (random walk)}
 }
 \details{
-This function calculates the overlap and non-overlap in the random walk trajectories originating in a single point to sets of other locations.
+This function calculates the overlap and non-overlap in the random walk trajectories or randomised shortest paths originating in a single point to sets of other locations.
 
-Probabilities of joint passage or divergence are calculated for each cell-to-cell connection. Joint passage is calculated as the joint probability (multiplying both probabilities). Divergence is calculates as [formula].
+First, probabilities of passage are calculated for each cell-to-cell connection. 
 
-These are multiplied by the resistance (1/conductance) of each connection and summed.
+Joint passage is calculated as the joint probability multiplied with the resistance of the connections. 
+
+Pjoint = Pi * Pj * Rij
+
+Divergence is calculates as the probability with which the passage of a path to either i or j exceeds the probability of the passage of the other or joint passage.
+
+Pdivergent = max(0, max(Pi, Pj) * (1 * min(Pi, Pj)) * min(Pi, Pj)) * Rij
+
+Both are summed over all connections ij in the transition matrix.
 }
 \value{
 dist object or list of dist objects
@@ -52,10 +60,10 @@ sP1 <- SpatialPoints(cbind(c(65,5,-65),c(-55,35,-35)))
 #randomised shortest paths
 #but rescaling is needed: exp(-theta * trC) should give reasonable values
 trC <- trC / median(transitionMatrix(trC)@x) #divide by median of the non-zero values
-flow(trC, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"), theta=2)
+pathInc(trC, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"), theta=2)
 
 #random walk
-flow(trR, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"))
+pathInc(trR, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"))
 
 }
 \keyword{ spatial }

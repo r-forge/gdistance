@@ -50,8 +50,10 @@ Class \code{"\linkS4class{Raster}"}.
 \examples{
 showClass("Transition")
 
-tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,ymin=-90,ymax=90,projection=CRS("+proj=longlat +datum=WGS84"))
+tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,
+          ymin=-90,ymax=90,projection=CRS("+proj=longlat +datum=WGS84"))
 
-tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,ymin=-90,ymax=90,projection="")
+tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,
+          ymin=-90,ymax=90,projection="")
 }
 \keyword{classes}
