@@ -1,4 +1,5 @@
-\documentclass{article}
+\documentclass[twoside]{article}
+%\documentclass{amsart}
 
 \usepackage{natbib}
 \usepackage{graphics}
@@ -23,69 +24,164 @@ foo <- packageDescription("gdistance")
 \author{Jacob van Etten}
 \maketitle
 
+\pagestyle{myheadings}
+\markboth{gdistance: geographic distances and movements}{Jacob van Etten}
+
 \section{Introduction}
 
-This vignette describes the R package \verb@gdistance@. This package provides functionality to calculate various geographic distance measures. Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related than distant things” (Tobler 1970). Mutual distances can be used to predict similarity and dissimilarity in geographical space, the main explanandum of geography. 
+This vignette describes the R package \verb@gdistance@. 
+This package provides functionality to calculate various geographic distance measures. 
+Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related 
+than distant things” (Tobler 1970). 
+In other words, mutual distances can be used to predict similarity and dissimilarity in geographical space, 
+the main \emph{explanandum} of geography. 
 
-Similarity is related to the intensity of interaction between spatial elements. Interaction consists in movement or communication in geographical space. Geographical distance is indicative of the cost or time required to realize movement of organisms, material or information between a pair of locations. A higher intensity of interaction is expected when this supposes less effort or travel time. 
+Similarity is related to the intensity of interaction between spatial elements. 
+Interaction consists in movement or communication in geographical space. 
+A higher intensity of interaction is expected when this supposes less effort or travel time. 
+Geographic distance is indicative of the cost or time required to realize movement of organisms, material or information 
+between a pair of locations. 
 
-In reality, travel time not only depends on the absolute distance between points. It depends on the mode of route-finding, the means of transport, and the characteristics of landscapes and infrastructure. Package \verb@gdistance@ provides the following distance measures.
+The most commonly used geographic distance measure is the great-circle distance, which represents the shortest line 
+between origin and destination, taking into account the curvature of the earth.
+However, the great-circle distance does not correspond very well to expected travel time in all cases. 
+Travel time depends on the means of transport, the mode of route-finding, and the characteristics of landscapes and infrastructure. 
+The great-circle distance could be considered as referring to a special mode of travel: goal-directed movement with no obstacles, 
+`as the crow flies'.
+Other distance measures are needed when travel is not (or less) goal-directed and landscape characteristics affect movement 
+in a spatially heterogeneous way. 
+Package \verb@gdistance@ was created to calculate distances using geographical grids (rasters) to represent landscape heterogeneity.
+It provides the following distance measures.
 \begin{itemize}
-\item{The great-circle distance reflects the travel time of goal-directed movement with no obstacles, `as the crow flies'.}
-\item{The least-cost distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' of the landscape.}
-\item{A very different form of movement in geographical space is the random walk, which has no predetermined destination (`drunkard's walk'). Resistance distance reflects (Brownian) random walks in geographical space (McRae 2006).}
-\item{`Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks, recently introduced by Saerens et al. (2009).}
+\item{The least-cost distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' 
+of the landscape.}
+\item{A very different form of movement in geographical space is the random walk, which has no predetermined destination 
+(`drunkard's walk'). Resistance distance reflects (Brownian) random walks in geographical space (McRae 2006).}
+\item{`Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks, 
+recently introduced by Saerens et al. (2009).}
 \end{itemize} 
 
-Similarity between geographical elements is not necessarily caused by direct, mutual spatial interaction. It may reflect diffusion starting from an independent, third point, which functions as a dominant source. For instance, diffusion from a single origin explains the current geographical patterns of genetic differences of humans, who spread from Africa to other continents. Using random walk or randomised shortest path algorithms, it is possible to calculate for each pair of points which parts of their dispersal trajectories from a common origin overlap and which parts diverge. These measures may be used as predict mutual similarity, treating them as if they were geographic distances. These metrics can be computed with \verb@gdistance@. Also, it is possible to visualize dispersal paths. 
+Similarity between geographical elements is not necessarily caused by direct spatial interaction between two points. 
+It may reflect diffusion starting from an independent, third point or area, which functions as a dominant source. 
+For instance, diffusion from a single origin explains the current geographical patterns of human genetic diversity.
+Prehistoric humans populated the globe spreading from an origin in Africa to other continents. 
+As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
+they share their prehistoric migration history.
 
-The package is currently limited to the distance measures and movement models listed above and dispersal path metrics derived from random walks and randomised shortest paths. All these are metrics that can be calculated with deterministic algorithms based on analytical solutions using matrix solving. The Lévy flight or walk, another important model of geographical movement, is not implemented. It is an obvious candidate to be included in the package, but requires more complex methods. Approximate, matrix-based methods for Lévy-like models will be considered in future versions of \verb@gdistance@. 
+Using random walk or randomised shortest path algorithms, it is possible to calculate for each pair of points which parts of 
+their dispersal trajectories from a common origin overlap and which parts diverge. 
+These measures can be computed with \verb@gdistance@ and may be used as predict mutual similarity, treating them 
+as if they were geographic distances. 
+The package also makes it possible to visualize the dispersal paths, as a grid with cell values representing 
+the probability of passage. 
 
-The package \verb@gdistance@ illustrates the potential of R spatial software to move from a map-centric approach in geo-information science to a more data-centric and model-centric approach. The package \verb@gdistance@ makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, and (with the help of other packages) to tree representations of distances, correlation and regression with distance matrices, and diversity calculations. This overcomes the privileged status of map-based data representations common in dominant GIS software and integrates geo-spatial analysis fully in the `programming with data' paradigm. Tailoring analyses to different geo-spatial problems is made easier, which should benefit the quality of quantitative methodology in geographical research.
+The package is currently limited to the distance measures and movement models listed above and dispersal path metrics 
+derived from random walks and randomised shortest paths. 
+Random walk and randomised shortest path metrics that can be calculated with algorithms based on analytical solutions 
+using matrix solving.
+The Lévy flight or walk, another important model of geographical movement, is not implemented. 
+It is an obvious candidate to be included in the package, but requires more complex methods. 
+Approximate, matrix-based methods for Lévy-like models will be considered in future versions of \verb@gdistance@. 
+
+The package \verb@gdistance@ illustrates the potential of our software to move from a map-centric approach in geo-information science 
+to a more data-centric and model-centric approach. 
+The package makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, 
+and (with the help of other packages) to tree representations of distances, correlation and regression with distance matrices, 
+and diversity calculations. 
+This overcomes the privileged status of map-based data representations common in dominant GIS software and integrates 
+geo-spatial analysis fully in the `programming with data' paradigm. 
+Tailoring analyses to different geo-spatial problems is made easier, which should benefit quantitative methodology 
+in geographical research.
 
 \section{Class Transition}
-To make distance calculations as flexible as possible, \verb@gdistance@ is build around the class Transition. This class contains all the necessary geographic references (projection, resolution, extent) as well as a transition matrix which specifies the probability (or cost) with which movements between cells occur. Transition objects can be constructed with a user-defined function from an object of class Raster*. This is a class from \verb@raster@, a package which contains all grid functionality expected from normal GIS software and more. 
+To make distance calculations as flexible as possible, distances and other measures are calculated in various steps.
+The central class in \verb@gdistance@ is the S4 class Transition, and most operations have an object of this class as input or output.
+Transition objects can be constructed from an object of class RasterLayer or RasterBrick. 
+These classes are from \verb@raster@, a memory-efficient and user-friendly R package which contains complete geographical grid functionality. 
+The class Transition takes the necessary geographic references (projection, resolution, extent) from the original Raster* object. 
+It also contains a transition matrix which specifies the probability, friction (cost) or `conductance' 
+of movements between cells. 
+It is not strange to use `conductance' in this context, as transition matrices can be thought of as analogous to electrical networks transporting current (McRae 2006).
+Each row and column in the transition matrix represents a cell in the original Raster* object.
+In most cases, cells are connected only with adjacent cells.
+Consequently, a transition matrix with `conductance' values contains only a small fraction of non-zero values.
+Therefore, it is stored as a \emph{sparse} matrix, which only records the non-zero values and information about their location.
+The package \verb@gdistance@ makes use of sparse matrix classes and methods from the package \verb@Matrix@, 
+which gives access to fast procedures implemented in the C language.
+
+A first step in any analysis with gdistance is the construction of a Transition object.
+The construction of a Transition object from a Raster* object is straightforward. 
+The user can define a function to calculate the conductance value from the values of each pair of cells to be connected.
 
 <<gdistance-1>>=
 library(gdistance)
-#create a new raster and set all its values to unity.
+#create a new raster with random values
 r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,rep(1,ncell(raster)))
+r <- setValues(r,runif(ncell(raster)))
 r
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(r, mean, 4)
+#the conductance value is determined as 
+#the mean value of adjacent cells
+tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
 @
 
 This connects all adjacent cells in 4 directions. Cells can also be connected in 8 or 16 connections.
-
 By inspecting the object, we see that the resulting Transition object shares much information with the original RasterLayer object.
 
 <<gdistance-2>>=
 tr
 @
 
-Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model different components of landscape friction separately.
+It is also possible to create asymmetric matrices, in which the conductance value for a transition between i and j is unequal 
+to the value from j back to i. 
+This is done with a non-commutative function, which is a function f for which f(i,j) is not equal to f(j,i).
+Also, the symm argument in TransitionFromRaster needs to be set to FALSE.
 
 <<gdistance-3>>=
+#a non-commutative function
+ncf <- function(x) max(x)/x[1]
+tr2 <- TransitionFromRaster(r, ncf, 4, symm=FALSE)
+class(transitionMatrix(tr))
+class(transitionMatrix(tr2))
+@
+
+Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model 
+different components of landscape friction separately.
+
+<<gdistance-4>>=
 tr <- tr*tr
 tr <- tr+tr
 tr <- tr*3
 tr <- sqrt(tr)
 @
 
-Transition objects should not contain isolated 'clumps'. This can be checked visually and avoided when creating Transition objects. This can be done by plotting the original Raster* object. An alternative is to create a RasterLayer object from the Transition object and plot this.
+Some functions require that Transition objects not contain isolated 'clumps'. 
+This can be avoided when creating Transition objects, 
+for instance by giving conductance values between all adjacent cells a minimum value.
+Also, it can be checked visually by plotting the original Raster* object. 
+An alternative is to create a RasterLayer object from the Transition object and plot this.
 
-<<gdistance-4>>=
+<<gdistance-5>>=
 r <- TransitionMap(tr)
 plot(r)
 @
 
 \section{Correcting inter-cell transition values}
+The function TransitionFromRaster calculates transition values based on adjacent cells in the input raster.
+However, diagonally connected cells are more remote from each other that orthogonally connected cells.
+In equirectangular (latlon) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
+Therefore, the values in the transition matrix need to be corrected for these distortions.
 
-<<gdistance-5>>=
-trCorr <- geoCorrection(tr, type="c", multpl=FALSE)
+<<gdistance-6>>=
+trCorrC <- geoCorrection(tr, type="c", multpl=FALSE)
 @
+
+The function geoCorrection simply divides the transition matrix values between the distance between cells.
+For random walks, there is an additional consideration: the number of connections in N-S direction remains equal when moving from the equator to the poles.
+However, the strip of geographical space they bridge becomes narrower, tending to zero at the poles.
+The connections should be thought of as parallel transistors, together lowering the resistance of movement towards the poles.
+By setting the argument type to "r", the function geoCorrection corrects this distortion by multiplying the conductance with the transition values by the cosine of the latitude.
 
 \section{Calculating distances}
 
@@ -95,10 +191,13 @@ trCorr <- geoCorrection(tr, type="c", multpl=FALSE)
 
 \section{References}
 
-McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. \emph{Ecology} 89:2712-2724.
+McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. 
+\emph{Ecology} 89:2712-2724.
   
-Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. \emph{Neural Computation}, 21(8):2363-2404.
+Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. 
+\emph{Neural Computation}, 21(8):2363-2404.
 
-Tobler W. 1970.
+Tobler W. 1970. A computer model simulating urban growth in the Detroit region. 
+\emph{Economic Geography}, 46(2):234-240.
 
 \end{document}
