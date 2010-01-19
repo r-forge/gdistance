@@ -19,8 +19,6 @@ setMethod("resistanceDistance", signature(transition = "Transition", fromCoords 
 		coords <- SpatialPoints(coords)
 		rd <- as.matrix(resistanceDistance(transition, coords))
 		rd <- rd[rownames(fromCoords),rownames(toCoords)]
-		rd <- as.dist(rd)
-		attr(rd, "method") <- "resistance"
 		return(rd)
 	}
 )
