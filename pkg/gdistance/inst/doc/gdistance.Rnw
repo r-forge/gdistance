@@ -101,7 +101,7 @@ These classes are from \verb@raster@, a memory-efficient and user-friendly R pac
 The class Transition takes the necessary geographic references (projection, resolution, extent) from the original Raster* object. 
 It also contains a transition matrix which specifies the probability, friction (cost) or `conductance' 
 of movements between cells. 
-It is not strange to use `conductance' in this context, as transition matrices can be thought of as analogous to electrical networks transporting current (McRae 2006).
+It is not strange to use the word `conductance' in this context, as transition matrices can be thought of as analogous to electrical networks transporting current (McRae 2006).
 Each row and column in the transition matrix represents a cell in the original Raster* object.
 In most cases, cells are connected only with adjacent cells.
 Consequently, a transition matrix with `conductance' values contains only a small fraction of non-zero values.
@@ -112,6 +112,7 @@ which gives access to fast procedures implemented in the C language.
 A first step in any analysis with gdistance is the construction of a Transition object.
 The construction of a Transition object from a Raster* object is straightforward. 
 The user can define a function to calculate the conductance value from the values of each pair of cells to be connected.
+
 
 <<gdistance-1>>=
 library(gdistance)
@@ -126,17 +127,21 @@ r
 tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
 @
 
+
 This connects all adjacent cells in 4 directions. Cells can also be connected in 8 or 16 connections.
 By inspecting the object, we see that the resulting Transition object shares much information with the original RasterLayer object.
+
 
 <<gdistance-2>>=
 tr
 @
 
+
 It is also possible to create asymmetric matrices, in which the conductance value for a transition between i and j is unequal 
 to the value from j back to i. 
 This is done with a non-commutative function, which is a function f for which f(i,j) is not equal to f(j,i).
 Also, the symm argument in TransitionFromRaster needs to be set to FALSE.
+
 
 <<gdistance-3>>=
 #a non-commutative function
@@ -146,8 +151,10 @@ class(transitionMatrix(tr))
 class(transitionMatrix(tr2))
 @
 
+
 Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model 
 different components of landscape friction separately.
+
 
 <<gdistance-4>>=
 tr <- tr*tr
@@ -156,16 +163,26 @@ tr <- tr*3
 tr <- sqrt(tr)
 @
 
-Some functions require that Transition objects not contain isolated 'clumps'. 
+Also, it is possible to extract and replace values in the Transition matrix using indices.
+
+<<gdistance-5>>=
+tr[cbind(c(1,2,3),c(2,3,4))] <- tr2[cbind(c(1,2,3),c(2,3,4))]
+tr[c(1,2,3),c(1,2,3)] <- tr2[c(1,2,3),c(1,2,3)]
+@
+
+
+Some functions require that Transition objects do not contain any isolated 'clumps'. 
 This can be avoided when creating Transition objects, 
 for instance by giving conductance values between all adjacent cells a minimum value.
 Also, it can be checked visually by plotting the original Raster* object. 
 An alternative is to create a RasterLayer object from the Transition object and plot this.
 
-<<gdistance-5>>=
+
+<<gdistance-6>>=
 r <- TransitionMap(tr)
 plot(r)
 @
+
 
 \section{Correcting inter-cell transition values}
 The function TransitionFromRaster calculates transition values based on adjacent cells in the input raster.
@@ -173,9 +190,11 @@ However, diagonally connected cells are more remote from each other that orthogo
 In equirectangular (latlon) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
 Therefore, the values in the transition matrix need to be corrected for these distortions.
 
-<<gdistance-6>>=
+
+<<gdistance-7>>=
 trCorrC <- geoCorrection(tr, type="c", multpl=FALSE)
 @
+
 
 The function geoCorrection simply divides the transition matrix values between the distance between cells.
 For random walks, there is an additional consideration: the number of connections in N-S direction remains equal when moving from the equator to the poles.
@@ -184,6 +203,11 @@ The connections should be thought of as parallel transistors, together lowering 
 By setting the argument type to "r", the function geoCorrection corrects this distortion by multiplying the conductance with the transition values by the cosine of the latitude.
 
 \section{Calculating distances}
+With the corrected Transition object we can calculate distances between points.
+First, we need to have the coordinates of the points.
+This is done by creating a two-row matrix and converting it in a SpatialPoints object.
+
+
 
 \section{Dispersal paths}
 

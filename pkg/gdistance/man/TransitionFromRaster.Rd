@@ -28,16 +28,16 @@ Transition object
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \examples{
 #create a new raster and set all its values to unity.
-raster <- raster(nrows=18, ncols=36) 
-raster <- setValues(raster,rep(1,ncell(raster)))
+r <- raster(nrows=18, ncols=36) 
+r <- setValues(raster,rep(1,ncell(raster)))
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(raster,mean,4)
+tr <- TransitionFromRaster(r,mean,4)
 
 #create an asymmetric transition matrix
 #first, an arbitrary non-commutative function 
 f <- function(x) max(x) - x[1] + x[2] 
-tr <- TransitionFromRaster(raster,f,4,symm=FALSE)
+tr <- TransitionFromRaster(r,f,4,symm=FALSE)
 }
 \keyword{ spatial }
 
