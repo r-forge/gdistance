@@ -19,7 +19,7 @@ TransitionFromRaster (object, transitionFunction, directions, ...)
 \details{
 When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(a,b) = f(b,a) (a commutative function). TransitionFromRaster() does no commutativity check.
 
-To obtain an asymmetric transition matrix, an additional argument `symm' should be set to FALSE. Asymmetric matrices require more memory and don't work with certain functions (e.g. random walk algorithms).
+To obtain an asymmetric transition matrix, an additional argument `symm' should be set to FALSE.
 }
 \value{
 Transition object
@@ -29,15 +29,17 @@ Transition object
 \examples{
 #create a new raster and set all its values to unity.
 r <- raster(nrows=18, ncols=36) 
-r <- setValues(raster,rep(1,ncell(raster)))
+r <- setValues(r, runif(ncell(r)))
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(r,mean,4)
+tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
+tr #the sparse matrix is of class dsCMatrix (symmetric)
 
 #create an asymmetric transition matrix
 #first, an arbitrary non-commutative function 
 f <- function(x) max(x) - x[1] + x[2] 
-tr <- TransitionFromRaster(r,f,4,symm=FALSE)
+tr2 <- TransitionFromRaster(r, f, 4, symm=FALSE)
+tr2 #the sparse matrix is of class dgCMatrix (asymmetric)
 }
 \keyword{ spatial }
 

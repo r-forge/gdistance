@@ -118,7 +118,7 @@ The user can define a function to calculate the conductance value from the value
 library(gdistance)
 #create a new raster with random values
 r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,runif(ncell(raster)))
+r <- setValues(r,runif(ncell(r)))
 r
 
 #create a Transition object from the raster
@@ -139,26 +139,31 @@ tr
 
 It is also possible to create asymmetric matrices, in which the conductance value for a transition between i and j is unequal 
 to the value from j back to i. 
-This is done with a non-commutative function, which is a function f for which f(i,j) is not equal to f(j,i).
+This is relevant for instance for modelling transport over hilly terrain. 
+Downslope movement experiences less friction than upslope movement.
+In this case, the transition function needs to be non-commutative: a function $f$ for which $f(i,j) \neq f(j,i)$.
 Also, the symm argument in TransitionFromRaster needs to be set to FALSE.
 
 
 <<gdistance-3>>=
 #a non-commutative function
-ncf <- function(x) max(x)/x[1]
+ncf <- function(x) max(x) - x[1] + x[2] 
 tr2 <- TransitionFromRaster(r, ncf, 4, symm=FALSE)
 class(transitionMatrix(tr))
 class(transitionMatrix(tr2))
 @
 
 
-Different arithmetic and mathematical operations can be done with Transition objects. This makes it possible to model 
-different components of landscape friction separately.
+The sparse matrix class \verb@dsCMatrix@ is symmetric and contains only half of the matrix. 
+The class \verb@dgCMatrix@ can hold an asymmetric matrix.
+ 
+Different mathematical operations can be done with Transition objects. This makes it possible to flexibly model 
+different components of landscape friction.
 
 
 <<gdistance-4>>=
-tr <- tr*tr
-tr <- tr+tr
+tr <- tr*tr2
+tr <- tr+tr2
 tr <- tr*3
 tr <- sqrt(tr)
 @
@@ -166,14 +171,15 @@ tr <- sqrt(tr)
 Also, it is possible to extract and replace values in the Transition matrix using indices.
 
 <<gdistance-5>>=
-tr[cbind(c(1,2,3),c(2,3,4))] <- tr2[cbind(c(1,2,3),c(2,3,4))]
-tr[c(1,2,3),c(1,2,3)] <- tr2[c(1,2,3),c(1,2,3)]
+tr[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
+tr[1:9,1:9] <- tr2[1:9,1:9]
+tr2[1:5,1:5]
 @
 
 
-Some functions require that Transition objects do not contain any isolated 'clumps'. 
+Some functions require that Transition objects do not contain any isolated `clumps'. 
 This can be avoided when creating Transition objects, 
-for instance by giving conductance values between all adjacent cells a minimum value.
+for instance by giving conductance values between all adjacent cells some minimum value.
 Also, it can be checked visually by plotting the original Raster* object. 
 An alternative is to create a RasterLayer object from the Transition object and plot this.
 
@@ -201,6 +207,11 @@ For random walks, there is an additional consideration: the number of connection
 However, the strip of geographical space they bridge becomes narrower, tending to zero at the poles.
 The connections should be thought of as parallel transistors, together lowering the resistance of movement towards the poles.
 By setting the argument type to "r", the function geoCorrection corrects this distortion by multiplying the conductance with the transition values by the cosine of the latitude.
+
+
+<<gdistance-8>>=
+trCorrR <- geoCorrection(tr, type="r", multpl=FALSE)
+@
 
 \section{Calculating distances}
 With the corrected Transition object we can calculate distances between points.

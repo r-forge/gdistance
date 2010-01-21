@@ -1,11 +1,9 @@
 \name{Transition methods}
 \docType{methods}
-\alias{[,Transition,index,missing,missing-method}
-\alias{[,Transition,index,index,missing-method}
+\alias{[,Transition,numeric,numeric,missing-method}
 \alias{[,Transition,matrix,missing,missing-method}
 \alias{[<-,Transition,matrix,missing,ANY-method}
-\alias{[<-,Transition,index,missing,sparseMatrix-method}
-\alias{[<-,Transition,index,index,ANY-method}
+\alias{[<-,Transition,numeric,numeric,ANY-method}
 \alias{==,Transition,Transition-method}
 \alias{coerce,RasterLayer,Transition-method}
 \alias{coerce,Transition,RasterLayer-method}
