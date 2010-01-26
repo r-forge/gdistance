@@ -18,6 +18,8 @@
 
 \hyphenation{FORTRAN Hy-phen-a-tion}
 
+\newcommand{\R}{{\normalfont\textsf{R }}{}}
+
 \begin{document}
 
 <<foo,include=FALSE,echo=FALSE>>=
@@ -34,8 +36,8 @@ foo <- packageDescription("gdistance")
 
 \section{Introduction}
 
-This vignette describes the R package \verb@gdistance@. 
-This package provides functionality to calculate various geographic distance measures. 
+This vignette describes the \R package \verb@gdistance@. 
+This \R package provides functionality to calculate various geographic distance measures. 
 Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related 
 than distant things” (Tobler 1970). 
 In other words, mutual distances can be used to predict similarity and dissimilarity in geographical space, 
@@ -77,12 +79,12 @@ Prehistoric humans populated the globe spreading from an origin in Africa to oth
 As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
 they share their prehistoric migration history.
 
-Using random walk or randomised shortest path algorithms, it is possible to calculate for each pair of points which parts of 
-their dispersal trajectories from a common origin overlap and which parts diverge. 
-These measures can be computed with \verb@gdistance@ and may be used as predict mutual similarity, treating them 
-as if they were geographic distances. 
-The package also makes it possible to visualize the dispersal paths, as a grid with cell values representing 
+The package also makes it possible to calculate the dispersal paths, and visualize them as grid with cell values representing 
 the probability of passage. 
+This can be done using two different algorithms: random walk or randomised shortest paths.
+To predict similarity based on trajectories from a common origin, \verb@gdistance@ can calculate for each pair of points which parts of 
+their dispersal trajectories overlap and which parts diverge. 
+Trajectory overlap and non-overlap can then be used to predict similarity, as if they were geographic distances. 
 
 The package is currently limited to the distance measures and movement models listed above and dispersal path metrics 
 derived from random walks and randomised shortest paths. 
@@ -92,16 +94,30 @@ The Lévy flight or walk, another important model of geographical movement, is n
 It is an obvious candidate to be included in the package, but requires more complex methods. 
 Approximate, matrix-based methods for Lévy-like models will be considered in future versions of \verb@gdistance@. 
 
-The package \verb@gdistance@ illustrates the potential of R spatial software to advance from a map-centric approach in geo-information science 
+The package \verb@gdistance@ illustrates the potential of \R spatial software to advance from a map-centric approach in geo-information science 
 to a more data-centric and model-centric approach. 
 The package makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, 
 and (with the help of other packages) to tree representations of distances, correlation and regression with distance matrices, 
 and diversity calculations. 
 This overcomes the privileged status of map-based data representations common in dominant GIS software and integrates 
 geo-spatial analysis fully in the `programming with data' paradigm. 
-Tailoring analyses to different geo-spatial problems is made easier, which should benefit quantitative methodology 
+Tailoring analyses to different geo-spatial problems is made easier, which hopefully will benefit quantitative methodology 
 in geographical research.
 
+\section{Getting started}
+The latest version of the package is available from R-Forge.
+The package depends on \verb@raster@, which is also on R-Forge.
+In the future, both packages will become available on CRAN.
+The following \R commands install the package \verb@gdistance@ and load it into memory.
+<<gdistance-1, eval=FALSE, keep.source=TRUE>>=
+install.packages("raster",
+  repos="http://R-Forge.R-project.org")
+install.packages("gdistance",
+  repos="http://R-Forge.R-project.org")
+@
+<<gdistance-2>>=
+library(gdistance)
+@
 \section{Class Transition}
 To make distance calculations as flexible as possible, distances and other measures are calculated in various steps.
 The central class in \verb@gdistance@ is the S4 class \verb@Transition@, and most operations have an object of this class as input or output.
@@ -122,146 +138,132 @@ A first step in any analysis with gdistance is the construction of an object of 
 The construction of a \verb@Transition@ object from a \verb@Raster*@ object is straightforward. 
 The user can define a function to calculate the conductance value from the values of each pair of cells to be connected.
 
-
-<<gdistance-1>>=
-library(gdistance)
-#create a new raster with random values
+<<gdistance-3>>=
 r <- raster(nrows=18, ncols=36) 
 r <- setValues(r,runif(ncell(r)))
 r
-
-#create a Transition object from the raster
-#the conductance value is determined as 
-#the mean value of adjacent cells
-tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
+tr1 <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
 @
 
-
-This connects all adjacent cells in 4 directions. 
+This connects all adjacent cells in 4 directions, and produces `Manhattan distances' between points. 
 Cells can also be connected in 8 or 16 connections.
 In chess terms, setting directions to 4 connects all cells with all possible one-cell rook movements, 
 while setting directions to 8 connects with one-cell queen movements.
-Connecting in 4 directions gives the `Manhattan distance', while connecting in 8 directions approximates the real shortest distance.
 With 16 directions, all cells are connected with both one-cell queen movements and one-turn knight movements.
-This can make least-cost distance calculations more accurate over large distances.
-Connecting in 16 directions in \verb@gdistance@ was inspired by the function r.cost in GRASS 6, and the documentation illustrates nicely 
-why connecting in 16 directions can increase the accuracy of the calculations \url{http://grass.itc.it/grass64/manuals/html64_user/r.cost.html}. 
+This can make distance calculations more accurate.
+\footnote{Connecting in 16 directions was inspired by the function r.cost in GRASS 6, 
+and the documentation of this function illustrates nicely why connecting in 16 directions 
+can increase the accuracy of the calculations \url{http://grass.itc.it/grass64/manuals/html64_user/r.cost.html}.}
 
 By inspecting the object we created, we see that the resulting \verb@Transition@ object shares much information with 
 the original \verb@RasterLayer@ object.
-
-
-<<gdistance-2>>=
-tr
+<<gdistance-4>>=
+tr1
 @
-
-
 It is also possible to create asymmetric matrices, in which the conductance value for a transition between i and j is unequal 
 to the value from j back to i. 
 This is relevant for instance for modelling travel in hilly terrain. 
-Downslope movement experiences less friction than upslope movement.
+A downslope traveler experiences less friction than upslope traveler.
 In this case, the transition function is non-commutative: $f(i,j) \neq f(j,i)$.
 The \verb@symm@ argument in \verb@TransitionFromRaster@ needs to be set to \verb@FALSE@.
-
-
-<<gdistance-3>>=
+<<gdistance-5>>=
 #a non-commutative function
 ncf <- function(x) max(x) - x[1] + x[2] 
 tr2 <- TransitionFromRaster(r, ncf, 4, symm=FALSE)
-class(transitionMatrix(tr))
+class(transitionMatrix(tr1))
 class(transitionMatrix(tr2))
 @
-
-\noindent
-The sparse matrix class \verb@dsCMatrix@ is symmetric and contains only half of the matrix. 
+\noindent The sparse matrix class \verb@dsCMatrix@ is symmetric and contains only half of the matrix. 
 The class \verb@dgCMatrix@ can hold an asymmetric matrix.
- 
 Different mathematical operations can be done with \verb@Transition@ objects. This makes it possible to flexibly model 
 different components of landscape friction.
-
-
-<<gdistance-4>>=
-tr <- tr*tr2
-tr <- tr+tr2
-tr <- tr*3
-tr <- sqrt(tr)
+<<gdistance-6>>=
+tr3 <- tr1*tr2
+tr3 <- tr1+tr2
+tr3 <- tr1*3
+tr3 <- sqrt(tr1)
 @
-
 Also, it is possible to extract and replace values in the transition matrix using indices.
-
-<<gdistance-5>>=
-tr[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
-tr[1:9,1:9] <- tr2[1:9,1:9]
-tr2[1:5,1:5]
+<<gdistance-7>>=
+tr3[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
+tr3[1:9,1:9] <- tr2[1:9,1:9]
+tr3[1:5,1:5]
 @
-
-
 Some functions require that \verb@Transition@ objects do not contain any isolated `clumps'. 
 This can be avoided when creating \verb@Transition@ objects, 
 for instance by giving conductance values between all adjacent cells some minimum value.
-Also, it can be checked visually by plotting the original \verb@Raster*@ object. 
-An alternative is to create a \verb@RasterLayer@ object from the \verb@Transition@ object and plot this.
-
-
-<<gdistance-6>>=
-r <- TransitionMap(tr)
-plot(r)
+Also, it can be checked visually. Here are a few ways to visualize a \verb@Transition@ object.
+\pagebreak[4]
+<<gdistance-8, eval=FALSE>>=
+image(transitionMatrix(tr1))
 @
-
-
+\begin{figure}[!ht]
+<<label=figure1,fig=TRUE,height = 4.5, echo=FALSE >>=
+print(image(transitionMatrix(tr1)))
+@
+\nopagebreak[4]
+\end{figure}
+\begin{figure}[!ht]
+<<label=figure2,fig=TRUE,height = 4.5 >>=
+plot(TransitionMap(tr1))
+@
+\end{figure}
+\clearpage
 \section{Correcting inter-cell transition values}
 The function \verb@TransitionFromRaster@ calculates transition values based on the values of adjacent cells in the input raster.
 However, diagonally connected cells are more remote from each other that orthogonally connected cells.
 Moreover, on equirectangular (latlon) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
-Therefore, the values in the transition matrix need to be corrected for these distortions.
-
-
-<<gdistance-7>>=
-trCorrC <- geoCorrection(tr, type="c", multpl=FALSE)
+Therefore, the values in the transition matrix need to be corrected for this distortion.
+<<gdistance-8>>=
+trCorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
 @
-
-
-The function \verb@geoCorrection@ simply divides the transition matrix values between the distance between cells.
-For random walks, there is an additional consideration to be made. 
+The function \verb@geoCorrection@ simply divides each transition matrix value between the inter-cell distance.
+For random walks on latlon grids, there is an additional consideration to be made. 
 Random walks can be seen as analogous to electrical current through a networks of resistors.
 Hence, the inter-cell connections should be thought of as parallel resistors.
 The number of connections in N-S direction remains equal when moving from the equator to the poles.
 At high latitudes there are more resistors packed together compared to lower latitudes, lowering the resistance of movement towards the poles.
 In other words, the N-S strip of geographical space each individual resistor bridges becomes narrower, tending to zero at the poles. 
-So equal N-S resistances would overestimate the probability of moving in this direcion.
-The function geoCorrection can correct this distortion by multiplying the 
+So in reality the N-S resistance should increase more towards the slopes, even though the N-S inter-cell distance remains equal.
+The function geoCorrection corrects this distortion by multiplying the 
 N-S transition values with the cosine of the average latitude of the cell centres.
 This is done with function \verb@geoCorrection@, by setting the argument \verb@type@ to “r", 
 
 
-<<gdistance-8>>=
-trCorrR <- geoCorrection(tr, type="r", multpl=FALSE)
+<<gdistance-9>>=
+trCorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
 @
 
-Mulplication matrix -- why and how.
+When similar \verb@Transition@ objects with equal resolution and extent need to be corrected repetitively, computational effort may be reduced by
+preparing an object that only needs to be multiplied with the \verb@Transition@ object to produce a corrected version of it.
+The following is equivalent to the previous procedure.
+
+<<gdistance-10>>=
+trCorrM <- geoCorrection(tr1, type="r", multpl=TRUE)
+trCorrR <- tr1 * trCorrM
+@
+
+\noindent The difference is that object \verb@trCorrM@ is only calculated once, while multiplication with \verb@trCorrM@, 
+a computationally less demanding operation, can be repeated with different versions of \verb@tr1@. 
+The user needs to take care, however, that the geo-correction multiplication matrix (\verb@trCorrM@) contains all non-zero values that are
+present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@).
 
 \section{Calculating distances}
 With the corrected \verb@Transition@ object we can calculate distances between points.
 First, we need to have the coordinates of the points.
 This is done by creating a two-row matrix and converting it into a \verb@SpatialPoints@ object.
 
-<<gdistance-8>>=
-#create a new raster and set all its values to unity.
-r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,rep(1,ncell(raster)))
+<<gdistance-11>>=
+sP <- SpatialPoints(cbind(
+c(65, 5, -65),
+c(55, 35,-35)))
+@
 
-#create a Transition object from the raster
-tr <- TransitionFromRaster(r,mean,4)
+\noindent Calculating a distance matrix is straightforward now.
 
-#create two sets of coordinates
-sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
-sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
-
-#from and to identical
-resistanceDistance(tr,sP1)
-
-#from and to different, not yet implemented
-#resistanceDistance(tr,sP1,sP2)
+<<gdistance-12>>=
+costDistance(tr1, sP)
+resistanceDistance(tr1, sP)
 @
 
 \section{Dispersal paths}

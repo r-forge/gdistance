@@ -18,7 +18,10 @@ setMethod("costDistance", signature(transition = "Transition", fromCoords = "Spa
 		costDist <- matrix(NA, nrow=length(fromCoords[,1]),ncol=length(toCoords[,1]))
 		rownames(costDist) <- rownames(fromCoords)
 		colnames(costDist) <- rownames(toCoords)
-		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode="undirected", weighted=TRUE)
+		
+		if(isSymmetric(transitionMatrix(transition))) {mode <- "undirected"} else {mode <- "directed"}
+		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode=mode, weighted=TRUE)
+		
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
 		fromCells <- subset(fromCoordsCells, fromCoordsCells %in% transitionCells(transition))
 		toCells <- subset(toCoordsCells, toCoordsCells %in% transitionCells(transition))
@@ -54,7 +57,10 @@ setMethod("costDistance", signature(transition = "Transition", fromCoords = "Spa
 		costDist <- matrix(NA, nrow=length(fromCoords[,1]),ncol=length(fromCoords[,1]))
 		rownames(costDist) <- rownames(fromCoords)
 		colnames(costDist) <- rownames(fromCoords)
-		adjacencyGraph <- graph.adjacency(transition@transitionMatrix, mode="undirected", weighted=TRUE, diag=FALSE)
+		
+		if(isSymmetric(transitionMatrix(transition))) {mode <- "undirected"} else {mode <- "directed"}
+		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode=mode, weighted=TRUE)
+		
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
 		fromCells <- subset(fromCoordsCells, fromCoordsCells %in% transitionCells(transition))
 		if (length(fromCells) < length (fromCoordsCells)) 
@@ -71,7 +77,7 @@ setMethod("costDistance", signature(transition = "Transition", fromCoords = "Spa
 		index1 <- which(fromCoordsCells %in% fromCells)
 		index2 <- match(fromCoordsCells[fromCoordsCells %in% fromCells],uniqueFromCells)
 		costDist[index1,index1] <- shortestPaths[index2,index2]
-		costDist <- as.dist(costDist)
+		if(mode=="undirected") {costDist <- as.dist(costDist)}
 		return(costDist)
 	}
 )

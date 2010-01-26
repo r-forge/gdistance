@@ -8,30 +8,17 @@
 #TODO check if bounding box of coordinates falls inside bb of transition
 #TODO coordinates in same cell: distance = 0
 
-setGeneric("resistanceDistance", function(transition, fromCoords, toCoords) standardGeneric("resistanceDistance"))
+setGeneric("resistanceDistance", function(transition, coords) standardGeneric("resistanceDistance"))
 
-setMethod("resistanceDistance", signature(transition = "Transition", fromCoords = "SpatialPoints", toCoords = "SpatialPoints"), def = function(transition, fromCoords, toCoords)
-	{
-		fromCoords <- coordinates(fromCoords)
-		toCoords <- coordinates(toCoords)
-		coords <- rbind(fromCoords,toCoords)
-		rownames(coords) <- c(rownames(fromCoords),rownames(toCoords))
-		coords <- SpatialPoints(coords)
-		rd <- as.matrix(resistanceDistance(transition, coords))
-		rd <- rd[rownames(fromCoords),rownames(toCoords)]
-		return(rd)
-	}
-)
-
-setMethod("resistanceDistance", signature(transition = "Transition", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, fromCoords) 
+setMethod("resistanceDistance", signature(transition = "Transition", coords = "SpatialPoints"), def = function(transition, coords) 
 	{
 		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in Transition object")}
-		fromCoords <- coordinates(fromCoords)
+		coords <- coordinates(coords)
 		transition <- .transitionSolidify(transition)
-		rd <- matrix(NA,nrow=length(fromCoords[,1]),ncol=length(fromCoords[,1]))
-		rownames(rd) <- rownames(fromCoords)
-		colnames(rd) <- rownames(fromCoords)
-		allFromCells <- cellFromXY(transition, fromCoords)
+		rd <- matrix(NA,nrow=length(coords[,1]),ncol=length(coords[,1]))
+		rownames(rd) <- rownames(coords)
+		colnames(rd) <- rownames(coords)
+		allFromCells <- cellFromXY(transition, coords)
 		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
 		if (length(fromCells) < length(allFromCells)) 
 		{
@@ -58,7 +45,8 @@ setMethod("resistanceDistance", signature(transition = "Transition", fromCoords 
 			Lplus[,i] <- c(as.vector(xi),0)[index]
 		}
 		Lplus <- Lplus / C
-		rdSS <- -2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) + t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))
+		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
+		+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) * sum(transitionMatrix(transition))
 		index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
 		rd[index1,index1] <- rdSS[index2,index2]

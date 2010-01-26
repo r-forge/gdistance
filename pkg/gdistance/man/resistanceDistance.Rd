@@ -1,18 +1,17 @@
 \name{resistanceDistance}
 \alias{ resistanceDistance }
-\alias{resistanceDistance,Transition,SpatialPoints,missing-method}
-\alias{resistanceDistance,Transition,SpatialPoints,SpatialPoints-method}
+\alias{resistanceDistance,Transition,SpatialPoints}
+
 \title{ Resistance distance }
 \description{
 Calculates the resistance distance between points. }
 \usage{
-resistanceDistance (transition, fromCoords, toCoords)
+resistanceDistance (transition, coords)
 }
 
 \arguments{
   \item{transition}{ transition object (Transition class) }
-  \item{fromCoords}{ first set of point locations (of SpatialPoints class)}  
-  \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)}  
+  \item{coords}{ point locations (of SpatialPoints class)}  
 
 }
 \details{
@@ -51,11 +50,8 @@ tr <- TransitionFromRaster(raster,mean,4)
 sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
 sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
 
-#from and to identical
+#calculate the resistance distance between the points
 resistanceDistance(tr,sP1)
-
-#from and to different 
-resistanceDistance(tr,sP1,sP2)
 
 }
 \keyword{ spatial }
