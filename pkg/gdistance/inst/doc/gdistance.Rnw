@@ -1,3 +1,7 @@
+% \VignetteIndexEntry{R package gdistance: distances and movements on geographical grids}
+% \VignetteDepends{Matrix, methods, igraph, raster, gdistance}
+% \VignetteKeyword{spatial}
+
 %\documentclass[twoside]{article}
 \documentclass[12pt,twoside,a4paper]{article}
 %\documentclass{amsart}
@@ -79,7 +83,7 @@ Prehistoric humans populated the globe spreading from an origin in Africa to oth
 As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
 they share their prehistoric migration history.
 
-The package also makes it possible to calculate the dispersal paths, and visualize them as grid with cell values representing 
+The package also makes it possible to calculate the dispersal paths, and visualize them as a grid with cell values representing 
 the probability of passage. 
 This can be done using two different algorithms: random walk or randomised shortest paths.
 To predict similarity based on trajectories from a common origin, \verb@gdistance@ can calculate for each pair of points which parts of 
@@ -170,7 +174,6 @@ A downslope traveler experiences less friction than upslope traveler.
 In this case, the transition function is non-commutative: $f(i,j) \neq f(j,i)$.
 The \verb@symm@ argument in \verb@TransitionFromRaster@ needs to be set to \verb@FALSE@.
 <<gdistance-5>>=
-#a non-commutative function
 ncf <- function(x) max(x) - x[1] + x[2] 
 tr2 <- TransitionFromRaster(r, ncf, 4, symm=FALSE)
 class(transitionMatrix(tr1))
