@@ -36,8 +36,7 @@ foo <- packageDescription("gdistance")
 
 \section{Introduction}
 
-This vignette describes the \R package \verb@gdistance@. 
-This \R package provides functionality to calculate various geographic distance measures. 
+This vignette describes \verb@gdistance@, an \R package which provides functionality to calculate various geographic distance measures. 
 Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related 
 than distant things” (Tobler 1970). 
 In other words, mutual distances can be used to predict similarity and dissimilarity in geographical space, 
@@ -47,6 +46,7 @@ Similarity is related to the intensity of interaction between spatial elements.
 More frequent exchange of materials and information will lead to an increased similarity between two places. 
 A higher intensity of interaction is expected when this supposes less effort or travel time. 
 Geographic distance is indicative of travel effort time, and therefore a predictor of similarity.
+
 Sewall Wright's (1943) idea of `isolation by distance' in genetics is a good illustration of the principle.
 If movement of reproducing individuals is random, it is expected that genetic differentiation (dissimilarity) 
 between populations in a homogeneous space is a linear function of the (logarithm of) the distance between them.
@@ -105,11 +105,14 @@ Tailoring analyses to different geo-spatial problems is made easier, which hopef
 in geographical research.
 
 \section{Getting started}
-The latest version of the package is available from R-Forge.
-The package depends on \verb@raster@, which is also on R-Forge.
-In the future, both packages will become available on CRAN.
+The latest version of the package is available from R-Forge (\url{http://R-Forge.R-project.org}).
+The package depends on a number of other packages: \verb@Matrix@ (comes with R as a recommended package), 
+igraph (CRAN) and \verb@raster@ (R-Forge).
+In the future, the package will become available on CRAN.
 The following \R commands install the package \verb@gdistance@ and load it into memory.
 <<gdistance-1, eval=FALSE, keep.source=TRUE>>=
+install.packages("igraph",
+  repos="http://cran.r-project.org")
 install.packages("raster",
   repos="http://R-Forge.R-project.org")
 install.packages("gdistance",
