@@ -1,6 +1,6 @@
 \name{resistanceDistance}
 \alias{ resistanceDistance }
-\alias{resistanceDistance,Transition,SpatialPoints}
+\alias{resistanceDistance,Transition,SpatialPoints-method}
 
 \title{ Resistance distance }
 \description{

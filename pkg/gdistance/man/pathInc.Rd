@@ -28,7 +28,7 @@ Joint passage is calculated as the joint probability multiplied with the resista
 
 Pjoint = Pi * Pj * Rij
 
-Divergence is calculates as the probability with which the passage of a path to either i or j exceeds the probability of the passage of the other or joint passage.
+Divergence is calculated as the probability with which the passage of a path to either i or j exceeds the probability of the passage of the other or joint passage.
 
 Pdivergent = max(0, max(Pi, Pj) * (1 * min(Pi, Pj)) * min(Pi, Pj)) * Rij
 

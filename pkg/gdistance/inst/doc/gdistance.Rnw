@@ -49,7 +49,7 @@ the main \emph{explanandum} of geography.
 Similarity is related to the intensity of interaction between spatial elements. 
 More frequent exchange of materials and information will lead to an increased similarity between two places. 
 A higher intensity of interaction is expected when this supposes less effort or travel time. 
-Geographic distance is indicative of travel effort time, and therefore a predictor of similarity.
+Geographic distance is indicative of travel effort and time, and therefore a predictor of similarity.
 
 Sewall Wright's (1943) idea of `isolation by distance' in genetics is a good illustration of the principle.
 If movement of reproducing individuals is random, it is expected that genetic differentiation (dissimilarity) 
@@ -189,6 +189,8 @@ tr3 <- tr1+tr2
 tr3 <- tr1*3
 tr3 <- sqrt(tr1)
 @
+\noindent Operations with more than one object require that the different objects have the same resolution and extent.
+
 Also, it is possible to extract and replace values in the transition matrix using indices.
 <<gdistance-7>>=
 tr3[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
@@ -225,12 +227,11 @@ trCorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
 @
 The function \verb@geoCorrection@ simply divides each transition matrix value between the inter-cell distance.
 For random walks on latlon grids, there is an additional consideration to be made. 
-Random walks can be seen as analogous to electrical current through a networks of resistors.
-Hence, the inter-cell connections should be thought of as parallel resistors.
 The number of connections in N-S direction remains equal when moving from the equator to the poles.
-At high latitudes there are more resistors packed together compared to lower latitudes, lowering the resistance of movement towards the poles.
-In other words, the N-S strip of geographical space each individual resistor bridges becomes narrower, tending to zero at the poles. 
-So in reality the N-S resistance should increase more towards the slopes, even though the N-S inter-cell distance remains equal.
+This is problematic, because random walks can be seen as analogous to electrical current through a networks of resistors.
+The inter-cell connections should be thought of as parallel resistors.
+Moving away from the equator, the inter-meridian space each individual resistor bridges becomes narrower, tending to zero at the poles. 
+Therefore, the N-S resistance between parallels should decrease when moving away from the equator.
 The function geoCorrection corrects this distortion by multiplying the 
 N-S transition values with the cosine of the average latitude of the cell centres.
 This is done with function \verb@geoCorrection@, by setting the argument \verb@type@ to “r", 
@@ -251,8 +252,8 @@ trCorrR <- tr1 * trCorrM
 
 \noindent The difference is that object \verb@trCorrM@ is only calculated once, while multiplication with \verb@trCorrM@, 
 a computationally less demanding operation, can be repeated with different versions of \verb@tr1@. 
-The user needs to take care, however, that the geo-correction multiplication matrix (\verb@trCorrM@) contains all non-zero values that are
-present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@).
+The user needs to take special care that the geo-correction multiplication matrix (\verb@trCorrM@) contains all non-zero values that are
+present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@). 
 
 \section{Calculating distances}
 With the corrected \verb@Transition@ object we can calculate distances between points.

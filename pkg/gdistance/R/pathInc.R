@@ -5,6 +5,9 @@
 # Licence GPL v3
 
 #TODO check if coordinate systems are equal (should throw warning)
+#division by zero: warning?
+#automatic rescaling?
+#reconstructing dist matrix with names, etc. -> generic function?
 
 setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta) standardGeneric("pathInc"))
 
@@ -154,10 +157,11 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	ei[ci] <- 1 / length(ci)
 
 	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
-	#depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()
-		Flow <- raster(nrows=length(fromCells), ncols=Size, filename=filenm)
+		Flow <- raster(nrows=length(fromCells), ncols=Size)
+		filename(Flow) <- filenm
 		for(i in 1:(length(fromCells)))
 		{
 			matrixRow <- .probPass(Id, W, nr, ei, cj[i], index)
@@ -175,7 +179,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	}
 	return(Flow)
 }	
-	
+
 .probPass <- function(Id, W, nr, ei, cj, index)
 {	
 	Ij <- Id
@@ -188,7 +192,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	ej[cj] <- 1
 	zcj <- solve(IdMinusWj, ej)
 	zcij <- sum(ei*zcj)
-	if(zcij == 0){return(rep(NA,length=length(index)))}
+	if(zcij == 0){return(rep(NA,times=length(index[,1])))}
 	else
 	{
 		# Computation of the matrix N, containing the number of passages through
@@ -212,26 +216,86 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	
 	if(class(Flow) == "RasterLayer")
 	{
-	
+		nr <- 5
+		end <- ceiling(length(fromCells)/nr)
+		if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
+		if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
+
+		
+		nrows1 <- min(nr, length(fromCells))
+		startrow1 <- 1
+		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
+		dataRows1 <- t(matrix(values(dataRows1),nrow=ncol(Flow))) #is this correct? CHECK!!!
+
+		for(j in 2:end)
+		{
+			if("divergent" %in% type) 
+			{
+				for(k in 1:nrows1)
+				{
+					index <- startrow1+k-1
+					divFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
+					   (1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R)
+					#this fills the lower triangle only
+				}
+			}
+			if("joint" %in% type) 
+			{
+				for(l in 1:nrows1)
+				{
+					index <- startrow1+k-1
+					jointFlow[startrow1:(startrow1+nrows1-1),index] <- colSums((dataRows1[,l] * dataRows1) * R)
+					#this fills the lower triangle only
+				}
+			}
+			for(m in (j+1):end)
+			{
+				nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
+				startrow2 <- (j-1)*nr+1
+				dataRows2 <- readRows(Flow, startrow=startrow2, nrows=nrows1)
+				dataRows2 <- t(matrix(values(dataRows2),nrow=ncol(Flow)))
+				
+				if("divergent" %in% type) 
+				{
+					for(n in 1:nrows1)
+					{
+						index <- startrow1+n-1 
+						divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows2) * 
+						   (1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,k],dataRows2), 0), nrow= Size) * R)
+					}
+				}
+				if("joint" %in% type) 
+				{
+					for(o in 1:nrows1)
+					{
+						index <- startrow1+o-1
+						jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums((dataRows1[,l] * dataRows2) * R)
+					}
+				}
+			}
+			nrows1 <- nrows2
+			startrow1 <- startrow2			
+			dataRows1 <- dataRows2
+		}
 	}
 	if(class(Flow) == "matrix")
 	{
 		if("divergent" %in% type)
+		{
+			divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(j in 1:(length(fromCells)))
 			{
-				divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-				for(j in 1:(length(fromCells)))
-				{
-					divFlow[j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R)
-				}
+				divFlow[j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R)
 			}
-			if("joint" %in% type)
+		}
+		if("joint" %in% type)
+		{
+			jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(j in 1:(length(fromCells)))
 			{
-				jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-				for(j in 1:(length(fromCells)))
-				{
-					jointFlow[j,] <- colSums((Flow[,j] * Flow) * R)
-				}
+				jointFlow[j,] <- colSums((Flow[,j] * Flow) * R)
 			}
+		}
 	}
 	if (norml) 
 	{
@@ -259,7 +323,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		jointFl <- as.dist(jointFl)
 		attr(jointFl, "method") <- "joint flow"		
 	}
-	if(length(type) > 1) {return(list(divFl=divFl, jointFl=jointFl))}
+	if(length(type) > 1) {return(list(divergent=divFl, joint=jointFl))}
 	if(length(type) == 1 & type == "divergent") {return(divFl)}
 	if(length(type) == 1 & type == "joint") {return(jointFl)}
 } 
