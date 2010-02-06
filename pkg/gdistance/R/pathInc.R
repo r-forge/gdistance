@@ -192,7 +192,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	ej[cj] <- 1
 	zcj <- solve(IdMinusWj, ej)
 	zcij <- sum(ei*zcj)
-	if(zcij == 0){return(rep(NA,times=length(index[,1])))}
+	if(zcij == 0){return(rep(0,times=length(index[,1])))}
 	else
 	{
 		# Computation of the matrix N, containing the number of passages through
@@ -225,9 +225,9 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		nrows1 <- min(nr, length(fromCells))
 		startrow1 <- 1
 		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-		dataRows1 <- t(matrix(values(dataRows1),nrow=ncol(Flow))) #is this correct? CHECK!!!
+		dataRows1 <- t(matrix(values(dataRows1),nrow=ncol(Flow))) #rows are cell transitions, columns are locations
 
-		for(j in 2:end)
+		for(j in 1:end)
 		{
 			if("divergent" %in% type) 
 			{
@@ -236,16 +236,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 					index <- startrow1+k-1
 					divFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
 					   (1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R)
-					#this fills the lower triangle only
+					#this fills the lower triangle only (plus some upper triangle blocks around the diagonal of size nr)
 				}
 			}
 			if("joint" %in% type) 
 			{
 				for(l in 1:nrows1)
 				{
-					index <- startrow1+k-1
-					jointFlow[startrow1:(startrow1+nrows1-1),index] <- colSums((dataRows1[,l] * dataRows1) * R)
-					#this fills the lower triangle only
+					index <- startrow1+l-1
+					jointFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix((dataRows1[,l] * dataRows1), nrow=Size) * R)
 				}
 			}
 			for(m in (j+1):end)
@@ -261,7 +260,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 					{
 						index <- startrow1+n-1 
 						divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows2) * 
-						   (1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,k],dataRows2), 0), nrow= Size) * R)
+						   (1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,k],dataRows2), 0), nrow=Size) * R)
 					}
 				}
 				if("joint" %in% type) 
@@ -269,7 +268,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 					for(o in 1:nrows1)
 					{
 						index <- startrow1+o-1
-						jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums((dataRows1[,l] * dataRows2) * R)
+						jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,l] * dataRows2), nrow=Size) * R)
 					}
 				}
 			}
