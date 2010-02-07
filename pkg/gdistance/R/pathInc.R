@@ -225,7 +225,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		nrows1 <- min(nr, length(fromCells))
 		startrow1 <- 1
 		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-		dataRows1 <- t(matrix(values(dataRows1),nrow=ncol(Flow))) #rows are cell transitions, columns are locations
+		dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
 
 		for(j in 1:end)
 		{
@@ -250,17 +250,17 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 			for(m in (j+1):end)
 			{
 				nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
-				startrow2 <- (j-1)*nr+1
-				dataRows2 <- readRows(Flow, startrow=startrow2, nrows=nrows1)
-				dataRows2 <- t(matrix(values(dataRows2),nrow=ncol(Flow)))
+				startrow2 <- (m-1)*nr+1
+				dataRows2 <- readRows(Flow, startrow=startrow2, nrows=nrows2)
+				dataRows2 <- matrix(values(dataRows2),nrow=ncol(Flow))
 				
 				if("divergent" %in% type) 
 				{
 					for(n in 1:nrows1)
 					{
 						index <- startrow1+n-1 
-						divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows2) * 
-						   (1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,k],dataRows2), 0), nrow=Size) * R)
+						divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,n],dataRows2) * 
+						   (1-pmin(dataRows1[,n],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow=Size) * R)
 					}
 				}
 				if("joint" %in% type) 
@@ -268,13 +268,14 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 					for(o in 1:nrows1)
 					{
 						index <- startrow1+o-1
-						jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,l] * dataRows2), nrow=Size) * R)
+						jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,o] * dataRows2), nrow=Size) * R)
 					}
 				}
 			}
-			nrows1 <- nrows2
-			startrow1 <- startrow2			
-			dataRows1 <- dataRows2
+			nrows1 <- min(nr, length(fromCells) - j * nr)
+			startrow1 <- j*nr+1
+			dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
+			dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow))
 		}
 	}
 	if(class(Flow) == "matrix")
