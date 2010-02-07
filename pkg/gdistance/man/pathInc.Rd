@@ -26,11 +26,11 @@ First, probabilities of passage are calculated for each cell-to-cell connection.
 
 Joint passage is calculated as the joint probability multiplied with the resistance of the connections. 
 
-Pjoint = Pi * Pj * Rij
+Pjoint,ij = Pi * Pj * Rij
 
 Divergence is calculated as the probability with which the passage of a path to either i or j exceeds the probability of the passage of the other or joint passage.
 
-Pdivergent = max(0, max(Pi, Pj) * (1 * min(Pi, Pj)) * min(Pi, Pj)) * Rij
+Pdivergent,ij = |Pi - Pj| * Rij
 
 Both are summed over all connections ij in the transition matrix.
 }
