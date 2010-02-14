@@ -1,18 +1,17 @@
 \name{geoCorrection}
 \alias{geoCorrection}
-\alias{geoCorrection,Transition,character,logical-method}
+\alias{geoCorrection,Transition,character-method}
 \title{ Geographic Correction }
 \description{ Correct Transition objects taking into account local distances
 }
 
 \usage{
-geoCorrection(transition, type, multpl)
+geoCorrection(transition, type, ...)
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}
   \item{type}{type of correction: "c" or "r" (see below)}  
-  \item{multpl}{matrix with correction factor (TRUE) or corrected values (FALSE)}
-
+  \item{...}{multpl: matrix with correction factor (TRUE) or corrected values (FALSE, the default); scl: scale the correction values (default is TRUE)}
 }
 \details{
 Geographic correction is necessary for all objects of the class Transition that are either:
@@ -21,7 +20,13 @@ Geographic correction is necessary for all objects of the class Transition that 
 
 The function will correct for map distortion, as well as for diagonal connections between grid cells (which cover a longer distance than vertical or horizontal connections).
 
-When working with latlon grids, users should also anticipate whether they will use methods based on either least cost or random walks, and set the \code{type} argument accordingly. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
+When working with latlon grids, users should also anticipate whether they will use methods based on either least-cost or random walks, and set the \code{type} argument accordingly. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
+
+The correction is done by dividing conductance values by the inter-cell distance, which is scaled to get values near 1 if the argument \code{scl} is set to TRUE (default). This is desirable for subsequent calculations involving random walk calculations. In the case of latlon grids, it is scaled to obtain a W-E inter-cell distance of 1 at the equator, even though the grid may not cover the equator. This makes the scaling independent of the extent and therefore more replicable.
+
+In the case of randomised shortest paths, the need for correction is somewhat in between these two correction methods. We have not developed an analytical solution for this problem yet. Users who want to work with intermediate values of theta are encouraged to experiment with different solutions. 
+
+For extreme values of theta, less problems are expected. With very low values for theta, choose the correction for random walks, and for high values the one for least-cost paths. 
 
 For repetitive correction of similar Transition objects, it is helpful to have a Transition matrix with just the correction factors. To achieve this, set \code{multpl} to TRUE (the default is FALSE). Correction is achieved by multiplying the original matrix with the matrix with correction factors. 
 }

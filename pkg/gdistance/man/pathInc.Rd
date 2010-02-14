@@ -17,22 +17,21 @@ pathInc(transition, origin, fromCoords, toCoords, norml, type, theta)
   \item{toCoords}{second set of coordinates of the destinations (only "missing" implemented)}
   \item{norml}{normalisation to values between 0 and 1}
   \item{type}{a vector of one or two calculation types c("divergent","joint")}  
-  \item{theta}{value between 0 and 20 (randomised shortest paths) or missing (random walk)}
+  \item{theta}{value between 0 and 20 (randomised shortest paths) or 0 or missing (random walk)}
+  \item{...}{additional arguments: totalNet ("total" or "net"), and output ("RasterLayer" or "Transition")}
 }
 \details{
 This function calculates the overlap and non-overlap in the random walk trajectories or randomised shortest paths originating in a single point to sets of other locations.
 
 First, probabilities of passage are calculated for each cell-to-cell connection. 
 
-Joint passage is calculated as the joint probability multiplied with the resistance of the connections. 
+The shared path is calculated as ... 
 
-Pjoint,ij = Pi * Pj * Rij
-
-Divergence is calculated as the probability with which the passage of a path to either i or j exceeds the probability of the passage of the other or joint passage.
-
-Pdivergent,ij = |Pi - Pj| * Rij
+Divergence is calculated as ...
 
 Both are summed over all connections ij in the transition matrix.
+
+Defaults for additional argument totalNet is "net" and for output it is "RasterLayer".
 }
 \value{
 dist object or list of dist objects

@@ -94,9 +94,7 @@ The package is currently limited to the distance measures and movement models li
 derived from random walks and randomised shortest paths. 
 Random walk and randomised shortest path metrics that can be calculated with algorithms based on analytical solutions 
 using matrix solving.
-The Lévy flight or walk, another important model of geographical movement, is not implemented. 
-It is an obvious candidate to be included in the package, but requires more complex methods. 
-Approximate, matrix-based methods for Lévy-like models will be considered in future versions of \verb@gdistance@. 
+For other important models of geographical movement, like the Lévy flight or walk, similar algorithms are not yet available. 
 
 The package \verb@gdistance@ illustrates the potential of \R spatial software to advance from a map-centric approach in geo-information science 
 to a more data-centric and model-centric approach. 
@@ -144,14 +142,18 @@ which gives access to fast procedures implemented in the C language.
 A first step in any analysis with gdistance is the construction of an object of the class \verb@Transition@.
 The construction of a \verb@Transition@ object from a \verb@Raster*@ object is straightforward. 
 The user can define a function to calculate the conductance value from the values of each pair of cells to be connected.
+Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
+We then create a Transition object. 
+The transition value between each pair of cells is the mean of the two cell values.
 
 <<gdistance-3>>=
 r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,runif(ncell(r)))
+r <- setValues(r,runif(ncell(r), min=0.4, max=0.6))
 r
 tr1 <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
 @
 
+We set the \verb@directions@ argument to value 4.
 This connects all adjacent cells in 4 directions, and produces `Manhattan distances' between points. 
 Cells can also be connected in 8 or 16 connections.
 In chess terms, setting directions to 4 connects all cells with all possible one-cell rook movements, 
@@ -275,9 +277,29 @@ resistanceDistance(tr1, sP)
 
 \section{Dispersal paths}
 
+To visualize dispersal paths, we have the function passage(). 
+This function can be used for both random walks and randomised shortest paths.
+The function calculates the number of passages through cells before arriving in the destination cell.
+Either the total or net number of passages can be calculated.
+The net number of passages is the number of passages that are not reciprocated by a passage in the opposite direction.
+
+<<gdistance-13>>=
+origin <- SpatialPoints(cbind(105,-55))
+goal <- SpatialPoints(cbind(-105,55))
+rSPraster <- passage(tr1, origin, goal, 2)
+@
+\begin{figure}[!ht]
+<<label=figure3,fig=TRUE,height = 4.5 >>=
+plot(rSPraster)
+@
+\end{figure}
+\clearpage
 
 
 \section{Path overlap and non-overlap}
+
+With the function pathInc() we can calculate measures of path overlap and non-overlap.
+
 
 \section{References}
 \begin{hangparas}{3em}{1}

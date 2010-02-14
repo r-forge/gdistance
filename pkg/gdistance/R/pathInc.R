@@ -4,14 +4,16 @@
 # Version 1.0
 # Licence GPL v3
 
+#permissible values totalNet and output
 #TODO check if coordinate systems are equal (should throw warning)
 #division by zero: warning?
-#automatic rescaling?
 #reconstructing dist matrix with names, etc. -> generic function?
 
-setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta) standardGeneric("pathInc"))
+#combining with passage functions and adding the same options (total flow, net flow, different/custom comparison functions)?
 
-setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type)
+setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta, ...) standardGeneric("pathInc"))
+
+setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type, ...)
 	{
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomWalk(prepared)
@@ -20,7 +22,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta)
+setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
 	{
 		if(theta<0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
@@ -118,7 +120,9 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	}
 	return(Flow)
 }
-	
+
+
+######### The following can be replaced by the one in passage?	
 .randomSP <- function(prepared, theta)
 {
 	transition <- prepared$transition
@@ -180,6 +184,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	return(Flow)
 }	
 
+
+######### The following can be replaced by the one in probPassage?
 .probPass <- function(Id, W, nr, ei, cj, index)
 {	
 	Ij <- Id
@@ -216,7 +222,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	
 	if(class(Flow) == "RasterLayer")
 	{
-		nr <- 5
+		nr <- 10
 		end <- ceiling(length(fromCells)/nr)
 		if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
 		if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
@@ -234,7 +240,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 				for(k in 1:nrows1)
 				{
 					index <- startrow1+k-1
-					divFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(abs(dataRows1[,k]-dataRows1) * R)
+					divFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
+					   (1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R)
 					#this fills the lower triangle only (plus some upper triangle blocks around the diagonal of size nr)
 				}
 			}
@@ -244,6 +251,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 				{
 					index <- startrow1+l-1
 					jointFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix((dataRows1[,l] * dataRows1), nrow=Size) * R)
+
 				}
 			}
 
@@ -270,7 +278,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 						for(o in 1:nrows1)
 						{
 							index <- startrow1+o-1
-							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,o] * dataRows2), nrow=Size) * R)
+							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmin(dataRows1[,o], dataRows2), nrow=Size) * R)
 						}
 					}
 				}
@@ -289,7 +297,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 			divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 			for(j in 1:(length(fromCells)))
 			{
-				divFlow[j,] <- colSums(abs(Flow[,j] - Flow) * R)
+				divFlow[j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R)
 			}
 		}
 		if("joint" %in% type)
@@ -314,18 +322,20 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		divFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
 		rownames(divFl) <- rownames(fromCoords)
 		colnames(divFl) <- rownames(fromCoords)
+		divFlow <- as.matrix(as.dist(divFlow, diag=TRUE))
 		divFl[index1,index1] <- divFlow[index2,index2]
 		divFl <- as.dist(divFl)
-		attr(divFl, "method") <- "divergent flow"
+		attr(divFl, "method") <- "divergent path"
 	}
 	if("joint" %in% type)
 	{
 		jointFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
 		rownames(jointFl) <- rownames(fromCoords)
 		colnames(jointFl) <- rownames(fromCoords)
+		jointFlow <- as.matrix(as.dist(jointFlow, diag=TRUE))
 		jointFl[index1,index1] <- jointFlow[index2,index2]
 		jointFl <- as.dist(jointFl)
-		attr(jointFl, "method") <- "joint flow"		
+		attr(jointFl, "method") <- "joint path"		
 	}
 	if(length(type) > 1) {return(list(divergent=divFl, joint=jointFl))}
 	if(length(type) == 1 & type == "divergent") {return(divFl)}
