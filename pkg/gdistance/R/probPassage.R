@@ -17,7 +17,7 @@ setGeneric("passage", function(transition, origin, goal, theta, ...) standardGen
 setMethod("passage", signature(transition = "Transition", origin = "SpatialPoints", goal = "SpatialPoints", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
 
-		if(totalNet="net" & output="RasterLayer")
+		if(totalNet=="net" & output=="RasterLayer")
 		{
 			transition <- .transitionSolidify(transition)
 			tc <- transitionCells(transition)
@@ -27,7 +27,7 @@ setMethod("passage", signature(transition = "Transition", origin = "SpatialPoint
 			cj <- match(cellnrj,tc)
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)
+		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)}
 		return(result)
 	}
 )
@@ -36,7 +36,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 	{
 		
 
-		if(totalNet="net" & output="RasterLayer")
+		if(totalNet=="net" & output=="RasterLayer")
 		{
 			transition <- .transitionSolidify(transition)
 			tc <- transitionCells(transition)
@@ -44,7 +44,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 			cj <- which(values(goal))
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)
+		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)}
 		return(result)
 	}
 )
@@ -115,12 +115,25 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 	W <- trR
 	W@x <- exp(-theta * trR@x)
 	W <- W * P 
+	
+
+	
+	return(.probPass(transition, Id, W, nr, ci, cj, tc, totalNet, output))
+}
+	
+.probPass <- function(transition, Id, W, nr, ci, cj, tc, totalNet, output)
+{
+
+
 	Ij <- Diagonal(nr)
 	Ij[cbind(cj,cj)] <- 1 - 1 / length(cj)
 	Wj <- Ij %*% W
 	
-	ei <- ej <- rep(0,times=nr)
+	ei <- rep(0,times=nr)
 	ei[ci] <- 1 / length(ci)
+	
+	ej <- rep(0,times=nr)
+
 	ej[cj] <- 1 / length(cj)
 	
 	IdMinusWj <- as((Id - Wj), "dgCMatrix")

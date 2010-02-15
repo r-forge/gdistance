@@ -134,6 +134,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	R <- prepared$R
 		
 	tr <- transitionMatrix(transition)
+	tc <- transitionCells(transition)
 	
 	A <- as(transitionMatrix(transition),"lMatrix")
 	A <- as(A,"dMatrix")
@@ -156,9 +157,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	W <- trR
 	W@x <- exp(-theta * trR@x)
 	W <- W * P 
-	
-	ei <- rep(0,times=nr)
-	ei[ci] <- 1 / length(ci)
 
 	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
@@ -168,7 +166,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		filename(Flow) <- filenm
 		for(i in 1:(length(fromCells)))
 		{
-			matrixRow <- .probPass(Id, W, nr, ei, cj[i], index)
+			matrixRow <- .probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition")[index]
 			Flow <- setValues(Flow, matrixRow, i)
 			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
 		}
@@ -178,36 +176,34 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		Flow <- matrix(nrow=Size,ncol=length(fromCells))
 		for(i in 1:(length(fromCells)))
 		{
-			Flow[,i] <- .probPass(Id, W, nr, ei, cj[i], index)
+			Flow[,i] <- .probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition")[index]
 		}
 	}
 	return(Flow)
 }	
 
+#.probPass <- function(Id, W, nr, ei, cj, index)
+#{	
+#	Ij <- Id
+#	Ij[cbind(cj,cj)] <- 0
+#	Wj <- Ij %*% W
+#	IdMinusWj <- as((Id - Wj), "dgCMatrix")
+#	zci <- solve(t(IdMinusWj),ei)
 
-######### The following can be replaced by the one in probPassage?
-.probPass <- function(Id, W, nr, ei, cj, index)
-{	
-	Ij <- Id
-	Ij[cbind(cj,cj)] <- 0
-	Wj <- Ij %*% W
-	IdMinusWj <- as((Id - Wj), "dgCMatrix")
-	zci <- solve(t(IdMinusWj),ei)
-
-	ej <- rep(0,times=nr)
-	ej[cj] <- 1
-	zcj <- solve(IdMinusWj, ej)
-	zcij <- sum(ei*zcj)
-	if(zcij < 1e-300){return(rep(0,times=length(index[,1])))}
-	else
-	{
-		# Computation of the matrix N, containing the number of passages through
-		# each arc
-		N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
-		result <- N[index]
-		return(result)
-	}
-}
+#	ej <- rep(0,times=nr)
+#	ej[cj] <- 1
+#	zcj <- solve(IdMinusWj, ej)
+#	zcij <- sum(ei*zcj)
+#	if(zcij < 1e-300){return(rep(0,times=length(index[,1])))}
+#	else
+#	{
+#		# Computation of the matrix N, containing the number of passages through
+#		# each arc
+#		N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
+#		result <- N[index]
+#		return(result)
+#	}
+#}
 
 .finishFlow <- function(prepared, Flow)
 {
