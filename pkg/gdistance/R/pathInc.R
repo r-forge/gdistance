@@ -24,7 +24,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 
 setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
 	{
-		if(theta<0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
+		if(theta < -0.000001 | theta > 20.000001 ) {stop("theta value out of range (between 0 and 20)")}
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
@@ -122,7 +122,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 }
 
 
-######### The following can be replaced by the one in passage?	
 .randomSP <- function(prepared, theta)
 {
 	transition <- prepared$transition
@@ -166,7 +165,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		filename(Flow) <- filenm
 		for(i in 1:(length(fromCells)))
 		{
-			matrixRow <- .probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition")[index]
+			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
 			Flow <- setValues(Flow, matrixRow, i)
 			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
 		}
@@ -176,7 +175,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		Flow <- matrix(nrow=Size,ncol=length(fromCells))
 		for(i in 1:(length(fromCells)))
 		{
-			Flow[,i] <- .probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition")[index]
+			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
 		}
 	}
 	return(Flow)

@@ -115,9 +115,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 	W <- trR
 	W@x <- exp(-theta * trR@x)
 	W <- W * P 
-	
 
-	
 	return(.probPass(transition, Id, W, nr, ci, cj, tc, totalNet, output))
 }
 	

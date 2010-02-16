@@ -172,7 +172,7 @@ tr1
 It is also possible to create asymmetric matrices, in which the conductance value for a transition between i and j is unequal 
 to the value from j back to i. 
 This is relevant for instance for modelling travel in hilly terrain. 
-A downslope traveler experiences less friction than upslope traveler.
+A downslope traveler experiences less resistance than an upslope traveler.
 In this case, the transition function is non-commutative: $f(i,j) \neq f(j,i)$.
 The \verb@symm@ argument in \verb@TransitionFromRaster@ needs to be set to \verb@FALSE@.
 <<gdistance-5>>=
