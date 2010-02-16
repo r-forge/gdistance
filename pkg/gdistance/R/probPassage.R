@@ -140,55 +140,72 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 	zcj <- solve(IdMinusWj, ej)
 	zcij <- sum(ei*zcj)
 	
-	# Computation of the cost dij between node i and node j
-	# dij <- (t(zci) %*% (trR * Wj) %*% zcj) / zcij
-	
-	# Computation of the matrix N, containing the number of passages through
-	# each arc
-	N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
-	
-	#N is here the NET number of passages, like McRae-random walk
-
-	if(output == "RasterLayer")
+	if(zcij < 1e-300)
 	{
-		if(totalNet == "total")
+		if(output == "RasterLayer")	
 		{
-			# Computation of the vector n, containing the number of visits in
-			# each node
-			n <- pmax(rowSums(N),colSums(N)) #not efficient but effective
-		}
-		# Computation of the matrix Pr, containing the transition
-		# probabilities
-		#rn <- rep(0, times=length(n))
-		#rn[n>0] <- 1 / n[n>0]
-		#Pr <- N * rn
-		#Pr <- N * (1 / n)
-	
-		#net visits
-		if(totalNet == "net")
+			result <- as(transition,"RasterLayer")
+			dataVector <- rep(0,times=ncell(result))
+		}	
+		if(output == "Transition")
 		{
-			nNet <- abs(skewpart(N))
-			n <- pmax(rowSums(nNet),colSums(nNet))
-			n[c(ci,cj)] <- 2 * n[c(ci,cj)]
+			result <- transition
+			transitionMatrix(result) <- transitionMatrix(result) * 0
 		}
-		result <- as(transition,"RasterLayer")
-		dataVector <- rep(NA,times=ncell(result))
-		dataVector[tc] <- n
-		result <- setValues(result, dataVector)
 	}
-
-	if(output == "Transition")
+	
+	else
 	{
-		result <- transition
-		if(totalNet == "total")
+		# Computation of the cost dij between node i and node j
+		# dij <- (t(zci) %*% (trR * Wj) %*% zcj) / zcij
+	
+		# Computation of the matrix N, containing the number of passages through
+		# each arc
+		N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
+	
+		#N is here the NET number of passages, like McRae-random walk
+
+		if(output == "RasterLayer")
 		{
-			transitionMatrix(transition) <- N
+			if(totalNet == "total")
+			{
+				# Computation of the vector n, containing the number of visits in
+				# each node
+				n <- pmax(rowSums(N),colSums(N)) #not efficient but effective
+			}
+			# Computation of the matrix Pr, containing the transition
+			# probabilities
+			#rn <- rep(0, times=length(n))
+			#rn[n>0] <- 1 / n[n>0]
+			#Pr <- N * rn
+			#Pr <- N * (1 / n)
+	
+			#net visits
+			if(totalNet == "net")
+			{
+				nNet <- abs(skewpart(N))
+				n <- pmax(rowSums(nNet),colSums(nNet))
+				n[c(ci,cj)] <- 2 * n[c(ci,cj)]
+			}
+			result <- as(transition,"RasterLayer")
+			dataVector <- rep(NA,times=ncell(result))
+			dataVector[tc] <- n
+			result <- setValues(result, dataVector)
 		}
-		if(totalNet == "net")
+	
+		if(output == "Transition")
 		{
-			nNet <- skewpart(N) * 2
-			nNet@x[nNet@x<0] <- 0
-			transitionMatrix(result) <- nNet
+			result <- transition
+			if(totalNet == "total")
+			{
+				transitionMatrix(transition) <- N
+			}
+			if(totalNet == "net")
+			{
+				nNet <- skewpart(N) * 2
+				nNet@x[nNet@x<0] <- 0
+				transitionMatrix(result) <- nNet
+			}
 		}
 	}
 	return(result)
