@@ -8,7 +8,7 @@ setGeneric("geoCorrection", function(transition, type, ...) standardGeneric("geo
 
 setMethod("geoCorrection", signature(transition = "Transition", type="character"), def = function(transition, type, multpl=FALSE, scl=TRUE)
 	{
-		if(isLatLon(transition))
+		if(isLonLat(transition))
 		{
 			if (type != "c" & type != "r"){stop("type can only be c or r")}
 			if (type == "r" & matrixValues(transition) != "conductance"){stop("matrix of Transition object must have conductance values")}
