@@ -271,8 +271,8 @@ c(55, 35,-35)))
 \noindent Calculating a distance matrix is straightforward now.
 
 <<gdistance-12>>=
-costDistance(tr1, sP)
-resistanceDistance(tr1, sP)
+costDistance(trCorrC, sP)
+resistanceDistance(trCorrR, sP)
 @
 
 \section{Dispersal paths}

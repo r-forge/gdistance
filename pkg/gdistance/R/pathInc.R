@@ -24,7 +24,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 
 setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
 	{
-		if(theta < -0.000001 | theta > 20.000001 ) {stop("theta value out of range (between 0 and 20)")}
+		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
@@ -157,9 +157,9 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	W@x <- exp(-theta * trR@x)
 	W <- W * P 
 
-	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	#if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
-	{
+	#{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
 		filename(Flow) <- filenm
@@ -169,15 +169,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 			Flow <- setValues(Flow, matrixRow, i)
 			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
 		}
-	}
-	else
-	{
-		Flow <- matrix(nrow=Size,ncol=length(fromCells))
-		for(i in 1:(length(fromCells)))
-		{
-			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
-		}
-	}
+	#}
+	#else
+	#{
+	#	Flow <- matrix(nrow=Size,ncol=length(fromCells))
+	#	for(i in 1:(length(fromCells)))
+	#	{
+	#		Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
+	#	}
+	#}
 	return(Flow)
 }	
 
@@ -217,16 +217,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	
 	if(class(Flow) == "RasterLayer")
 	{
-		nr <- 10
+		nr <- 2
 		end <- ceiling(length(fromCells)/nr)
 		if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
 		if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
-
 		
 		nrows1 <- min(nr, length(fromCells))
 		startrow1 <- 1
 		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-		dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
+		dataRows1 <- matrix(as.vector(t(values(dataRows1))),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
 
 		for(j in 1:end)
 		{
@@ -249,10 +248,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 
 				}
 			}
-
 			if(j != end)
 			{
-
 				for(m in (j+1):end)
 				{
 					nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
@@ -265,7 +262,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 						for(n in 1:nrows1)
 						{
 							index <- startrow1+n-1 
-							divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(abs(dataRows1[,n]-dataRows2) * R)
+							divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,n],dataRows2) * 
+							(1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow= Size) * R)
 						}
 					}
 					if("joint" %in% type) 
@@ -273,11 +271,10 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 						for(o in 1:nrows1)
 						{
 							index <- startrow1+o-1
-							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmin(dataRows1[,o], dataRows2), nrow=Size) * R)
+							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,l] * dataRows2), nrow=Size) * R)
 						}
 					}
 				}
-
 				nrows1 <- min(nr, length(fromCells) - j * nr)
 				startrow1 <- j*nr+1
 				dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)

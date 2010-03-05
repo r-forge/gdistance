@@ -27,7 +27,7 @@ setMethod("passage", signature(transition = "Transition", origin = "SpatialPoint
 			cj <- match(cellnrj,tc)
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)}
+		else{stop("no method available")}
 		return(result)
 	}
 )
@@ -44,20 +44,18 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 			cj <- which(values(goal))
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{result <- passage(transition, origin, goal, theta = 0, totalNet=totalNet, output=output)}
+		else{stop("no method available")}
 		return(result)
 	}
 )
 
-.flowMap <- function(transition, originCell, goalCell, tc)
+.flowMap <- function(transition, indexOrigin, indexGoal, tc)
 {
 	L <- .Laplacian(transition)
 	Lr <- L[-dim(L)[1],-dim(L)[1]]
 	A <- as(L,"lMatrix")
 	A <- as(A,"dMatrix")
 	n <- max(dim(Lr))
-	indexGoal <- match(goalCell,transitionCells(transition))
-	indexOrigin <- match(originCell,transitionCells(transition))
 	Current <- .currentR(L, Lr, A, n, indexOrigin, indexGoal)
 	result <- as(transition,"RasterLayer")
 	dataVector <- rep(NA,times=ncell(result))
@@ -100,7 +98,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 
 .randomShPaths <- function(transition, ci, cj, theta, tc, totalNet, output)
 {
-	if(theta < -0.000000001 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
+	if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 	
 	tr <- transitionMatrix(transition)
 	
