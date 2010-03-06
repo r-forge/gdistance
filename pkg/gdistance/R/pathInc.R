@@ -157,9 +157,9 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	W@x <- exp(-theta * trR@x)
 	W <- W * P 
 
-	#if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
-	#{
+	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
 		filename(Flow) <- filenm
@@ -169,15 +169,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 			Flow <- setValues(Flow, matrixRow, i)
 			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
 		}
-	#}
-	#else
-	#{
-	#	Flow <- matrix(nrow=Size,ncol=length(fromCells))
-	#	for(i in 1:(length(fromCells)))
-	#	{
-	#		Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
-	#	}
-	#}
+	}
+	else
+	{
+		Flow <- matrix(nrow=Size,ncol=length(fromCells))
+		for(i in 1:(length(fromCells)))
+		{
+			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
+		}
+	}
 	return(Flow)
 }	
 
@@ -217,15 +217,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	
 	if(class(Flow) == "RasterLayer")
 	{
-		nr <- 2
+		nr <- min(10,nrow(Flow))
 		end <- ceiling(length(fromCells)/nr)
 		if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
 		if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
 		
-		nrows1 <- min(nr, length(fromCells))
+		nrows1 <- nr
 		startrow1 <- 1
 		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-		dataRows1 <- matrix(as.vector(t(values(dataRows1))),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
+		dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
 
 		for(j in 1:end)
 		{
@@ -236,7 +236,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 					index <- startrow1+k-1
 					divFlow[startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
 					   (1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R)
-					#this fills the lower triangle only (plus some upper triangle blocks around the diagonal of size nr)
+					#this fills the lower triangle only (plus some upper triangle blocks of size nr around the diagonal)
 				}
 			}
 			if("joint" %in% type) 
