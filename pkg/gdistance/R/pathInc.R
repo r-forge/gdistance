@@ -64,6 +64,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		R <- 1/transitionMatrix(transition)[index] #or transition[index]?
 		R[R == Inf] <- 0
 		
+		transition <- .normalize(transition)
+		
 		result <- list(transition=transition,
 						type=type,
 						norml=norml,
@@ -99,7 +101,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	n <- max(Lr@Dim)
 	Lr <- Cholesky(Lr)
 
-	if( ((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	if(FALSE)#((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size, filename=filenm)
@@ -134,7 +136,10 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		
 	tr <- transitionMatrix(transition)
 	tc <- transitionCells(transition)
-	
+
+	R <- 1/tr[index]
+	R[R == Inf] <- 0	
+
 	A <- as(transitionMatrix(transition),"lMatrix")
 	A <- as(A,"dMatrix")
 	AIndex <- as(A, "dgTMatrix")
@@ -142,11 +147,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	index <- index[index[,1] < index[,2],]
 	Size <- length(index[,1])
 
-	R <- 1/tr[index]
-	R[R == Inf] <- 0
-
+	#automatically transform
+	#if(log1p(quantile(R,probs=0.9)) - log1p(quantile(R,probs=0.1)) > 5)
+	#{
+	#tr <- log1p(tr)
+	#}	
+	
 	trR <- tr
 	trR@x <- 1 / trR@x 
+
 	nr <- dim(tr)[1] 
 	Id <- Diagonal(nr) 
 	rs <- rowSums(tr)
@@ -154,10 +163,10 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	P <- tr * rs
 
 	W <- trR
-	W@x <- exp(-theta * trR@x)
+	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step
 	W <- W * P 
 
-	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	if(FALSE) #((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()

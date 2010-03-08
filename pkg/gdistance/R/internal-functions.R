@@ -106,3 +106,16 @@
 	transitionMatrix(transition) <- transitionMatr
 	return(transition)
 }
+
+# International Rice Research Institute
+# Date :  March 2010
+# Version beta
+# Licence GPL v3
+
+.normalize <- function(transition)
+	{
+		tr <- transitionMatrix(transition)
+		tr <- (1 / colSums(tr)) * tr
+		transitionMatrix(transition) <- tr
+		return(transition)
+	}
