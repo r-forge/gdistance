@@ -64,8 +64,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 		R <- 1/transitionMatrix(transition)[index] #or transition[index]?
 		R[R == Inf] <- 0
 		
-		transition <- .normalize(transition)
-		
 		result <- list(transition=transition,
 						type=type,
 						norml=norml,
