@@ -10,11 +10,12 @@ normalize(transition)
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}
+  \item{...}{optional argument (see below)}
  }
 \details{
 Normalization of the weighted adjacency matrix in the Transition object to obtain the transition probabilities.
 
-von Luxburg (2007) refers to this normalization as the "random walk" normalization.
+For random walk calculations a symmetric matrix is needed (symm = TRUE).
 }
 \value{
   Transition object
@@ -30,7 +31,7 @@ r <- setValues(r,rep(1,times=ncell(r)))
 tr <- TransitionFromRaster(r, mean, directions=8)
 
 tr1 <- normalize(tr)
-
+tr2 <- normalize(tr, symm=TRUE)
 }
 \keyword{methods}
 \keyword{spatial}

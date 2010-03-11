@@ -4,10 +4,10 @@
 # Version beta
 # Licence GPL v3
 
-setGeneric("normalize", function(transition) standardGeneric("normalize"))
+setGeneric("normalize", function(transition, ...) standardGeneric("normalize"))
 
-setMethod("normalize", signature(transition = "Transition"), def = function(transition)
+setMethod("normalize", signature(transition = "Transition"), def = function(transition, symm=FALSE)
 	{
-		return(.normalize(transition))
+		return(.normalize(transition, symm))
 	}
 )
