@@ -1,5 +1,5 @@
-\name{permRegDist}
-\alias{permRegDist}
+\name{robustRegDist}
+\alias{robustRegDist}
 \title{Permutational regression with distance data}
 \description{
   Robust regression with distance data, excluding outliers using a genetic algorithm.
