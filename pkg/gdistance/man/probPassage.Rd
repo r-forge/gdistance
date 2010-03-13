@@ -4,6 +4,10 @@
 \alias{passage,Transition,SpatialPoints,SpatialPoints,numeric-method}
 \alias{passage,Transition,RasterLayer,RasterLayer,missing-method}
 \alias{passage,Transition,RasterLayer,RasterLayer,numeric-method}
+\alias{passage,Transition,numeric,numeric,numeric-method}
+\alias{passage,Transition,numeric,numeric,missing-method}
+\alias{passage,Transition,matrix,matrix,numeric-method}
+\alias{passage,Transition,matrix,matrix,missing-method}
 
 \title{ Probability of passage }
 \description{

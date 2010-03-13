@@ -14,6 +14,38 @@
 
 setGeneric("passage", function(transition, origin, goal, theta, ...) standardGeneric("passage"))
 
+setMethod("passage", signature(transition = "Transition", origin = "numeric", goal = "numeric", theta="numeric"), def = function(transition, origin, goal, theta)
+	{
+		if(length(origin) == 2) origin <- SpatialPoints(t(as.matrix(origin)))
+		if(length(goal) == 2) goal <- SpatialPoints(t(as.matrix(goal)))	
+		return(passage(transition, origin, goal, theta))		
+	}
+)
+
+setMethod("passage", signature(transition = "Transition", origin = "numeric", goal = "numeric", theta="missing"), def = function(transition, origin, goal)
+	{
+		if(length(origin) == 2) origin <- SpatialPoints(t(as.matrix(origin)))
+		if(length(goal) == 2) goal <- SpatialPoints(t(as.matrix(goal)))	
+		return(passage(transition, origin, goal))		
+	}
+)
+	
+setMethod("passage", signature(transition = "Transition", origin = "matrix", goal = "matrix", theta="missing"), def = function(transition, origin, goal)
+	{
+		if(ncol(origin) == 2) origin <- SpatialPoints(origin)
+		if(ncol(goal) == 2) goal <- SpatialPoints(goal)
+		return(passage(transition, origin, goal))
+	}	
+)
+
+setMethod("passage", signature(transition = "Transition", origin = "matrix", goal = "matrix", theta="numeric"), def = function(transition, origin, goal, theta)
+	{
+		if(ncol(origin) == 2) origin <- SpatialPoints(origin)
+		if(ncol(goal) == 2) goal <- SpatialPoints(goal)
+		return(passage(transition, origin, goal, theta))
+	}	
+)
+	
 setMethod("passage", signature(transition = "Transition", origin = "SpatialPoints", goal = "SpatialPoints", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
 
