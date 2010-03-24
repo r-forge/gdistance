@@ -8,5 +8,5 @@ Depends: R (>= 2.8.0), raster(>= 0.9.9-36), igraph, Matrix, methods, sp
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: Calculate distances and other measures using models/algorithms for movements on geographic grids (least-cost path, random walk, randomises shortest paths).
 License: GPL-3
-Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R accCost.R probPassage.R geoCorrection.R normalize.R resistanceDistance.R TransitionMap.R pathInc.R sumT.R
+Collate: Transition-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R TransitionFromRaster.R costDistance.R accCost.R probPassage.R geoCorrection.R normalize.R resistanceDistance.R TransitionMap.R pathInc.R sumT.R shortestPath.R
 LazyLoad: yes

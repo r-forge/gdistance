@@ -72,7 +72,7 @@ setMethod("costDistance", signature(transition = "Transition", fromCoords = "Spa
 		index <- match(uniqueFromCells,transitionCells(transition))
 		for (i in 1:length(uniqueFromCells))
 		{
-			shortestPaths[i,] <- shortest.paths(adjacencyGraph, match(uniqueFromCells[i],transitionCells(transition))-1)[,index]
+			shortestPaths[i,] <- shortest.paths(adjacencyGraph, index[i]-1)[,index]
 		}
 		index1 <- which(fromCoordsCells %in% fromCells)
 		index2 <- match(fromCoordsCells[fromCoordsCells %in% fromCells],uniqueFromCells)

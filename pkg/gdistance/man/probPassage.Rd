@@ -14,7 +14,7 @@
   Calculates for each cell the number of passages of a random-walk or randomised shortest paths with given origin(s) and destination(s). Either the total or the net number of passages can be calculated.  In the case of multiple origins or destinations, each receives equal weight. 
 }
 \usage{
-passage(transition, origin, goal, theta)
+passage(transition, origin, goal, theta, ...)
 }
 \arguments{
   \item{transition}{Object of class Transition}

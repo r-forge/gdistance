@@ -112,17 +112,3 @@
 # Version beta
 # Licence GPL v3
 
-.normalize <- function(transition, symm)
-	{
-		tr <- transitionMatrix(transition)
-		if(symm)
-		{
-			tr <- t((rowSums(tr)^-.5) * t(tr)) * (colSums(tr)^-.5)	
-		}
-		else
-		{
-			tr <- (1 / colSums(tr)) * tr
-		}
-		transitionMatrix(transition) <- tr
-		return(transition)
-	}

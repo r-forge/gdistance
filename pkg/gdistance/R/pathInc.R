@@ -135,24 +135,15 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	tr <- transitionMatrix(transition)
 	tc <- transitionCells(transition)
 
-	R <- 1/tr[index]
-	R[R == Inf] <- 0	
-
 	A <- as(transitionMatrix(transition),"lMatrix")
 	A <- as(A,"dMatrix")
 	AIndex <- as(A, "dgTMatrix")
 	index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
 	index <- index[index[,1] < index[,2],]
 	Size <- length(index[,1])
-
-	#automatically transform
-	#if(log1p(quantile(R,probs=0.9)) - log1p(quantile(R,probs=0.1)) > 5)
-	#{
-	#tr <- log1p(tr)
-	#}	
 	
 	trR <- tr
-	trR@x <- 1 / trR@x 
+	trR[index] <- R 
 
 	nr <- dim(tr)[1] 
 	Id <- Diagonal(nr) 
@@ -161,10 +152,10 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	P <- tr * rs
 
 	W <- trR
-	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step
+	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) ; the logarithm is a small variation, which gives a natural random walk
 	W <- W * P 
 
-	if(FALSE) #((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()

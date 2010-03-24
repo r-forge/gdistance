@@ -6,7 +6,7 @@
 }
 
 \usage{
-normalize(transition)
+normalize(transition, ...)
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}

@@ -109,14 +109,14 @@ in geographical research.
 \section{Getting started}
 The latest version of the package is available from R-Forge (\url{http://R-Forge.R-project.org}).
 The package depends on a number of other packages: \verb@Matrix@ (comes with R as a recommended package), 
-igraph (CRAN) and \verb@raster@ (R-Forge).
-In the future, the package will become available on CRAN.
+igraph and \verb@raster@ (both available from CRAN).
+In the future, the package \verb@gdistance@ will become available on CRAN as well.
 The following \R commands install the package \verb@gdistance@ and load it into memory.
 <<gdistance-1, eval=FALSE, keep.source=TRUE>>=
 install.packages("igraph",
   repos="http://cran.r-project.org")
 install.packages("raster",
-  repos="http://R-Forge.R-project.org")
+  repos="http://cran.r-project.org")
 install.packages("gdistance",
   repos="http://R-Forge.R-project.org")
 @
@@ -141,7 +141,7 @@ which gives access to fast procedures implemented in the C language.
 
 A first step in any analysis with gdistance is the construction of an object of the class \verb@Transition@.
 The construction of a \verb@Transition@ object from a \verb@Raster*@ object is straightforward. 
-The user can define a function to calculate the conductance value from the values of each pair of cells to be connected.
+The user can define a function to calculate the transition/conductance values from the values of each pair of cells to be connected.
 Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
 We then create a Transition object. 
 The transition value between each pair of cells is the mean of the two cell values.
@@ -164,7 +164,7 @@ This can make distance calculations more accurate.
 and the documentation of this function illustrates nicely why connecting in 16 directions 
 can increase the accuracy of the calculations \url{http://grass.itc.it/grass64/manuals/html64_user/r.cost.html}.}
 
-By inspecting the object we created, we see that the resulting \verb@Transition@ object shares much information with 
+By inspecting the object we created, we see that the resulting \verb@Transition@ object keeps much information from 
 the original \verb@RasterLayer@ object.
 <<gdistance-4>>=
 tr1
@@ -272,6 +272,7 @@ c(55, 35,-35)))
 
 <<gdistance-12>>=
 costDistance(trCorrC, sP)
+costDistance(tr3, sP)
 resistanceDistance(trCorrR, sP)
 @
 

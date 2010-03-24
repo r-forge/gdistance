@@ -7,7 +7,7 @@
 \description{
 Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
 \usage{
-pathInc(transition, origin, fromCoords, toCoords, norml, type, theta)
+pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,11 +27,11 @@ First, probabilities of passage are calculated for each cell-to-cell connection.
 
 The shared path is calculated as:
 
-Pjoint = Pi • Pj 
+Pjoint = Pi * Pj 
 
 Divergence is calculated as: 
 
-Pdivergent = max(0, max(Pi, Pj) • (1 – min(Pi, Pj)) – min(Pi, Pj))
+Pdivergent = max(0, max(Pi, Pj) * (1 - min(Pi, Pj)) - min(Pi, Pj))
 
 Both are summed over all connections ij in the transition matrix.
 
