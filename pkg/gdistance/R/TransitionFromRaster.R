@@ -14,7 +14,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 
 .TfromR <- function(object, transitionFunction, directions, symm)
 {
-			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
+			if(dataContent(object) != 'all'){object <- readAll(object)}
 			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
 			transitionMatr <- transitionMatrix(transition)
 			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
@@ -33,7 +33,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 
 setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{
-			if(dataContent(object) != 'all'){stop("only implemented for rasters with all values in memory; use readAll() to read values")}
+			if(dataContent(object) != 'all'){object <- readAll(object)}
 			if(transitionFunction != "mahal")
 			{
 				stop("only Mahalanobis distance method implemented for RasterBrick")
