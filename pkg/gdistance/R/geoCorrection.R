@@ -4,6 +4,7 @@
 # Version beta
 # Licence GPL v3
 
+
 setGeneric("geoCorrection", function(transition, type, ...) standardGeneric("geoCorrection"))
 
 setMethod("geoCorrection", signature(transition = "Transition", type="character"), def = function(transition, type, multpl=FALSE, scl=TRUE)
