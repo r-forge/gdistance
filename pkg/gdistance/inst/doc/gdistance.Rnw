@@ -225,7 +225,8 @@ However, diagonally connected cells are more remote from each other that orthogo
 Moreover, on equirectangular (latlon) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
 Therefore, the values in the transition matrix need to be corrected for this distortion.
 <<gdistance-8>>=
-trCorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
+tr1CorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
+tr3CorrC <- geoCorrection(tr3, type="c", multpl=FALSE)
 @
 The function \verb@geoCorrection@ simply divides each transition matrix value between the inter-cell distance.
 For random walks on latlon grids, there is an additional consideration to be made. 
@@ -240,7 +241,7 @@ This is done with function \verb@geoCorrection@, by setting the argument \verb@t
 
 
 <<gdistance-9>>=
-trCorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
+tr1CorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
 @
 
 When similar \verb@Transition@ objects with equal resolution and extent need to be corrected repetitively, computational effort may be reduced by
@@ -248,14 +249,15 @@ preparing an object that only needs to be multiplied with the \verb@Transition@ 
 The following is equivalent to the previous procedure.
 
 <<gdistance-10>>=
-trCorrM <- geoCorrection(tr1, type="r", multpl=TRUE)
-trCorrR <- tr1 * trCorrM
+tr1CorrMatrix <- geoCorrection(tr1, type="r", multpl=TRUE)
+tr1CorrR <- tr1 * tr1CorrMatrix
 @
 
-\noindent The difference is that object \verb@trCorrM@ is only calculated once, while multiplication with \verb@trCorrM@, 
-a computationally less demanding operation, can be repeated with different versions of \verb@tr1@. 
-The user needs to take special care that the geo-correction multiplication matrix (\verb@trCorrM@) contains all non-zero values that are
+\noindent Object \verb@trCorr1Matrix@ is only calculated once.
+It can be multiplicated with Transition objects, as long as they have the same extent, resolution, and directions of cell connections.
+The user needs to take special care that the geo-correction multiplication matrix (\verb@trC1orrMatrix@) contains all non-zero values that are
 present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@). 
+\footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition object with cells connected with value 1.}
 
 \section{Calculating distances}
 With the corrected \verb@Transition@ object we can calculate distances between points.
@@ -271,9 +273,9 @@ c(55, 35,-35)))
 \noindent Calculating a distance matrix is straightforward now.
 
 <<gdistance-12>>=
-costDistance(trCorrC, sP)
-costDistance(tr3, sP)
-resistanceDistance(trCorrR, sP)
+costDistance(tr1CorrC, sP)
+costDistance(tr3CorrC, sP)
+resistanceDistance(tr1CorrR, sP)
 @
 
 \section{Dispersal paths}
