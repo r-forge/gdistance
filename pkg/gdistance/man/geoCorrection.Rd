@@ -1,6 +1,7 @@
 \name{geoCorrection}
 \alias{geoCorrection}
 \alias{geoCorrection,Transition,character-method}
+\alias{geoCorrection,Transition,missing-method}
 \title{ Geographic Correction }
 \description{ Correct Transition objects taking into account local distances
 }
@@ -10,19 +11,21 @@ geoCorrection(transition, type, ...)
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}
-  \item{type}{type of correction: "c" or "r" (see below)}  
+  \item{type}{type of correction: "c", "r", or missing (only required for lonlat, see below)}  
   \item{...}{multpl: matrix with correction factor (TRUE) or corrected values (FALSE, the default); scl: scale the correction values (default is TRUE)}
 }
 \details{
 Geographic correction is necessary for all objects of the class Transition that are either:
-(1) based on a grid in a geographic (latlon) (non)projection and covering a large area; 
+(1) based on a grid in a geographic (lonlat) projection and covering a large area; 
 (2) made with directions > 4.
 
 The function will correct for map distortion, as well as for diagonal connections between grid cells (which cover a longer distance than vertical or horizontal connections).
 
-When working with latlon grids, users should also anticipate whether they will use methods based on either least-cost or random walks, and set the \code{type} argument accordingly. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
+When working with lonlat grids, users should also anticipate whether they will use methods based on either least-cost or random walks, and set the \code{type} argument accordingly. In the case of random walks there will be an additional correction which reduces the conductance in North-South direction.
 
-The correction is done by dividing conductance values by the inter-cell distance, which is scaled to get values near 1 if the argument \code{scl} is set to TRUE (default). This is desirable for subsequent calculations involving random walk calculations. In the case of latlon grids, it is scaled to obtain a W-E inter-cell distance of 1 at the equator, even though the grid may not cover the equator. This makes the scaling independent of the extent and therefore more replicable.
+The correction is done by dividing conductance values by the inter-cell distance. Distances are calculated as great-circle distances for lonlat grids (see function isLonLat()) and Euclidean distances for all other grids.
+
+The values are scaled to get values near 1 if the argument \code{scl} is set to TRUE (default). This is desirable for subsequent calculations involving random walk calculations. Values are divided by the W-E inter-cell distance (at the equator).
 
 In the case of randomised shortest paths, the need for correction is somewhat in between these two correction methods. We have not developed an analytical solution for this problem yet. Users who want to work with intermediate values of theta are encouraged to experiment with different solutions. 
 

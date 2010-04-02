@@ -7,6 +7,13 @@
 
 setGeneric("geoCorrection", function(transition, type, ...) standardGeneric("geoCorrection"))
 
+setMethod("geoCorrection", signature(transition = "Transition", type="missing"), def = function(transition, multpl=FALSE, scl=TRUE)
+	{
+		return(geoCorrection(transition, type="c", multpl=FALSE, scl=TRUE))
+	}
+)
+
+
 setMethod("geoCorrection", signature(transition = "Transition", type="character"), def = function(transition, type, multpl=FALSE, scl=TRUE)
 	{
 		if(isLonLat(transition))
@@ -15,7 +22,14 @@ setMethod("geoCorrection", signature(transition = "Transition", type="character"
 			if (type == "r" & matrixValues(transition) != "conductance"){stop("matrix of Transition object must have conductance values")}
 			adjacency <- .adjacency.from.transition(transition)
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-			scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="GreatCircle")
+			if(scl)
+			{
+				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="GreatCircle")
+			}
+			else
+			{
+				scaleValue <- 1
+			}
 			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue)}
 			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue}
 			if (type=="r")
@@ -30,9 +44,16 @@ setMethod("geoCorrection", signature(transition = "Transition", type="character"
 		{
 			adjacency <- .adjacency.from.transition(transition)
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-			scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="GreatCircle")
-			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue)}
-			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue}	
+			if(scl)
+			{
+				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="Euclidean")
+			}
+			else
+			{
+				scaleValue <- 1
+			}
+			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='Euclidean')/scaleValue)}
+			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='Euclidean')/scaleValue}	
 		}
 		i <- as.integer(adjacency[,1] - 1)
 		j <- as.integer(adjacency[,2] - 1)
