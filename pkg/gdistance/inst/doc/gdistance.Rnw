@@ -222,14 +222,14 @@ plot(TransitionMap(tr1))
 \section{Correcting inter-cell transition values}
 The function \verb@TransitionFromRaster@ calculates transition values based on the values of adjacent cells in the input raster.
 However, diagonally connected cells are more remote from each other that orthogonally connected cells.
-Moreover, on equirectangular (latlon) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
+Moreover, on equirectangular (lonlat) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
 Therefore, the values in the transition matrix need to be corrected for this distortion.
 <<gdistance-8>>=
 tr1CorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
 tr3CorrC <- geoCorrection(tr3, type="c", multpl=FALSE)
 @
 The function \verb@geoCorrection@ simply divides each transition matrix value between the inter-cell distance.
-For random walks on latlon grids, there is an additional consideration to be made. 
+For random walks on lonlat grids, there is an additional consideration to be made. 
 The number of connections in N-S direction remains equal when moving from the equator to the poles.
 This is problematic, because random walks can be seen as analogous to electrical current through a networks of resistors.
 The inter-cell connections should be thought of as parallel resistors.
@@ -238,7 +238,6 @@ Therefore, the N-S resistance between parallels should decrease when moving away
 The function geoCorrection corrects this distortion by multiplying the 
 N-S transition values with the cosine of the average latitude of the cell centres.
 This is done with function \verb@geoCorrection@, by setting the argument \verb@type@ to “r", 
-
 
 <<gdistance-9>>=
 tr1CorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
@@ -303,6 +302,9 @@ plot(rSPraster)
 
 With the function pathInc() we can calculate measures of path overlap and non-overlap.
 
+<<gdistance-13>>=
+pathInc(tr1CorrC, sP[1,], sP[2:3], norml=FALSE, type=c("divergent","joint"))
+@
 
 \section{References}
 \begin{hangparas}{3em}{1}
