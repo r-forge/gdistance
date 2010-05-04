@@ -77,8 +77,8 @@ recently introduced by Saerens et al. (2009).}
 \end{itemize} 
 
 Similarity between geographical elements is not necessarily caused by direct spatial interaction between two points. 
-It may reflect diffusion starting from an independent, third point or area, which functions as a dominant source. 
-For instance, diffusion from a single origin explains the current geographical patterns of human genetic diversity.
+It may reflect diffusion starting from an independent, third point or area, which functions as a common source. 
+For instance, diffusion from a single origin explains much of the current geographical patterns of human genetic diversity.
 Prehistoric humans populated the globe spreading from an origin in Africa to other continents. 
 As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
 they share their prehistoric migration history.
@@ -129,8 +129,8 @@ The central class in \verb@gdistance@ is the S4 class \verb@Transition@, and mos
 \verb@Transition@ objects can be constructed from an object of class \verb@RasterLayer@ or \verb@RasterBrick@. 
 These classes are from \verb@raster@, a memory-efficient and user-friendly R package which contains complete geographical grid functionality. 
 The class \verb@Transition@ takes the necessary geographic references (projection, resolution, extent) from the original \verb@Raster*@ object. 
-It also contains a transition matrix which specifies the probability, friction (cost) or `conductance' 
-of movements between cells. 
+It also contains a transition matrix which specifies the probability or `conductance' 
+of movements between cells.
 It is not strange to use the word `conductance' in this context, as transition matrices can be thought of as analogous to electrical networks (McRae 2006).
 Each row and column in the transition matrix represents a cell in the original \verb@Raster*@ object.
 In most cases, cells are connected only with adjacent cells.
@@ -254,7 +254,7 @@ tr1CorrR <- tr1 * tr1CorrMatrix
 
 \noindent Object \verb@trCorr1Matrix@ is only calculated once.
 It can be multiplicated with Transition objects, as long as they have the same extent, resolution, and directions of cell connections.
-The user needs to take special care that the geo-correction multiplication matrix (\verb@trC1orrMatrix@) contains all non-zero values that are
+The user needs to take special care that the geo-correction multiplication matrix (\verb@tr1CorrMatrix@) contains all non-zero values that are
 present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@). 
 \footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition object with cells connected with value 1.}
 
@@ -288,7 +288,7 @@ The net number of passages is the number of passages that are not reciprocated b
 <<gdistance-13>>=
 origin <- SpatialPoints(cbind(105,-55))
 goal <- SpatialPoints(cbind(-105,55))
-rSPraster <- passage(tr1, origin, goal, 2)
+rSPraster <- passage(tr1, origin, goal, theta=2)
 @
 \begin{figure}[!ht]
 <<label=figure3,fig=TRUE,height = 4.5 >>=
@@ -301,6 +301,7 @@ plot(rSPraster)
 \section{Path overlap and non-overlap}
 
 With the function pathInc() we can calculate measures of path overlap and non-overlap.
+These measures can be used to predict patterns of diversity resulting from a single, common source (see Introduction).
 
 <<gdistance-13>>=
 pathInc(tr1CorrC, sP[1,], sP[2:3], norml=FALSE, type=c("divergent","joint"))

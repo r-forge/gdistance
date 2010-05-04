@@ -4,11 +4,11 @@
 # Version 1.0
 # Licence GPL v3
 
-setGeneric("accCost", function(transition, object) standardGeneric("accCost"))
+setGeneric("accCost", function(transition, fromCoords) standardGeneric("accCost"))
 
-setMethod("accCost", signature(transition = "Transition", object = "SpatialPoints"), def = function(transition, object)
+setMethod("accCost", signature(transition = "Transition", fromCoords = "Coords"), def = function(transition, fromCoords)
 	{
-		fromCoords <- coordinates(object)
+		fromCoords <- .coordsToMatrix(coords)
 		fromCoordsCells <- cellFromXY(transition, fromCoords)
 		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode="undirected", weighted=TRUE)
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
@@ -30,7 +30,7 @@ setMethod("accCost", signature(transition = "Transition", object = "SpatialPoint
 	}
 )
 
-setMethod("accCost", signature(transition = "Transition", object = "RasterLayer"), def = function(transition, object)
+setMethod("accCost", signature(transition = "Transition", fromCoords = "RasterLayer"), def = function(transition, fromCoords)
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))

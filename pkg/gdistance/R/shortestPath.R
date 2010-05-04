@@ -8,33 +8,16 @@
 
 setGeneric("shortestPath", function(transition, origin, goal) standardGeneric("shortestPath"))
 
-setMethod("shortestPath", signature(transition = "Transition", origin = "numeric", goal = "numeric"), def = function(transition, origin, goal)
+setMethod("shortestPath", signature(transition = "Transition", origin = "Coords", goal = "Coords"), def = function(transition, origin, goal)
 	{
-		if(length(origin) == 2) origin <- SpatialPoints(t(as.matrix(origin))) else{stop("argument origin is a vector but does not have a length of two")}
-		if(length(goal) == 2) goal <- SpatialPoints(t(as.matrix(goal)))	else{stop("argument goal is a vector but does not have a length of two")}
-		return(shortestPath(transition, origin, goal))		
-	}
-)
-
-setMethod("shortestPath", signature(transition = "Transition", origin = "matrix", goal = "matrix"), def = function(transition, origin, goal)
-	{
-		if(ncol(origin) == 2) origin <- SpatialPoints(origin) else{stop("argument origin is a matrix but does not have two columns")}
-		if(ncol(goal) == 2) goal <- SpatialPoints(goal) else{stop("argument goal is a matrix but does not have two columns")}
-		stop("multiple origin or goal cells not implemented")
-		#return(shortestPath(transition, origin, goal))
-	}	
-)
-	
-setMethod("shortestPath", signature(transition = "Transition", origin = "SpatialPoints", goal = "SpatialPoints"), def = function(transition, origin, goal)
-	{
-		return(.shortestPath(transition, origin, goal))
+		origin <- .coordsToMatrix(origin)
+		goal <- .coordsToMatrix(goal)
+		return(.shortestPath(transition, origin, goal))		
 	}
 )
 
 .shortestPath <- function(transition, origin, goal)
 {
-		origin <- coordinates(origin)
-		goal <- coordinates(goal)
 		originCells <- cellFromXY(transition, origin)
 		goalCells <- cellFromXY(transition, goal)
 		indexOrigin <- match(originCells,transitionCells(transition)) - 1

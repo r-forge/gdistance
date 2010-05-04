@@ -1,6 +1,6 @@
 \name{resistanceDistance}
 \alias{ resistanceDistance }
-\alias{resistanceDistance,Transition,SpatialPoints-method}
+\alias{resistanceDistance,Transition,Coords-method}
 
 \title{ Resistance distance }
 \description{
@@ -11,7 +11,7 @@ resistanceDistance (transition, coords)
 
 \arguments{
   \item{transition}{ transition object (Transition class) }
-  \item{coords}{ point locations (of SpatialPoints class)}  
+  \item{coords}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}  
 
 }
 \details{

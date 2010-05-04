@@ -1,8 +1,6 @@
 \name{shortestPath}
 \alias{shortestPath}
-\alias{shortestPath,Transition,SpatialPoints,SpatialPoints-method}
-\alias{shortestPath,Transition,numeric,numeric-method}
-\alias{shortestPath,Transition,matrix,matrix-method}
+\alias{shortestPath,Transition,Coords,Coords-method}
 
 \title{ Shortest path }
 \description{
@@ -13,8 +11,8 @@ shortestPath(transition, origin, goal)
 }
 \arguments{
   \item{transition}{Object of class Transition}
-  \item{origin}{SpatialPoints object, vector or matrix with coordinates}
-  \item{goal}{SpatialPoints object, vector or matrix with coordinates}
+  \item{origin}{SpatialPoints, vector or matrix with coordinates}
+  \item{goal}{SpatialPoints, vector or matrix with coordinates}
 }
 \details{
   If there is more than one path, transition values get values below 1.

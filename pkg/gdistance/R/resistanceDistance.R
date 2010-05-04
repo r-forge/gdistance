@@ -10,10 +10,10 @@
 
 setGeneric("resistanceDistance", function(transition, coords) standardGeneric("resistanceDistance"))
 
-setMethod("resistanceDistance", signature(transition = "Transition", coords = "SpatialPoints"), def = function(transition, coords) 
+setMethod("resistanceDistance", signature(transition = "Transition", coords = "Coords"), def = function(transition, coords) 
 	{
 		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in Transition object")}
-		coords <- coordinates(coords)
+		coords <- .coordsToMatrix(coords)
 		transition <- .transitionSolidify(transition)
 		rd <- matrix(NA,nrow=length(coords[,1]),ncol=length(coords[,1]))
 		rownames(rd) <- rownames(coords)

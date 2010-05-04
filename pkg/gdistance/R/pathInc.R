@@ -13,8 +13,10 @@
 
 setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta, ...) standardGeneric("pathInc"))
 
-setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type, ...)
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type, ...)
 	{
+		origin <- .coordsToMatrix(origin)
+		goal <- .coordsToMatrix(goal)
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
@@ -22,7 +24,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoints", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
@@ -35,9 +37,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "SpatialPoint
 .preparationFlow <- function(transition, origin, fromCoords, norml, type)
 {
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
-		
-		origin <- coordinates(origin)
-		fromCoords <- coordinates(fromCoords)
 
 		transition <- .transitionSolidify(transition)
 		originCell <- cellFromXY(transition, origin)

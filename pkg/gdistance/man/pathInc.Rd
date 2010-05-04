@@ -1,7 +1,7 @@
 \name{pathInc}
 \alias{pathInc}
-\alias{pathInc,Transition,SpatialPoints,SpatialPoints,missing,logical,character,missing-method}
-\alias{pathInc,Transition,SpatialPoints,SpatialPoints,missing,logical,character,numeric-method}
+\alias{pathInc,Transition,Coords,Coords,missing,logical,character,missing-method}
+\alias{pathInc,Transition,Coords,Coords,missing,logical,character,numeric-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Incidence of paths from a common origin: overlap and non-overlap}
 \description{
@@ -12,8 +12,8 @@ pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{transition}{transition matrix (class Transition)}
-  \item{origin}{coordinates of the origin (one point location, SpatialPoints class)}  
-  \item{fromCoords}{coordinates of the destinations (SpatialPoints class)}
+  \item{origin}{coordinates of the origin (one point location, SpatialPoints, matrix or numeric class)}  
+  \item{fromCoords}{coordinates of the destinations (SpatialPoints, matrix or numeric class)}
   \item{toCoords}{second set of coordinates of the destinations (only "missing" implemented)}
   \item{norml}{normalisation to values between 0 and 1}
   \item{type}{a vector of one or two calculation types c("divergent","joint")}  

@@ -1,13 +1,9 @@
 \name{passage}
 \alias{passage}
-\alias{passage,Transition,SpatialPoints,SpatialPoints,missing-method}
-\alias{passage,Transition,SpatialPoints,SpatialPoints,numeric-method}
+\alias{passage,Transition,Coords,Coords,missing-method}
+\alias{passage,Transition,Coords,Coords,numeric-method}
 \alias{passage,Transition,RasterLayer,RasterLayer,missing-method}
 \alias{passage,Transition,RasterLayer,RasterLayer,numeric-method}
-\alias{passage,Transition,numeric,numeric,numeric-method}
-\alias{passage,Transition,numeric,numeric,missing-method}
-\alias{passage,Transition,matrix,matrix,numeric-method}
-\alias{passage,Transition,matrix,matrix,missing-method}
 
 \title{ Probability of passage }
 \description{
@@ -18,8 +14,8 @@ passage(transition, origin, goal, theta, ...)
 }
 \arguments{
   \item{transition}{Object of class Transition}
-  \item{origin}{SpatialPoints object or RasterLayer object with origin cells set to TRUE}
-  \item{goal}{SpatialPoints object or RasterLayer object with origin cells set to TRUE}
+  \item{origin}{SpatialPoints, matrix or numeric object with coordinates or RasterLayer object with origin cells set to TRUE}
+  \item{goal}{SpatialPoints, matrix or numeric object with coordinates or RasterLayer object with origin cells set to TRUE}
   \item{theta}{If theta is zero or missing random walk results, if a numeric value 0 < theta < 20 is given, randomised shortest paths are calculated}
   \item{...}{Additional arguments: totalNet ("total" or "net"), and output ("RasterLayer" or "Transition")}
 }

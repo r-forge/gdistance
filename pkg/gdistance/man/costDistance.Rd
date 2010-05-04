@@ -1,7 +1,7 @@
 \name{costDistance}
 \alias{costDistance}
-\alias{costDistance,Transition,SpatialPoints,missing-method}
-\alias{costDistance,Transition,SpatialPoints,SpatialPoints-method}
+\alias{costDistance,Transition,Coords,missing-method}
+\alias{costDistance,Transition,Coords,Coords-method}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Cost distance (least-cost distance) }
 \description{
@@ -12,8 +12,8 @@ costDistance(transition, fromCoords, toCoords)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{transition}{ transition matrix (class Transition) }
-  \item{fromCoords}{ first set of point locations (of SpatialPoints class)}  
-  \item{toCoords}{ second, optional set of point locations (of SpatialPoints class)}
+  \item{fromCoords}{ first set of point locations (of SpatialPoints, matrix or numeric class)}  
+  \item{toCoords}{ second, optional set of point locations (of SpatialPoints, matrix or numeric class)}
 }
 \details{
 Cost units between cells are defined as the reciprocal of the values in the transition matrix (in transition argument).

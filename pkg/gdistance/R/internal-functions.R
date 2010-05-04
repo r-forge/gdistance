@@ -12,6 +12,27 @@
 	return(adjacency)
 }
 
+.coordsToMatrix <- function(Coords)
+{
+	if(class(Coords) == "numeric")
+	{
+		if(length(Coords) == 2) {Coords <- t(as.matrix(Coords))} 
+		else{stop("coordinates given as a vector but it does not have a length of two")}
+	}
+
+	
+	if(class(Coords) == "matrix")
+	{
+		if(!(ncol(origin) == 2)){stop("coordinates given as a matrix but it does not have two columns")}
+	}	
+
+	if(class(Coords) == "SpatialPoints")
+	{
+		Coords <- coordinates(Coords)
+	}
+	return(Coords)
+}
+
 .connected.components <- function(transition)
 {
 	adj.graph <- graph.adjacency(transition@transitionMatrix)
