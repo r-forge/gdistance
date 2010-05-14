@@ -16,7 +16,7 @@ setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, 
 setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type, ...)
 	{
 		origin <- .coordsToMatrix(origin)
-		goal <- .coordsToMatrix(goal)
+		from <- .coordsToMatrix(fromCoords)
 		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
