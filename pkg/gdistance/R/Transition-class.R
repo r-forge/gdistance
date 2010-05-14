@@ -57,7 +57,7 @@ setAs("Transition", "sparseMatrix", function(from){from@transitionMatrix})
 
 setAs("Transition", "RasterLayer", function(from)
 	{
-		raster(xmn=xmin(from), xmx=xmax(from), ymn=ymin(from), ymx=ymax(from), nrows=nrow(from), ncols=ncol(from), projs=projection(from))
+		raster(xmn=xmin(from), xmx=xmax(from), ymn=ymin(from), ymx=ymax(from), nrows=nrow(from), ncols=ncol(from), crs=projection(from))
 	}
 )
 

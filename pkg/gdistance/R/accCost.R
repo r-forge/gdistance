@@ -8,7 +8,7 @@ setGeneric("accCost", function(transition, fromCoords) standardGeneric("accCost"
 
 setMethod("accCost", signature(transition = "Transition", fromCoords = "Coords"), def = function(transition, fromCoords)
 	{
-		fromCoords <- .coordsToMatrix(coords)
+		fromCoords <- .coordsToMatrix(fromCoords) 
 		fromCoordsCells <- cellFromXY(transition, fromCoords)
 		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode="undirected", weighted=TRUE)
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
@@ -34,8 +34,8 @@ setMethod("accCost", signature(transition = "Transition", fromCoords = "RasterLa
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))
-		fromCells <- which(!is.na(values(object)))
-		toCells <- which(is.na(values(object)))
+		fromCells <- which(!is.na(values(fromCoords)))
+		toCells <- which(is.na(values(fromCoords)))
 		accCostDist <- rep(Inf,times=n)
 		accCostDist[fromCells] <- 0
 		#while(length(fromCells)>0)

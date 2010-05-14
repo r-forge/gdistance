@@ -101,13 +101,14 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	if(FALSE)#((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
-		Flow <- raster(nrows=length(fromCells), ncols=Size, filename=filenm)
+		Flow <- raster(nrows=length(fromCells), ncols=Size)
+		Flow <- writeStart(Flow, filenm, overwrite=TRUE)
 		for(i in 1:(length(fromCells)))
 		{
 			matrixRow <- .currentM(L, Lr, A, n, indexOrigin, indexCoords[i], index)
-			Flow <- setValues(Flow, matrixRow, i)
-			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
+			Flow <- writeValues(Flow, matrixRow)
 		}
+		Flow <- writeStop(Flow)
 	}
 	else
 	{
@@ -159,13 +160,13 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
-		filename(Flow) <- filenm
+		Flow <- writeStart(Flow, filenm, overwrite=TRUE)
 		for(i in 1:(length(fromCells)))
 		{
 			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
-			Flow <- setValues(Flow, matrixRow, i)
-			Flow <- writeRaster(Flow, filenm, overwrite=TRUE)
+			writeValues(Flow, matrixRow)
 		}
+		Flow <- writeStop(Flow)
 	}
 	else
 	{
@@ -221,8 +222,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		
 		nrows1 <- nr
 		startrow1 <- 1
-		dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-		dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow)) #rows are cell transitions, columns are locations
+		dataRows1 <- getValues(Flow, startrow=startrow1, nrows=nrows1)
+		dataRows1 <- matrix(dataRows1,nrow=ncol(Flow)) #rows are cell transitions, columns are locations
 
 		for(j in 1:end)
 		{
@@ -251,8 +252,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				{
 					nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
 					startrow2 <- (m-1)*nr+1
-					dataRows2 <- readRows(Flow, startrow=startrow2, nrows=nrows2)
-					dataRows2 <- matrix(values(dataRows2),nrow=ncol(Flow))
+					dataRows2 <- getValues(Flow, startrow=startrow2, nrows=nrows2)
+					dataRows2 <- matrix(dataRows2,nrow=ncol(Flow))
 				
 					if("divergent" %in% type) 
 					{
@@ -274,8 +275,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				}
 				nrows1 <- min(nr, length(fromCells) - j * nr)
 				startrow1 <- j*nr+1
-				dataRows1 <- readRows(Flow, startrow=startrow1, nrows=nrows1)
-				dataRows1 <- matrix(values(dataRows1),nrow=ncol(Flow))
+				dataRows1 <- matrix(getValues(dataRows1, row=startrow1, nrows=nrows1),nrow=ncol(Flow))
 			}
 		}
 	}
