@@ -17,7 +17,7 @@ setGeneric("passage", function(transition, origin, goal, theta, ...) standardGen
 setMethod("passage", signature(transition = "Transition", origin = "Coords", goal = "Coords", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
 		origin <- .coordsToMatrix(origin)
-		goal <- coordsToMatrix(goal)
+		goal <- .coordsToMatrix(goal)
 		
 		if(totalNet=="net" & output=="RasterLayer")
 		{
