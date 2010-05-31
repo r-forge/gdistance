@@ -275,7 +275,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				}
 				nrows1 <- min(nr, length(fromCells) - j * nr)
 				startrow1 <- j*nr+1
-				dataRows1 <- matrix(getValues(dataRows1, row=startrow1, nrows=nrows1),nrow=ncol(Flow))
+				dataRows1 <- matrix(getValues(Flow, row=startrow1, nrows=nrows1),nrow=ncol(Flow))
 			}
 		}
 	}
