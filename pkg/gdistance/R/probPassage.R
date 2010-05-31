@@ -121,8 +121,6 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 	
 .probPass <- function(transition, Id, W, nr, ci, cj, tc, totalNet, output)
 {
-
-
 	Ij <- Diagonal(nr)
 	Ij[cbind(cj,cj)] <- 1 - 1 / length(cj)
 	Wj <- Ij %*% W

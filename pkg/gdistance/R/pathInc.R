@@ -143,7 +143,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	Size <- length(index[,1])
 	
 	trR <- tr
-	trR[index] <- R 
+	trR@x <- 1 / tr@x
 
 	nr <- dim(tr)[1] 
 	Id <- Diagonal(nr) 
@@ -222,7 +222,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		
 		nrows1 <- nr
 		startrow1 <- 1
-		dataRows1 <- getValues(Flow, startrow=startrow1, nrows=nrows1)
+		dataRows1 <- getValues(Flow, row=startrow1, nrows=nrows1)
 		dataRows1 <- matrix(dataRows1,nrow=ncol(Flow)) #rows are cell transitions, columns are locations
 
 		for(j in 1:end)
@@ -252,7 +252,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				{
 					nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
 					startrow2 <- (m-1)*nr+1
-					dataRows2 <- getValues(Flow, startrow=startrow2, nrows=nrows2)
+					dataRows2 <- getValues(Flow, row=startrow2, nrows=nrows2)
 					dataRows2 <- matrix(dataRows2,nrow=ncol(Flow))
 				
 					if("divergent" %in% type) 
@@ -275,7 +275,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				}
 				nrows1 <- min(nr, length(fromCells) - j * nr)
 				startrow1 <- j*nr+1
-				dataRows1 <- matrix(getValues(dataRows1, row=startrow1, nrows=nrows1),nrow=ncol(Flow))
+				dataRows1 <- matrix(getValues(dataRows1, row=row1, nrows=nrows1),nrow=ncol(Flow))
 			}
 		}
 	}
