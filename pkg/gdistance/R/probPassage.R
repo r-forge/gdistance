@@ -72,7 +72,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 # Version 1.0
 # Licence GPL v3
 
-setMethod("passage", signature(transition = "Transition", origin = "SpatialPoints", goal = "SpatialPoints", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
+setMethod("passage", signature(transition = "Transition", origin = "Coords", goal = "Coords", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
 	{
 		transition <- .transitionSolidify(transition)
 		tc <- transitionCells(transition)

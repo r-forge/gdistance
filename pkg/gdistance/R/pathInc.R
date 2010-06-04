@@ -57,7 +57,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
 		index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
-		index <- index[index[,1] < index[,2],]
+		#index <- index[index[,1] < index[,2],]
 		Size <- length(index[,1])
 
 		R <- 1/transitionMatrix(transition)[index] #or transition[index]?
@@ -127,20 +127,12 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	transition <- prepared$transition
 	cj <- prepared$indexCoords
 	ci <- prepared$indexOrigin
-	fromCells <- prepared$fromCells #only length is used. Also, cj should be equal in length to fromCells
 	index <- prepared$index
 	Size <- prepared$Size
 	R <- prepared$R
 		
 	tr <- transitionMatrix(transition)
 	tc <- transitionCells(transition)
-
-	A <- as(transitionMatrix(transition),"lMatrix")
-	A <- as(A,"dMatrix")
-	AIndex <- as(A, "dgTMatrix")
-	index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
-	index <- index[index[,1] < index[,2],]
-	Size <- length(index[,1])
 	
 	trR <- tr
 	trR@x <- 1 / tr@x
@@ -155,13 +147,13 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) ; the logarithm is a small variation, which gives a natural random walk
 	W <- W * P 
 
-	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	if(((Size * length(cj) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()
-		Flow <- raster(nrows=length(fromCells), ncols=Size)
+		Flow <- raster(nrows=length(cj), ncols=Size)
 		Flow <- writeStart(Flow, filenm, overwrite=TRUE)
-		for(i in 1:(length(fromCells)))
+		for(i in 1:(length(cj)))
 		{
 			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
 			writeValues(Flow, matrixRow)
@@ -170,8 +162,8 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	}
 	else
 	{
-		Flow <- matrix(nrow=Size,ncol=length(fromCells))
-		for(i in 1:(length(fromCells)))
+		Flow <- matrix(nrow=Size,ncol=length(cj))
+		for(i in 1:(length(cj)))
 		{
 			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
 		}
@@ -261,7 +253,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 						{
 							index <- startrow1+n-1 
 							divFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,n],dataRows2) * 
-							(1-pmin(dataRows1[,k],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow= Size) * R)
+							(1-pmin(dataRows1[,n],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow= Size) * R)
 						}
 					}
 					if("joint" %in% type) 
@@ -269,7 +261,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 						for(o in 1:nrows1)
 						{
 							index <- startrow1+o-1
-							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,l] * dataRows2), nrow=Size) * R)
+							jointFlow[startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,o] * dataRows2), nrow=Size) * R)
 						}
 					}
 				}
