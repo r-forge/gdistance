@@ -11,30 +11,57 @@
 
 #combining with passage functions and adding the same options (total flow, net flow, different/custom comparison functions)?
 
-setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, norml, type, theta, ...) standardGeneric("pathInc"))
+setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, type, theta, weight) standardGeneric("pathInc"))
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", norml="logical", type="character", theta="missing"), def = function(transition, origin, fromCoords, norml, type, ...)
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="missing"), def = function(transition, origin, fromCoords, type)
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", norml="logical", type="character", theta="numeric"), def = function(transition, origin, fromCoords, norml, type, theta, ...)
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="missing"), def = function(transition, origin, fromCoords, type, theta)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
-		prepared <- .preparationFlow(transition, origin, fromCoords, norml, type)
+		origin <- .coordsToMatrix(origin)
+		from <- .coordsToMatrix(fromCoords)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
 	}
 )
 
-.preparationFlow <- function(transition, origin, fromCoords, norml, type)
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="Transition"), def = function(transition, origin, fromCoords, type, weight)
+	{
+		origin <- .coordsToMatrix(origin)
+		from <- .coordsToMatrix(fromCoords)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		Intermediate <- .randomWalk(prepared)
+		result <- .finishFlow(prepared, Intermediate)
+		return(result)
+	}
+)
+
+setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="Transition"), def = function(transition, origin, fromCoords, type, theta, weight)
+	{
+		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
+		origin <- .coordsToMatrix(origin)
+		from <- .coordsToMatrix(fromCoords)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		Intermediate <- .randomSP(prepared, theta)
+		result <- .finishFlow(prepared, Intermediate)
+		return(result)
+	}
+)
+
+#weight = "TransitionStack" ???
+
+.preparationFlow <- function(transition, origin, fromCoords, type, ...)
 {
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
 
@@ -59,13 +86,13 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
 		#index <- index[index[,1] < index[,2],]
 		Size <- length(index[,1])
-
-		R <- 1/transitionMatrix(transition)[index] #or transition[index]?
+		
+		R <- try(1/transitionMatrix(...)[index], silent=TRUE)
+		if(class(R) != "numeric") {R <- 1/transitionMatrix(transition)[index]} #or transition[index]?
 		R[R == Inf] <- 0
 		
 		result <- list(transition=transition,
 						type=type,
-						norml=norml,
 						fromCoords=fromCoords,
 						allFromCells=allFromCells, 
 						fromCells=fromCells,
@@ -91,14 +118,14 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	index <- prepared$index
 	Size <- prepared$Size
 	A <- prepared$A
-	R <- prepared$R
+
 		
 	L <- .Laplacian(transition)
 	Lr <- L[-dim(L)[1],-dim(L)[1]]
 	n <- max(Lr@Dim)
 	Lr <- Cholesky(Lr)
 
-	if(FALSE)#((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
@@ -129,7 +156,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	ci <- prepared$indexOrigin
 	index <- prepared$index
 	Size <- prepared$Size
-	R <- prepared$R
 		
 	tr <- transitionMatrix(transition)
 	tc <- transitionCells(transition)
@@ -200,7 +226,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	allFromCells <- prepared$allFromCells
 	fromCoords <- prepared$fromCoords
 	type <- prepared$type
-	norml <- prepared$norml
 	
 	Size <- prepared$Size
 	R <- prepared$R
@@ -289,11 +314,6 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 				jointFlow[j,] <- colSums((Flow[,j] * Flow) * R)
 			}
 		}
-	}
-	if (norml) 
-	{
-		if("divergent" %in% type) divFlow <- divFlow / sum(R)
-		if("joint" %in% type) jointFlow <- jointFlow / sum(R)
 	}
 	index1 <- which(allFromCells %in% fromCells)
 	index2 <- match(allFromCells[allFromCells %in% fromCells], fromCells)

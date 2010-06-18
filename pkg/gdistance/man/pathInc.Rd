@@ -7,7 +7,7 @@
 \description{
 Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
 \usage{
-pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, ...)
+pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, weight)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,10 +15,9 @@ pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, ...)
   \item{origin}{coordinates of the origin (one point location, SpatialPoints, matrix or numeric class)}  
   \item{fromCoords}{coordinates of the destinations (SpatialPoints, matrix or numeric class)}
   \item{toCoords}{second set of coordinates of the destinations (only "missing" implemented)}
-  \item{norml}{normalisation to values between 0 and 1}
   \item{type}{a vector of one or two calculation types c("divergent","joint")}  
-  \item{theta}{value between 0 and 20 (randomised shortest paths) or 0 or missing (random walk)}
-  \item{...}{additional arguments: totalNet ("total" or "net"), and output ("RasterLayer" or "Transition")}
+  \item{theta}{value > 0 and < 20 (randomised shortest paths) or missing (random walk)}
+  \item{weight}{weight matrix -- Reciprocals of the non-zero values are used as weights. If missing, reciprocals of the transition matrix are used.}
 }
 \details{
 This function calculates the overlap and non-overlap in the random walk trajectories or randomised shortest paths originating in a single point to sets of other locations.
@@ -35,7 +34,6 @@ Pdivergent = max(0, max(Pi, Pj) * (1 - min(Pi, Pj)) - min(Pi, Pj))
 
 Both are summed over all connections ij in the transition matrix.
 
-Defaults for additional argument totalNet is "net" and for output it is "RasterLayer".
 }
 \value{
 dist object or list of dist objects

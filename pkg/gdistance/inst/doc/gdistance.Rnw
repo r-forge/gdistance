@@ -304,7 +304,7 @@ With the function pathInc() we can calculate measures of path overlap and non-ov
 These measures can be used to predict patterns of diversity resulting from a single, common source (see Introduction).
 
 <<gdistance-13>>=
-pathInc(tr1CorrC, sP[1,], sP[2:3], norml=FALSE, type=c("divergent","joint"))
+pathInc(tr1CorrC, sP[1,], sP[2:3], type=c("divergent","joint"))
 @
 
 \section{References}
