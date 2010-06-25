@@ -9,7 +9,7 @@
 
 setGeneric("costDistance", function(transition, fromCoords, toCoords) standardGeneric("costDistance"))
 
-setMethod("costDistance", signature(transition = "Transition", fromCoords = "Coords", toCoords = "Coords"), def = function(transition, fromCoords, toCoords)
+setMethod("costDistance", signature(transition = "TransitionLayer", fromCoords = "Coords", toCoords = "Coords"), def = function(transition, fromCoords, toCoords)
 	{
 		fromCoords <- .coordsToMatrix(fromCoords)
 		toCoords <- .coordsToMatrix(toCoords)
@@ -53,7 +53,7 @@ setMethod("costDistance", signature(transition = "Transition", fromCoords = "Coo
 	}
 )
 
-setMethod("costDistance", signature(transition = "Transition", fromCoords = "SpatialPoints", toCoords = "missing"), def = function(transition, fromCoords)
+setMethod("costDistance", signature(transition = "TransitionLayer", fromCoords = "Coords", toCoords = "missing"), def = function(transition, fromCoords)
 	{
 		fromCoords <- coordinates(fromCoords)
 		fromCoordsCells <- cellFromXY(transition, fromCoords)

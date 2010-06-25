@@ -14,7 +14,7 @@
 
 setGeneric("passage", function(transition, origin, goal, theta, ...) standardGeneric("passage"))
 
-setMethod("passage", signature(transition = "Transition", origin = "Coords", goal = "Coords", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
+setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords", goal = "Coords", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
 		origin <- .coordsToMatrix(origin)
 		goal <- .coordsToMatrix(goal)
@@ -34,7 +34,7 @@ setMethod("passage", signature(transition = "Transition", origin = "Coords", goa
 	}
 )
 
-setMethod("passage", signature(transition = "Transition", origin = "RasterLayer", goal = "RasterLayer", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
+setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterLayer", goal = "RasterLayer", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
 		
 
@@ -72,7 +72,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 # Version 1.0
 # Licence GPL v3
 
-setMethod("passage", signature(transition = "Transition", origin = "Coords", goal = "Coords", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
+setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords", goal = "Coords", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
 	{
 		transition <- .transitionSolidify(transition)
 		tc <- transitionCells(transition)
@@ -86,7 +86,7 @@ setMethod("passage", signature(transition = "Transition", origin = "Coords", goa
 	}
 )
 
-setMethod("passage", signature(transition = "Transition", origin = "RasterLayer", goal = "RasterLayer", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
+setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterLayer", goal = "RasterLayer", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
 	{
 		#check if Transition and RasterLayers coincide
 		transition <- .transitionSolidify(transition)
@@ -145,7 +145,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 			result <- as(transition,"RasterLayer")
 			dataVector <- rep(0,times=ncell(result))
 		}	
-		if(output == "Transition")
+		if(output == "TransitionLayer")
 		{
 			result <- transition
 			transitionMatrix(result) <- transitionMatrix(result) * 0
@@ -191,7 +191,7 @@ setMethod("passage", signature(transition = "Transition", origin = "RasterLayer"
 			result <- setValues(result, dataVector)
 		}
 	
-		if(output == "Transition")
+		if(output == "TransitionLayer")
 		{
 			result <- transition
 			if(totalNet == "total")

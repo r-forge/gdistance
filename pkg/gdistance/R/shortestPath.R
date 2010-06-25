@@ -8,7 +8,7 @@
 
 setGeneric("shortestPath", function(transition, origin, goal) standardGeneric("shortestPath"))
 
-setMethod("shortestPath", signature(transition = "Transition", origin = "Coords", goal = "Coords"), def = function(transition, origin, goal)
+setMethod("shortestPath", signature(transition = "TransitionLayer", origin = "Coords", goal = "Coords"), def = function(transition, origin, goal)
 	{
 		origin <- .coordsToMatrix(origin)
 		goal <- .coordsToMatrix(goal)

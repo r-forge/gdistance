@@ -1,16 +1,25 @@
-\name{Transition class}
+\name{Transition* classes}
 \docType{class}
-\alias{Transition-class}
-\alias{Arith,Transition,transition-method}
-\alias{coerce,Transition,sparseMatrix-method}
-\alias{initialize,Transition-method}
-\alias{show,Transition-method}
+\alias{TransitionLayer-class}
+\alias{TransitionStack-class}
+\alias{coerce,TransitionLayer,sparseMatrix-method}
+\alias{coerce,TransitionLayer,RasterLayer-method}
+\alias{coerce,TransitionLayer,TransitionStack-method}
+\alias{coerce,TransitionData,TransitionLayer-method}
+\alias{coerce,RasterLayer,TransitionLayer-method}
 
-\title{Class "Transition" }
+\alias{initialize,TransitionLayer-method}
+\alias{initialize,TransitionStack-method}
+
+\alias{show,TransitionLayer-method}
+
+\alias{==,TransitionLayer,TransitionLayer-method}
+
+\title{Transition* classes}
 \description{
 
 
-An object of the class Transition contains two main elements:
+An object of the class TransitionLayer contains two main elements:
 1. a transition matrix with transition values between connected cells in a raster - an object of class sparseMatrix (package Matrix); 
 2. information on the extent, resolution and projection of the underlying raster - an object of class Raster (package raster).
 
@@ -48,12 +57,12 @@ Class \code{"\linkS4class{Raster}"}.
 
 \author{ Jacob van Etten <jacobvanetten@yahoo.com> }
 \examples{
-showClass("Transition")
+showClass("TransitionLayer")
 
-tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,
+tr <- new("TransitionLayer",nrows=36,ncols=18,xmin=-180,xmax=180,
           ymin=-90,ymax=90,projection=CRS("+proj=longlat +datum=WGS84"))
 
-tr <- new("Transition",nrows=36,ncols=18,xmin=-180,xmax=180,
+tr <- new("TransitionLayer",nrows=36,ncols=18,xmin=-180,xmax=180,
           ymin=-90,ymax=90,projection="")
 }
 \keyword{classes}

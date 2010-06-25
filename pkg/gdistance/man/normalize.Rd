@@ -1,6 +1,6 @@
 \name{normalize}
 \alias{normalize}
-\alias{normalize,Transition-method}
+\alias{normalize,TransitionLayer-method}
 \title{ normalize }
 \description{  Normalize the transition matrix.
 }
@@ -9,7 +9,7 @@
 normalize(transition, ...)
 }
 \arguments{
-  \item{transition}{transition matrix (class Transition)}
+  \item{transition}{transition matrix (class Transition*)}
   \item{...}{optional argument (see below)}
  }
 \details{

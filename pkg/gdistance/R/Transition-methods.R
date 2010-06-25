@@ -6,7 +6,7 @@
 
 #TODO matrixValues == "resistance"
 
-setMethod("Arith", signature(e1 = "Transition", e2 = "Transition"),
+setMethod("Arith", signature(e1 = "TransitionLayer", e2 = "TransitionLayer"),
 		function(e1, e2){
 			if(as(e1, "BasicRaster") == as(e2, "BasicRaster"))
 				{
@@ -14,11 +14,11 @@ setMethod("Arith", signature(e1 = "Transition", e2 = "Transition"),
 					transitionMatrix(e1) <- matrix.dsC
 					return(e1)
 				}
-			else {stop("transition matrices do not coincide in resolution, extent and/or projection")}
+			else {stop("objects do not coincide in resolution, extent and/or projection")}
 		}
 )
 
-setMethod("Arith", signature(e1 = "Transition", e2 = "ANY"),
+setMethod("Arith", signature(e1 = "TransitionLayer", e2 = "ANY"),
 		function(e1, e2){
 			matrix.dsC <- callGeneric(as(e1,"sparseMatrix"),e2)
 			transitionMatrix(e1) <- matrix.dsC
@@ -26,7 +26,7 @@ setMethod("Arith", signature(e1 = "Transition", e2 = "ANY"),
 		}
 )
 
-setMethod("Arith", signature(e1 = "ANY", e2 = "Transition"),
+setMethod("Arith", signature(e1 = "ANY", e2 = "TransitionLayer"),
 		function(e1, e2){
 			matrix.dsC <- callGeneric(e1,as(e2,"sparseMatrix"))
 			transitionMatrix(e1) <- matrix.dsC
@@ -34,14 +34,60 @@ setMethod("Arith", signature(e1 = "ANY", e2 = "Transition"),
 		}
 )
 
-setMethod("Math", signature(x = "Transition"),
+setMethod("Math", signature(x = "TransitionLayer"),
 		function(x){
 			transitionMatrix(x) <- callGeneric(transitionMatrix(x))
 			return(x)
 		}
 )
 
-setMethod("==", signature(e1 = "Transition", e2 = "Transition"),
+setMethod("==", signature(e1 = "TransitionLayer", e2 = "TransitionLayer"),
+		function(e1, e2){
+			c1 <- e1@transitionMatrix == e2@transitionMatrix
+			c2 <- as(e1, "BasicRaster") == as(e2, "BasicRaster")
+			cond <- c1 & c2
+			return(cond)
+		}
+)
+
+#TransitionStack
+
+setMethod("Arith", signature(e1 = "TransitionLayer", e2 = "TransitionStack"),
+		function(e1, e2){
+			if(as(e1, "BasicRaster") == as(e2, "BasicRaster"))
+				{
+					matrix.dsC <- callGeneric(as(e1,"sparseMatrix"),as(e2,"sparseMatrix"))
+					transitionMatrix(e1) <- matrix.dsC
+					return(e1)
+				}
+			else {stop("objects do not coincide in resolution, extent and/or projection")}
+		}
+)
+
+setMethod("Arith", signature(e1 = "TransitionLayer", e2 = "ANY"),
+		function(e1, e2){
+			matrix.dsC <- callGeneric(as(e1,"sparseMatrix"),e2)
+			transitionMatrix(e1) <- matrix.dsC
+			return(e1)
+		}
+)
+
+setMethod("Arith", signature(e1 = "ANY", e2 = "TransitionLayer"),
+		function(e1, e2){
+			matrix.dsC <- callGeneric(e1,as(e2,"sparseMatrix"))
+			transitionMatrix(e1) <- matrix.dsC
+			return(e1)
+		}
+)
+
+setMethod("Math", signature(x = "TransitionLayer"),
+		function(x){
+			transitionMatrix(x) <- callGeneric(transitionMatrix(x))
+			return(x)
+		}
+)
+
+setMethod("==", signature(e1 = "TransitionLayer", e2 = "TransitionLayer"),
 		function(e1, e2){
 			c1 <- e1@transitionMatrix == e2@transitionMatrix
 			c2 <- as(e1, "BasicRaster") == as(e2, "BasicRaster")

@@ -1,7 +1,7 @@
 \name{accCost}
 \alias{accCost}
-\alias{accCost,Transition,RasterLayer-method}
-\alias{accCost,Transition,Coords-method}
+\alias{accCost,TransitionLayer,RasterLayer-method}
+\alias{accCost,TransitionLayer,Coords-method}
 \title{ Accumulated Cost Surface }
 \description{
 Calculates the accumulated cost surface from one or more origins. }
@@ -10,7 +10,7 @@ accCost(transition, fromCoords)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition}{ object of class Transition }
+  \item{transition}{ object of class TransitionLayer }
   \item{fromCoords}{ origin point locations (SpatialPoints, matrix or numeric class) or surface (RasterLayer class) }
 }
 \details{

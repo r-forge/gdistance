@@ -164,7 +164,7 @@ This can make distance calculations more accurate.
 and the documentation of this function illustrates nicely why connecting in 16 directions 
 can increase the accuracy of the calculations \url{http://grass.itc.it/grass64/manuals/html64_user/r.cost.html}.}
 
-By inspecting the object we created, we see that the resulting \verb@Transition@ object keeps much information from 
+If we inspect the object we created, we see that the resulting \verb@Transition@ object keeps much information from 
 the original \verb@RasterLayer@ object.
 <<gdistance-4>>=
 tr1

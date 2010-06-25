@@ -6,7 +6,7 @@
 
 setGeneric("accCost", function(transition, fromCoords) standardGeneric("accCost"))
 
-setMethod("accCost", signature(transition = "Transition", fromCoords = "Coords"), def = function(transition, fromCoords)
+setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "Coords"), def = function(transition, fromCoords)
 	{
 		fromCoords <- .coordsToMatrix(fromCoords) 
 		fromCoordsCells <- cellFromXY(transition, fromCoords)
@@ -30,7 +30,7 @@ setMethod("accCost", signature(transition = "Transition", fromCoords = "Coords")
 	}
 )
 
-setMethod("accCost", signature(transition = "Transition", fromCoords = "RasterLayer"), def = function(transition, fromCoords)
+setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "RasterLayer"), def = function(transition, fromCoords)
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))

@@ -35,6 +35,7 @@ Jacob van Etten \email{jacobvanetten@yahoo.com}
   \url{http://cmpg.unibe.ch/software/pathmatrix/}
 
   McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551 - 1561.
+  
   McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. \emph{Ecology} 89:2712-2724.
   \url{http://www.circuitscape.org}
 }

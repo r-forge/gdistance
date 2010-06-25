@@ -1,16 +1,16 @@
 \name{geoCorrection}
 \alias{geoCorrection}
-\alias{geoCorrection,Transition,character-method}
-\alias{geoCorrection,Transition,missing-method}
+\alias{geoCorrection,TransitionLayer,character-method}
+\alias{geoCorrection,TransitionLayer,missing-method}
 \title{ Geographic Correction }
-\description{ Correct Transition objects taking into account local distances
+\description{ Correct Transition* objects taking into account local distances
 }
 
 \usage{
 geoCorrection(transition, type, ...)
 }
 \arguments{
-  \item{transition}{transition matrix (class Transition)}
+  \item{transition}{object of class Transition*}
   \item{type}{type of correction: "c", "r", or missing (only required for lonlat, see below)}  
   \item{...}{multpl: matrix with correction factor (TRUE) or corrected values (FALSE, the default); scl: scale the correction values (default is TRUE)}
 }

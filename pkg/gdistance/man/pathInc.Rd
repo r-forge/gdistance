@@ -1,13 +1,15 @@
 \name{pathInc}
 \alias{pathInc}
-\alias{pathInc,Transition,Coords,Coords,missing,logical,character,missing-method}
-\alias{pathInc,Transition,Coords,Coords,missing,logical,character,numeric-method}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,character,missing,missing-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,character,numeric,missing-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,character,missing,TransitionLayer-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,character,numeric,TransitionLayer-method}
+
 \title{Incidence of paths from a common origin: overlap and non-overlap}
 \description{
 Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
 \usage{
-pathInc(transition, origin, fromCoords, toCoords, norml, type, theta, weight)
+pathInc(transition, origin, fromCoords, toCoords, type, theta, weight)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -61,10 +63,10 @@ sP1 <- SpatialPoints(cbind(c(65,5,-65),c(-55,35,-35)))
 #randomised shortest paths
 #but rescaling is needed: exp(-theta * trC) should give reasonable values
 trC <- trC / median(transitionMatrix(trC)@x) #divide by median of the non-zero values
-pathInc(trC, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"), theta=2)
+pathInc(trC, origin=sP0, fromCoords=sP1, type=c("divergent","joint"), theta=2)
 
 #random walk
-pathInc(trR, origin=sP0, fromCoords=sP1, norml=FALSE, type=c("divergent","joint"))
+pathInc(trR, origin=sP0, fromCoords=sP1, type=c("divergent","joint"))
 
 }
 \keyword{ spatial }

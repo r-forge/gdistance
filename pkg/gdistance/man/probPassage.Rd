@@ -1,9 +1,9 @@
 \name{passage}
 \alias{passage}
-\alias{passage,Transition,Coords,Coords,missing-method}
-\alias{passage,Transition,Coords,Coords,numeric-method}
-\alias{passage,Transition,RasterLayer,RasterLayer,missing-method}
-\alias{passage,Transition,RasterLayer,RasterLayer,numeric-method}
+\alias{passage,TransitionLayer,Coords,Coords,missing-method}
+\alias{passage,TransitionLayer,Coords,Coords,numeric-method}
+\alias{passage,TransitionLayer,RasterLayer,RasterLayer,missing-method}
+\alias{passage,TransitionLayer,RasterLayer,RasterLayer,numeric-method}
 
 \title{ Probability of passage }
 \description{

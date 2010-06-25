@@ -13,7 +13,7 @@
 
 setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, type, theta, weight) standardGeneric("pathInc"))
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="missing"), def = function(transition, origin, fromCoords, type)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="missing"), def = function(transition, origin, fromCoords, type)
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
@@ -24,7 +24,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="missing"), def = function(transition, origin, fromCoords, type, theta)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="missing"), def = function(transition, origin, fromCoords, type, theta)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
@@ -36,7 +36,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="Transition"), def = function(transition, origin, fromCoords, type, weight)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="TransitionLayer"), def = function(transition, origin, fromCoords, type, weight)
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
@@ -47,7 +47,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 	}
 )
 
-setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="Transition"), def = function(transition, origin, fromCoords, type, theta, weight)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="TransitionLayer"), def = function(transition, origin, fromCoords, type, theta, weight)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
@@ -181,7 +181,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		Flow <- writeStart(Flow, filenm, overwrite=TRUE)
 		for(i in 1:(length(cj)))
 		{
-			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
+			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"))[index]
 			writeValues(Flow, matrixRow)
 		}
 		Flow <- writeStop(Flow)
@@ -191,7 +191,7 @@ setMethod("pathInc", signature(transition = "Transition", origin = "Coords", fro
 		Flow <- matrix(nrow=Size,ncol=length(cj))
 		for(i in 1:(length(cj)))
 		{
-			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="Transition"))[index]
+			Flow[,i] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"))[index]
 		}
 	}
 	return(Flow)

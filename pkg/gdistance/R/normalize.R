@@ -6,7 +6,7 @@
 
 setGeneric("normalize", function(transition, ...) standardGeneric("normalize"))
 
-setMethod("normalize", signature(transition = "Transition"), def = function(transition, symm=FALSE)
+setMethod("normalize", signature(transition = "TransitionLayer"), def = function(transition, symm=FALSE)
 	{
 		return(.normalize(transition, symm))
 	}

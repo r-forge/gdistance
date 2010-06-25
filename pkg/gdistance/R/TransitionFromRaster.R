@@ -15,7 +15,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 .TfromR <- function(object, transitionFunction, directions, symm)
 {
 			if(dataContent(object) != 'all'){object <- readAll(object)}
-			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
+			transition <- new("TransitionLayer",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
 			transitionMatr <- transitionMatrix(transition)
 			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
 			if(symm){adj <- adj[adj[,1] < adj[,2],]}
@@ -52,7 +52,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = funct
 					Dimnames = list(as.character(1:ncell(object)),as.character(1:ncell(object)))
 			)
 			transitiondsC[adj] <- mahaldistance
-			transition <- new("Transition",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE), matrixValues="conductance")
+			transition <- new("TransitionLayer",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE), matrixValues="conductance")
 			transitionMatrix(transition) <- transitiondsC
 			return(transition)
 		}

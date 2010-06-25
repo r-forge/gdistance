@@ -1,8 +1,7 @@
 \name{costDistance}
 \alias{costDistance}
-\alias{costDistance,Transition,Coords,missing-method}
-\alias{costDistance,Transition,Coords,Coords-method}
-%- Also NEED an '\alias' for EACH other topic documented here.
+\alias{costDistance,TransitionLayer,Coords,missing-method}
+\alias{costDistance,TransitionLayer,Coords,Coords-method}
 \title{ Cost distance (least-cost distance) }
 \description{
 Calculates the least-cost distance between points. }
@@ -11,7 +10,7 @@ costDistance(transition, fromCoords, toCoords)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition}{ transition matrix (class Transition) }
+  \item{transition}{ transition matrix (class TransitionLayer) }
   \item{fromCoords}{ first set of point locations (of SpatialPoints, matrix or numeric class)}  
   \item{toCoords}{ second, optional set of point locations (of SpatialPoints, matrix or numeric class)}
 }

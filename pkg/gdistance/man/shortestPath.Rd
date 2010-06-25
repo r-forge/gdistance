@@ -1,6 +1,6 @@
 \name{shortestPath}
 \alias{shortestPath}
-\alias{shortestPath,Transition,Coords,Coords-method}
+\alias{shortestPath,TransitionLayer,Coords,Coords-method}
 
 \title{ Shortest path }
 \description{

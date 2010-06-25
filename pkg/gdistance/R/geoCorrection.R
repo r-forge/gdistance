@@ -7,14 +7,14 @@
 
 setGeneric("geoCorrection", function(transition, type, ...) standardGeneric("geoCorrection"))
 
-setMethod("geoCorrection", signature(transition = "Transition", type="missing"), def = function(transition, multpl=FALSE, scl=TRUE)
+setMethod("geoCorrection", signature(transition = "TransitionLayer", type="missing"), def = function(transition, multpl=FALSE, scl=TRUE)
 	{
 		return(geoCorrection(transition, type="c", multpl=FALSE, scl=TRUE))
 	}
 )
 
 
-setMethod("geoCorrection", signature(transition = "Transition", type="character"), def = function(transition, type, multpl=FALSE, scl=TRUE)
+setMethod("geoCorrection", signature(transition = "TransitionLayer", type="character"), def = function(transition, type, multpl=FALSE, scl=TRUE)
 	{
 		if(isLonLat(transition))
 		{

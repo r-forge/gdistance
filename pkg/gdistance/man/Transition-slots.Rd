@@ -4,14 +4,14 @@
 \alias{matrixValues}
 \alias{matrixValues<-}
 \alias{transitionCells}
-\alias{transitionMatrix,Transition-method}
-\alias{transitionMatrix<-,Transition,sparseMatrix-method}
-\alias{transitionCells,Transition-method}
-\alias{matrixValues,Transition-method}
-\alias{matrixValues<-,Transition,character-method}
+\alias{transitionMatrix,TransitionLayer-method}
+\alias{transitionMatrix<-,TransitionLayer,sparseMatrix-method}
+\alias{transitionCells,TransitionLayer-method}
+\alias{matrixValues,TransitionLayer-method}
+\alias{matrixValues<-,TransitionLayer,character-method}
 \title{Extract or change elements of Transition objects}
 \description{
-These functions are to be used to access slots of Transition objects directly.
+These functions are to be used to access slots of Transition* objects directly.
 }
 \usage{
 transitionMatrix(transition)
@@ -19,5 +19,5 @@ transitionCells(transition)
 matrixValues(transition)
 }
 \arguments{
-  \item{transition}{object of class Transition}
+  \item{transition}{object of class Transition*}
 }

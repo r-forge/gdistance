@@ -6,7 +6,7 @@
 
 setGeneric("transitionMatrix", function(transition) standardGeneric("transitionMatrix"))
 
-setMethod ("transitionMatrix", signature(transition = "Transition"),
+setMethod ("transitionMatrix", signature(transition = "TransitionLayer"),
 	function(transition){
 		transition@transitionMatrix
 	}
@@ -14,25 +14,25 @@ setMethod ("transitionMatrix", signature(transition = "Transition"),
 
 setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("transitionMatrix<-"))
 
-setReplaceMethod ("transitionMatrix", signature(transition = "Transition", value = "sparseMatrix"),
+setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", value = "sparseMatrix"),
 	function(transition, value){
-		#if(dim(transitionMatrix(transition) != dim(sparseMatrix)){warning(unequal dimensions)}
+		if(dim(value)[1] != dim(value)[2]){stop("sparse matrix has to be square")}
 		transition@transitionMatrix <- value
 		return(transition)
 	}
 )
 
-setGeneric("transitionCells", function(transition = "Transition") standardGeneric("transitionCells"))
+setGeneric("transitionCells", function(transition = "TransitionLayer") standardGeneric("transitionCells"))
 
-setMethod ("transitionCells", signature(transition = "Transition"),
+setMethod ("transitionCells", signature(transition = "TransitionLayer"),
 	function(transition){
 		transition@transitionCells
 	}
 )
 
-setGeneric("matrixValues", function(transition = "Transition") standardGeneric("matrixValues"))
+setGeneric("matrixValues", function(transition = "TransitionLayer") standardGeneric("matrixValues"))
 
-setMethod ("matrixValues", signature(transition = "Transition"),
+setMethod ("matrixValues", signature(transition = "TransitionLayer"),
 	function(transition){
 		transition@matrixValues
 	}
@@ -40,7 +40,7 @@ setMethod ("matrixValues", signature(transition = "Transition"),
 
 setGeneric("matrixValues<-", function(transition, value) standardGeneric("matrixValues<-"))
 
-setReplaceMethod ("matrixValues", signature(transition = "Transition", value = "character"),
+setReplaceMethod ("matrixValues", signature(transition = "TransitionLayer", value = "character"),
 	function(transition, value){
 		if (value == "resistance" | value == "conductance") 
 		{
@@ -51,7 +51,7 @@ setReplaceMethod ("matrixValues", signature(transition = "Transition", value = "
 	}
 )
 
-setMethod("[", signature(x = "Transition", i="numeric", j="numeric", drop="missing"), function(x,i,j)
+setMethod("[", signature(x = "TransitionLayer", i="numeric", j="numeric", drop="missing"), function(x,i,j)
 	{
 		i <- as.integer(i)
 		if (!((all(i %in% transitionCells(x)) || all(-i %in% transitionCells(x))) && (all(j %in% transitionCells(x)) || all(-j %in% transitionCells(x))))){stop("wrong cell numbers")}
@@ -76,7 +76,7 @@ setMethod("[", signature(x = "Transition", i="numeric", j="numeric", drop="missi
 	}
 )
 
-setMethod("[", signature(x = "Transition", i="matrix", j="missing", drop="missing"), function(x,i)
+setMethod("[", signature(x = "TransitionLayer", i="matrix", j="missing", drop="missing"), function(x,i)
 	{
 		if (!(all(i[,1] %in% transitionCells(x))  && all(i[,2] %in% transitionCells(x)))){stop("wrong cell numbers")}
 		else
@@ -91,7 +91,7 @@ setMethod("[", signature(x = "Transition", i="matrix", j="missing", drop="missin
 	}
 )
 
-setMethod("[<-", signature(x = "Transition", i="matrix", j="missing", value="ANY"),
+setMethod("[<-", signature(x = "TransitionLayer", i="matrix", j="missing", value="ANY"),
 		function(x, i, value){
 			if (!all(i[,1] %in% transitionCells(x)) || !all(i[,2] %in% transitionCells(x))){stop("wrong cell numbers")}
 			else
@@ -110,7 +110,7 @@ setMethod("[<-", signature(x = "Transition", i="matrix", j="missing", value="ANY
 		}
 )
 
-setMethod("[<-", signature(x = "Transition", i="numeric", j="numeric", value="ANY"),
+setMethod("[<-", signature(x = "TransitionLayer", i="numeric", j="numeric", value="ANY"),
 		function(x, i, j, value)
 		{
 			#stop("not yet implemented; request package author to implement this method")
@@ -128,3 +128,14 @@ setMethod("[<-", signature(x = "Transition", i="numeric", j="numeric", value="AN
 			return(x)
 		}
 )
+
+setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("transitionMatrix<-"))
+
+setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", value = "sparseMatrix"),
+	function(transition, value){
+		if(dim(value)[1] != dim(value)[2]){stop("sparse matrix has to be square")}
+		transition@transitionMatrix <- value
+		return(transition)
+	}
+)
+
