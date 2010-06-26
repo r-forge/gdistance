@@ -12,8 +12,10 @@
 \alias{initialize,TransitionStack-method}
 
 \alias{show,TransitionLayer-method}
+\alias{show,TransitionStack-method}
 
 \alias{==,TransitionLayer,TransitionLayer-method}
+\alias{==,TransitionStack,TransitionStack-method}
 
 \title{Transition* classes}
 \description{

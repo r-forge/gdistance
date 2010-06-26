@@ -139,3 +139,9 @@ setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", 
 	}
 )
 
+setMethod('nlayers', signature(object='TransitionStack'), 
+	function(object)
+	{
+		return(length(object@transition)) 
+    }
+)

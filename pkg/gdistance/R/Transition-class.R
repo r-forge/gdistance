@@ -65,6 +65,8 @@ setMethod ("initialize", "TransitionLayer",
 
 setAs("TransitionLayer", "sparseMatrix", function(from){from@transitionMatrix})
 
+setAs("TransitionData", "sparseMatrix", function(from){from@transitionMatrix})
+
 setAs("TransitionLayer", "RasterLayer", function(from)
 	{
 		raster(xmn=xmin(from), xmx=xmax(from), ymn=ymin(from), ymx=ymax(from), nrows=nrow(from), ncols=ncol(from), crs=projection(from))
@@ -82,8 +84,7 @@ setAs("RasterLayer", "TransitionLayer", function(from)
 setClass ("TransitionStack",
 	contains = "Raster",
 	representation (
-			nlayers = "integer",
-	    	transition = "list"
+			transition = "list"
 		),
 	validity = function(object) {
 		return(TRUE)
@@ -103,7 +104,6 @@ setMethod ("initialize", "TransitionStack",
 			#.Object@transitionMatrix <- NULL
 			#.Object@transitionCells <- NULL
 			#.Object@matrixValues <- NULL
-			.Object@nlayers = 0
 			return(.Object)
 		}
 )
@@ -125,4 +125,22 @@ setAs("TransitionData", "TransitionLayer", function(from)
 			matrixValues = matrixValues(from))
 		return(TD)
 	}
+)
+
+setMethod ("show" , "TransitionStack", 
+		function(object) {
+			cat("class       :" , class(object), "\n")
+			cat("nrows       :" , nrow(object), "\n")
+			cat("ncols       :" , ncol(object), "\n")
+			cat("ncells      :" , nrow(object) * ncol(object), "\n")
+			cat("xmin        :" , xmin(object), "\n")
+			cat("xmax        :" , xmax(object), "\n")
+			cat("ymin        :" , ymin(object), "\n")
+			cat("ymax        :" , ymax(object), "\n")
+			cat("xres        :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
+			cat("yres        :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
+			cat("projection  :", projection(object), "\n")
+			cat("layers      :", nlayers(object), "\n")
+			cat ("\n")
+		}
 )

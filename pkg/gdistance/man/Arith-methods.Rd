@@ -7,10 +7,16 @@
 \alias{Arith,TransitionLayer,ANY-method}
 \alias{Arith,TransitionLayer,TransitionLayer-method}
 \alias{Arith,TransitionLayer,TransitionStack-method}
+\alias{Arith,TransitionStack,TransitionLayer-method}
+\alias{Arith,TransitionStack,ANY-method}
+
+\alias{Arith,TransitionLayer,TransitionStack-method}
+
 \alias{Math-methods}
 \alias{Math,TransitionLayer-method}
+\alias{Math,TransitionStack-method}
 
-\title{Arithmetic and mathematical operations with objects of class Transition}
+\title{Arithmetic and mathematical operations with objects of Transition* classes}
 
 \description{
   Standard arithmetic operators for computations with Transition* objects and numeric values. 
