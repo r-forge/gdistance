@@ -61,7 +61,7 @@ sP0 <- SpatialPoints(cbind(0,0))
 sP1 <- SpatialPoints(cbind(c(65,5,-65),c(-55,35,-35)))
 
 #randomised shortest paths
-#but rescaling is needed: exp(-theta * trC) should give reasonable values
+#rescaling is needed: exp(-theta * trC) should give reasonable values
 trC <- trC / median(transitionMatrix(trC)@x) #divide by median of the non-zero values
 pathInc(trC, origin=sP0, fromCoords=sP1, type=c("divergent","joint"), theta=2)
 

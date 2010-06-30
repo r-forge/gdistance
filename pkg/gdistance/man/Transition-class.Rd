@@ -19,15 +19,24 @@
 
 \title{Transition* classes}
 \description{
-
+TransitionLayer and TransitionStack (or Transition*) are the core classes of the package gdistance. 
+They are the main input into the functions to calculate distances and routes.
 
 An object of the class TransitionLayer contains two main elements:
-1. a transition matrix with transition values between connected cells in a raster - an object of class sparseMatrix (package Matrix); 
-2. information on the extent, resolution and projection of the underlying raster - an object of class Raster (package raster).
+
+a. a transition matrix with transition values between connected cells in a raster - an object of class sparseMatrix (package Matrix); 
+
+b. information on the extent, resolution and projection of the underlying raster - an object of class Raster (package raster).
+
+
 
 All slots belong to these two elements from other package, except two additional slots:
+
 1. slot transitionCells, which contains the cell numbers of the cells included in the transition matrix;
+
 2. slot matrixValues indicates if the nonzero values of the transition matrix contains conductance or resistance values.
+
+Class TransitionStack contains various transition matrices. 
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Transition", nrows, ncols, xmin, xmax, ymin, ymax, projection)}.

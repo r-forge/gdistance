@@ -4,39 +4,40 @@
 # Version 1.0
 # Licence GPL v3
 
-#permissible values totalNet and output
-#TODO check if coordinate systems are equal (should throw warning)
-#division by zero: warning?
-#reconstructing dist matrix with names, etc. -> generic function?
-
-#combining with passage functions and adding the same options (total flow, net flow, different/custom comparison functions)?
+#transitionCells()
 
 setGeneric("pathInc", function(transition, origin, fromCoords, toCoords, type, theta, weight) standardGeneric("pathInc"))
 
-setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="missing"), def = function(transition, origin, fromCoords, type)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="missing", weight="missing"), 
+	def = function(transition, origin, fromCoords, type)
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, 0)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
 	}
 )
 
-setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="missing"), def = function(transition, origin, fromCoords, type, theta)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="numeric", weight="missing"), 
+	def = function(transition, origin, fromCoords, type, theta)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, 0)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
 	}
 )
 
-setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="missing", weight="TransitionLayer"), def = function(transition, origin, fromCoords, type, weight)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="missing", weight="TransitionLayer"), 
+	def = function(transition, origin, fromCoords, type, weight)
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
@@ -47,7 +48,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	}
 )
 
-setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", toCoords = "missing", type="character", theta="numeric", weight="TransitionLayer"), def = function(transition, origin, fromCoords, type, theta, weight)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="numeric", weight="TransitionLayer"), 
+	def = function(transition, origin, fromCoords, type, theta, weight)
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
@@ -59,9 +62,34 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	}
 )
 
-#weight = "TransitionStack" ???
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="missing", weight="TransitionStack"), 
+	def = function(transition, origin, fromCoords, type, weight)
+	{
+		origin <- .coordsToMatrix(origin)
+		from <- .coordsToMatrix(fromCoords)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		Intermediate <- .randomWalk(prepared)
+		result <- .finishFlowStack(prepared, Intermediate)
+		return(result)
+	}
+)
 
-.preparationFlow <- function(transition, origin, fromCoords, type, ...)
+setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords", fromCoords = "Coords", 
+	toCoords = "missing", type="character", theta="numeric", weight="TransitionStack"), 
+	def = function(transition, origin, fromCoords, type, theta, weight)
+	{
+		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
+		origin <- .coordsToMatrix(origin)
+		from <- .coordsToMatrix(fromCoords)
+		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		Intermediate <- .randomSP(prepared, theta)
+		result <- .finishFlowStack(prepared, Intermediate)
+		return(result)
+	}
+)
+
+.preparationFlow <- function(transition, origin, fromCoords, type, weight)
 {
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
 
@@ -83,14 +111,29 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		A <- as(transitionMatrix(transition),"lMatrix")
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
-		index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
-		#index <- index[index[,1] < index[,2],]
+		index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1)) #BUT @transitionCells -> create function extractNon0()
+		#if symmetric? index <- index[index[,1] < index[,2],]
 		Size <- length(index[,1])
 		
-		R <- try(1/transitionMatrix(...)[index], silent=TRUE)
-		if(class(R) != "numeric") {R <- 1/transitionMatrix(transition)[index]} #or transition[index]?
-		R[R == Inf] <- 0
-		
+		if(weight == 0)
+		{
+			R <- 1/transition[index]
+			R[R == Inf] <- 0
+		}
+		if(class(weight) == "TransitionLayer")
+		{
+			R <- 1/weight[index]
+			R[R == Inf] <- 0
+		}
+		if(class(weight) == "TransitionStack")
+		{
+			R <- matrix(nrow=nlayer(weight), ncol=length(index[,1]))
+			for(i in 1:nlayers(transition))
+			{
+				R[i,] <- 1/weight[index] 
+			}
+			R[R == Inf] <- 0
+		}
 		result <- list(transition=transition,
 						type=type,
 						fromCoords=fromCoords,
@@ -104,10 +147,6 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 						R=R)
 		return(result)
 }
-
-#setMethod("flow", signature(transition = "Transition", origin = "RasterLayer", fromCoords = "SpatialPoints", toCoords = "missing", norml="logical", type="character", algorithm="character"), def = function(transition, originCoord, fromCoords, norml, type, algorithm)
-#	{
-#	}
 
 .randomWalk <- function(prepared)
 {
@@ -170,7 +209,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	P <- tr * rs
 
 	W <- trR
-	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) ; the logarithm is a small variation, which gives a natural random walk
+	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x)
 	W <- W * P 
 
 	if(((Size * length(cj) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
@@ -196,29 +235,6 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	}
 	return(Flow)
 }	
-
-#.probPass <- function(Id, W, nr, ei, cj, index)
-#{	
-#	Ij <- Id
-#	Ij[cbind(cj,cj)] <- 0
-#	Wj <- Ij %*% W
-#	IdMinusWj <- as((Id - Wj), "dgCMatrix")
-#	zci <- solve(t(IdMinusWj),ei)
-
-#	ej <- rep(0,times=nr)
-#	ej[cj] <- 1
-#	zcj <- solve(IdMinusWj, ej)
-#	zcij <- sum(ei*zcj)
-#	if(zcij < 1e-300){return(rep(0,times=length(index[,1])))}
-#	else
-#	{
-#		# Computation of the matrix N, containing the number of passages through
-#		# each arc
-#		N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
-#		result <- N[index]
-#		return(result)
-#	}
-#}
 
 .finishFlow <- function(prepared, Flow)
 {
@@ -342,3 +358,163 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	if(length(type) == 1 & type == "divergent") {return(divFl)}
 	if(length(type) == 1 & type == "joint") {return(jointFl)}
 } 
+
+.finishFlowStack <- function(prepared, Flow) 
+{
+	fromCells <- prepared$fromCells
+	allFromCells <- prepared$allFromCells
+	fromCoords <- prepared$fromCoords
+	type <- prepared$type
+	
+	Size <- prepared$Size
+	R <- prepared$R
+	
+	if(class(Flow) == "RasterLayer")
+	{
+		nr <- min(10,nrow(Flow))
+		end <- ceiling(length(fromCells)/nr)
+		if("divergent" %in% type) 
+		{
+			divFlow <- vector("list", nlayers(R))
+			divFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(i in 1:nlayers(R)){divFlow[[i]] <- divFlowi}
+		}
+		if("joint" %in% type) 
+		{
+			jointFlow <- vector("list", nlayers(R))
+			jointFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(i in 1:nlayers(R)){jointFlow[[i]] <- jointFlowi}
+
+		}
+		nrows1 <- nr
+		startrow1 <- 1
+		dataRows1 <- getValues(Flow, row=startrow1, nrows=nrows1)
+		dataRows1 <- matrix(dataRows1,nrow=ncol(Flow)) #rows are cell transitions, columns are locations
+
+		for(j in 1:end)
+		{
+			if("divergent" %in% type) 
+			{
+				for(k in 1:nrows1)
+				{
+					index <- startrow1+k-1
+					for(i in 1:nlayers(R))
+					{
+						divFlow[[i]][startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
+							(1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R[i,])
+					}
+					#this fills the lower triangle only (plus some upper triangle blocks of size nr around the diagonal)
+				}
+			}
+			if("joint" %in% type) 
+			{
+				for(l in 1:nrows1)
+				{
+					index <- startrow1+l-1
+					for(i in 1:nlayers(R))
+					{
+						jointFlow[[i]][startrow1:(startrow1+nrows1-1),index] <- colSums(matrix((dataRows1[,l] * dataRows1), nrow=Size) * R[i,])
+					}
+				}
+			}
+			if(j != end)
+			{
+				for(m in (j+1):end)
+				{
+					nrows2 <- min(nr, length(fromCells) - (m - 1) * nr)
+					startrow2 <- (m-1)*nr+1
+					dataRows2 <- getValues(Flow, row=startrow2, nrows=nrows2)
+					dataRows2 <- matrix(dataRows2,nrow=ncol(Flow))
+				
+					if("divergent" %in% type) 
+					{
+						for(n in 1:nrows1)
+						{
+							index <- startrow1+n-1
+							for(i in 1:nlayers(R))
+							{
+								divFlow[[i]][startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,n],dataRows2) * 
+									(1-pmin(dataRows1[,n],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow= Size) * R[i,])
+							}
+						}
+					}
+					if("joint" %in% type) 
+					{
+						for(o in 1:nrows1)
+						{
+							index <- startrow1+o-1
+							for(i in 1:nlayers(R))
+							{
+								jointFlow[[i]][startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,o] * dataRows2), nrow=Size) * R[i,])
+							}
+						}
+					}
+				}
+				nrows1 <- min(nr, length(fromCells) - j * nr)
+				startrow1 <- j*nr+1
+				dataRows1 <- matrix(getValues(Flow, row=startrow1, nrows=nrows1),nrow=ncol(Flow))
+			}
+		}
+	}
+	if(class(Flow) == "matrix")
+	{
+		if("divergent" %in% type)
+		{
+			divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(j in 1:(length(fromCells)))
+			{
+				for(i in 1:nlayers(R))
+				{
+					divFlow[[i]][j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R[i,])
+				}
+			}
+		}
+		if("joint" %in% type)
+		{
+			jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+			for(j in 1:(length(fromCells)))
+			{
+				for(i in 1:nlayers(R))
+				{
+					jointFlow[[i]][j,] <- colSums((Flow[,j] * Flow) * R[[i]])
+				}
+			}
+		}
+	}
+	index1 <- which(allFromCells %in% fromCells)
+	index2 <- match(allFromCells[allFromCells %in% fromCells], fromCells)
+	#convert to stack from here
+
+
+	if("divergent" %in% type)
+	{
+		for(i in 1:nlayers(R))
+		{
+			divFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
+			rownames(divFl) <- rownames(fromCoords)
+			colnames(divFl) <- rownames(fromCoords)
+			divFlowi <- as.matrix(as.dist(divFlow[[i]], diag=TRUE))
+			divFl[index1,index1] <- divFlowi[index2,index2]
+			divFl <- as.dist(divFl)
+			attr(divFl, "method") <- "divergent path"
+			divFlow[[i]] <- divFl
+		}
+	}
+	if("joint" %in% type)
+	{
+		for(i in 1:nlayers(R))
+		{
+			jointFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
+			rownames(jointFl) <- rownames(fromCoords)
+			colnames(jointFl) <- rownames(fromCoords)
+			jointFlowi <- as.matrix(as.dist(jointFlow[[i]], diag=TRUE))
+			jointFl[index1,index1] <- jointFlowi[index2,index2]
+			jointFl <- as.dist(jointFl)
+			attr(jointFl, "method") <- "joint path"	
+			jointFlow[[i]] <- jointFl
+		}
+	}
+	if(length(type) > 1) {return(list(divergent=divFl, joint=jointFl))}
+	if(length(type) == 1 & type == "divergent") {return(divFl)}
+	if(length(type) == 1 & type == "joint") {return(jointFl)}
+}
