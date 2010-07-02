@@ -12,6 +12,12 @@ setMethod ("transitionMatrix", signature(transition = "TransitionLayer"),
 	}
 )
 
+setMethod ("transitionMatrix", signature(transition = "TransitionData"),
+	function(transition){
+		transition@transitionMatrix
+	}
+)
+
 setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("transitionMatrix<-"))
 
 setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", value = "sparseMatrix"),
@@ -144,4 +150,28 @@ setMethod('nlayers', signature(object='TransitionStack'),
 	{
 		return(length(object@transition)) 
     }
+)
+
+
+setMethod("[[", signature(x = "TransitionStack", i="numeric", j="missing"), function(x,i)
+	{
+		if (!(all(i %in% 1:nlayers(x)))){stop("indices should correspond to layers")}
+		else
+		{
+			if(length(i)==1)
+			{
+				result <- new("TransitionLayer", nrows=nrow(x),ncols = ncol(x),xmin = xmin(x),xmax = xmax(x),
+				ymin = ymin(x), ymax = ymax(x), projection=projection(x))
+				result@transitionMatrix <- x@transition[[i]]@transitionMatrix
+				result@transitionCells <- x@transition[[i]]@transitionCells
+				result@matrixValues <- x@transition[[i]]@matrixValues
+			}			
+			if(length(i)>1)
+			{
+				result <- x
+				result@transition <- x@transition[[i]]
+			}
+		}
+	return(result)
+	}
 )

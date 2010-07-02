@@ -47,14 +47,17 @@ Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path pro
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}. Implementation of randomised shortest paths based on Matlab code by Marco Saerens. }
 \examples{
-#create Transition object
+#create TransitionLayer
 r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
 tr <- TransitionFromRaster(r,mean,directions=4)
 
-#two different types of correction are required
+#Two different types of correction are required
 trR <- geoCorrection(tr, type="r", multpl=FALSE)
 trC <- geoCorrection(tr, type="c", multpl=FALSE)
+
+#Create TransitionStack
+ts <- stack(trR, trR)
 
 #points for origin and coordinates between which to calculate path (non)overlaps
 sP0 <- SpatialPoints(cbind(0,0))
@@ -67,6 +70,9 @@ pathInc(trC, origin=sP0, fromCoords=sP1, type=c("divergent","joint"), theta=2)
 
 #random walk
 pathInc(trR, origin=sP0, fromCoords=sP1, type=c("divergent","joint"))
+
+#TransitionStack as weights
+pathInc(trR, origin=sP0, fromCoords=sP1, type=c("divergent","joint"), weight=ts)
 
 }
 \keyword{ spatial }

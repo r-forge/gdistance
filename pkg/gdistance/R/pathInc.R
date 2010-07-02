@@ -115,7 +115,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		#if symmetric? index <- index[index[,1] < index[,2],]
 		Size <- length(index[,1])
 		
-		if(weight == 0)
+		if(class(weight) == "numeric")
 		{
 			R <- 1/transition[index]
 			R[R == Inf] <- 0
@@ -127,10 +127,10 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		}
 		if(class(weight) == "TransitionStack")
 		{
-			R <- matrix(nrow=nlayer(weight), ncol=length(index[,1]))
-			for(i in 1:nlayers(transition))
+			R <- matrix(nrow=nlayers(weight), ncol=length(index[,1]))
+			for(i in 1:nlayers(weight))
 			{
-				R[i,] <- 1/weight[index] 
+				R[i,] <- 1/weight[[i]][index] 
 			}
 			R[R == Inf] <- 0
 		}
@@ -245,13 +245,14 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	
 	Size <- prepared$Size
 	R <- prepared$R
-	
+	if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
+	if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}	
+
 	if(class(Flow) == "RasterLayer")
 	{
 		nr <- min(10,nrow(Flow))
 		end <- ceiling(length(fromCells)/nr)
-		if("divergent" %in% type) {divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
-		if("joint" %in% type) {jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))}
+
 		
 		nrows1 <- nr
 		startrow1 <- 1
@@ -316,7 +317,6 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	{
 		if("divergent" %in% type)
 		{
-			divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 			for(j in 1:(length(fromCells)))
 			{
 				divFlow[j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R)
@@ -324,7 +324,6 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		}
 		if("joint" %in% type)
 		{
-			jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 			for(j in 1:(length(fromCells)))
 			{
 				jointFlow[j,] <- colSums((Flow[,j] * Flow) * R)
@@ -368,24 +367,23 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	
 	Size <- prepared$Size
 	R <- prepared$R
-	
+	if("divergent" %in% type) 
+	{
+		divFlow <- vector("list", nrow(R))
+		divFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+		for(i in 1:nrow(R)){divFlow[[i]] <- divFlowi}
+	}
+	if("joint" %in% type) 
+	{
+		jointFlow <- vector("list", nrow(R))
+		jointFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+		for(i in 1:nrow(R)){jointFlow[[i]] <- jointFlowi}
+	}	
 	if(class(Flow) == "RasterLayer")
 	{
 		nr <- min(10,nrow(Flow))
 		end <- ceiling(length(fromCells)/nr)
-		if("divergent" %in% type) 
-		{
-			divFlow <- vector("list", nlayers(R))
-			divFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-			for(i in 1:nlayers(R)){divFlow[[i]] <- divFlowi}
-		}
-		if("joint" %in% type) 
-		{
-			jointFlow <- vector("list", nlayers(R))
-			jointFlowi <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-			for(i in 1:nlayers(R)){jointFlow[[i]] <- jointFlowi}
 
-		}
 		nrows1 <- nr
 		startrow1 <- 1
 		dataRows1 <- getValues(Flow, row=startrow1, nrows=nrows1)
@@ -398,7 +396,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 				for(k in 1:nrows1)
 				{
 					index <- startrow1+k-1
-					for(i in 1:nlayers(R))
+					for(i in 1:nrow(R))
 					{
 						divFlow[[i]][startrow1:(startrow1+nrows1-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,k],dataRows1) * 
 							(1-pmin(dataRows1[,k],dataRows1)) - pmin(dataRows1[,k],dataRows1), 0), nrow= Size) * R[i,])
@@ -411,7 +409,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 				for(l in 1:nrows1)
 				{
 					index <- startrow1+l-1
-					for(i in 1:nlayers(R))
+					for(i in 1:nrow(R))
 					{
 						jointFlow[[i]][startrow1:(startrow1+nrows1-1),index] <- colSums(matrix((dataRows1[,l] * dataRows1), nrow=Size) * R[i,])
 					}
@@ -431,7 +429,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 						for(n in 1:nrows1)
 						{
 							index <- startrow1+n-1
-							for(i in 1:nlayers(R))
+							for(i in 1:nrow(R))
 							{
 								divFlow[[i]][startrow2:(startrow2+nrows2-1),index] <- colSums(matrix(pmax(pmax(dataRows1[,n],dataRows2) * 
 									(1-pmin(dataRows1[,n],dataRows2)) - pmin(dataRows1[,n],dataRows2), 0), nrow= Size) * R[i,])
@@ -443,7 +441,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 						for(o in 1:nrows1)
 						{
 							index <- startrow1+o-1
-							for(i in 1:nlayers(R))
+							for(i in 1:nrow(R))
 							{
 								jointFlow[[i]][startrow2:(startrow2+nrows2-1),index] <- colSums(matrix((dataRows1[,o] * dataRows2), nrow=Size) * R[i,])
 							}
@@ -460,10 +458,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	{
 		if("divergent" %in% type)
 		{
-			divFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 			for(j in 1:(length(fromCells)))
 			{
-				for(i in 1:nlayers(R))
+				for(i in 1:nrow(R))
 				{
 					divFlow[[i]][j,] <- colSums(matrix(pmax(pmax(Flow[,j],Flow) * (1-pmin(Flow[,j],Flow)) - pmin(Flow[,j],Flow), 0), nrow= Size) * R[i,])
 				}
@@ -471,12 +468,11 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		}
 		if("joint" %in% type)
 		{
-			jointFlow <- matrix(ncol=length(fromCells),nrow=length(fromCells))
 			for(j in 1:(length(fromCells)))
 			{
-				for(i in 1:nlayers(R))
+				for(i in 1:nrow(R))
 				{
-					jointFlow[[i]][j,] <- colSums((Flow[,j] * Flow) * R[[i]])
+					jointFlow[[i]][j,] <- colSums((Flow[,j] * Flow) * R[i,])
 				}
 			}
 		}
@@ -488,7 +484,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 
 	if("divergent" %in% type)
 	{
-		for(i in 1:nlayers(R))
+		for(i in 1:nrow(R))
 		{
 			divFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
 			rownames(divFl) <- rownames(fromCoords)
@@ -502,7 +498,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	}
 	if("joint" %in% type)
 	{
-		for(i in 1:nlayers(R))
+		for(i in 1:nrow(R))
 		{
 			jointFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
 			rownames(jointFl) <- rownames(fromCoords)
@@ -514,7 +510,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 			jointFlow[[i]] <- jointFl
 		}
 	}
-	if(length(type) > 1) {return(list(divergent=divFl, joint=jointFl))}
-	if(length(type) == 1 & type == "divergent") {return(divFl)}
-	if(length(type) == 1 & type == "joint") {return(jointFl)}
+	if(length(type) > 1) {return(list(divergent=divFlow, joint=jointFlow))}
+	if(length(type) == 1 & type == "divergent") {return(divFlow)}
+	if(length(type) == 1 & type == "joint") {return(jointFlow)}
 }
