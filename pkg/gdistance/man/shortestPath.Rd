@@ -21,7 +21,7 @@ shortestPath(transition, origin, goal)
   Transition object.
 }
 
-\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}. Implementation of randomised shortest paths based on Matlab code by Marco Saerens.}
+\author{ Jacob van Etten \email{jacobvanetten@yahoo.com}.}
 
 \seealso{ \code{\link[gdistance]{costDistance}}, \code{\link[gdistance]{accCost}} }
 \examples{

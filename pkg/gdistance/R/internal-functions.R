@@ -19,11 +19,10 @@
 		if(length(Coords) == 2) {Coords <- t(as.matrix(Coords))} 
 		else{stop("coordinates given as a vector but it does not have a length of two")}
 	}
-
 	
 	if(class(Coords) == "matrix")
 	{
-		if(!(ncol(origin) == 2)){stop("coordinates given as a matrix but it does not have two columns")}
+		if(!(ncol(Coords) == 2)){stop("coordinates given as a matrix but it does not have two columns")}
 	}	
 
 	if(class(Coords) == "SpatialPoints")
