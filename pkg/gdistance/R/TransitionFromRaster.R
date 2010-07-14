@@ -14,12 +14,11 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 
 .TfromR <- function(object, transitionFunction, directions, symm)
 {
-			if(dataContent(object) != 'all'){object <- readAll(object)}
 			transition <- new("TransitionLayer",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
 			transitionMatr <- transitionMatrix(transition)
 			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
 			if(symm){adj <- adj[adj[,1] < adj[,2],]}
-			transition.values <- apply(cbind(values(object)[adj[,1]],values(object)[adj[,2]]),1,transitionFunction)
+			transition.values <- apply(cbind(getValues(object)[adj[,1]],getValues(object)[adj[,2]]),1,transitionFunction)
 			if(!all(transition.values>=0)){warning("transition function gives negative values")}
 			transitionMatr[adj] <- as.vector(transition.values)
 			if(symm)
@@ -33,12 +32,11 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 
 setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{
-			if(dataContent(object) != 'all'){object <- readAll(object)}
 			if(transitionFunction != "mahal")
 			{
 				stop("only Mahalanobis distance method implemented for RasterBrick")
 			}
-			x <- cbind(1:ncell(object),values(object))
+			x <- cbind(1:ncell(object),getValues(object))
 			x <- na.omit(x)
 			dataCells <- x[,1]
 			adj <- adjacency(object,dataCells,dataCells,directions=directions)

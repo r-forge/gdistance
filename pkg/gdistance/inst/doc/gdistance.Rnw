@@ -261,12 +261,11 @@ present in the \verb@Transition@ object with which it will be multiplied (\verb@
 \section{Calculating distances}
 With the corrected \verb@Transition@ object we can calculate distances between points.
 First, we need to have the coordinates of the points.
-This is done by creating a two-row matrix and converting it into a \verb@SpatialPoints@ object.
+This is done by creating a two-row matrix of coordinates.
+Functions will also accept a \verb@SpatialPoints@ object or, if there is only one point, a vector of length two.
 
 <<gdistance-11>>=
-sP <- SpatialPoints(cbind(
-c(65, 5, -65),
-c(55, 35,-35)))
+sP <- cbind(c(65, 5, -65), c(55, 35,-35))
 @
 
 \noindent Calculating a distance matrix is straightforward now.
@@ -301,7 +300,8 @@ plot(rSPraster)
 \section{Path overlap and non-overlap}
 
 With the function pathInc() we can calculate measures of path overlap and non-overlap.
-These measures can be used to predict patterns of diversity resulting from a single, common source (see Introduction).
+These measures can be used to predict patterns of diversity resulting from a single, common source.
+If the argument type contains two elements (divergent and joint), the result is a list.
 
 <<gdistance-13>>=
 pathInc(tr1CorrC, sP[1,], sP[2:3], type=c("divergent","joint"))

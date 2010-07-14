@@ -6,7 +6,7 @@
 
 setGeneric("normalize", function(transition, ...) standardGeneric("normalize"))
 
-setMethod("normalize", signature(transition = "TransitionLayer"), def = function(transition, symm=FALSE)
+setMethod("normalize", signature(transition = "TransitionLayer"), def = function(transition, method="row")
 	{
 		return(.normalize(transition, symm))
 	}
@@ -15,7 +15,8 @@ setMethod("normalize", signature(transition = "TransitionLayer"), def = function
 .normalize <- function(transition, symm)
 	{
 		tr <- transitionMatrix(transition)
-		if(symm)
+		if(!(method %in% c("row","col","symm"))){stop("invalid method argument")}
+		if(method=="symm")
 		{
 			tr <- t(tr) 
 			rs <- (rowSums(tr)^-.5)
@@ -26,9 +27,15 @@ setMethod("normalize", signature(transition = "TransitionLayer"), def = function
 			cs[cs == Inf] <- 0
 			tr <- tr * rs
 		}
-		else
+		if(method=="row")
 		{
 			rs <- 1 / rowSums(tr)
+			rs[rs == Inf] <- 0
+			tr <- tr * rs
+		}
+		if(method=="col")
+		{
+			rs <- 1 / colSums(tr)
 			rs[rs == Inf] <- 0
 			tr <- tr * rs
 		}
