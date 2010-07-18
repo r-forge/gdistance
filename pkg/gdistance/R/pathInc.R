@@ -164,7 +164,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	n <- max(Lr@Dim)
 	Lr <- Cholesky(Lr)
 
-	if(((Size * length(fromCells) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	if(canProcessInMemory(transition, length(fromCells))) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
@@ -212,7 +212,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x)
 	W <- W * P 
 
-	if(((Size * length(cj) * 8) + 112)/1048576 > (memory.limit()-memory.size())/10) 
+	if(canProcessInMemory(transition, length(fromCells))) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()
