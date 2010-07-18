@@ -8,11 +8,11 @@ setGeneric("normalize", function(transition, ...) standardGeneric("normalize"))
 
 setMethod("normalize", signature(transition = "TransitionLayer"), def = function(transition, method="row")
 	{
-		return(.normalize(transition, symm))
+		return(.normalize(transition, method))
 	}
 )
 
-.normalize <- function(transition, symm)
+.normalize <- function(transition, method)
 	{
 		tr <- transitionMatrix(transition)
 		if(!(method %in% c("row","col","symm"))){stop("invalid method argument")}
