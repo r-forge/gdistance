@@ -195,6 +195,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	ci <- prepared$indexOrigin
 	index <- prepared$index
 	Size <- prepared$Size
+	fromCells <- prepared$fromCells
 		
 	tr <- transitionMatrix(transition)
 	tc <- transitionCells(transition)
