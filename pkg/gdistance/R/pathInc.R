@@ -111,7 +111,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		A <- as(transitionMatrix(transition),"lMatrix")
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
-		index <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1)) #BUT @transitionCells -> create function extractNon0()
+		index <- cbind(transition@transitionCells[as.integer(AIndex@i+1)],transition@transitionCells[as.integer(AIndex@j+1)]) #BUT @transitionCells -> create function extractNon0()
 		#if symmetric? index <- index[index[,1] < index[,2],]
 		Size <- length(index[,1])
 		
