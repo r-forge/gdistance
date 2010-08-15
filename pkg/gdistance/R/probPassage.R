@@ -42,8 +42,8 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 		{
 			transition <- .transitionSolidify(transition)
 			tc <- transitionCells(transition)
-			ci <- which(values(origin))
-			cj <- which(values(goal))
+			ci <- which(getValues(origin))
+			cj <- which(getValues(goal))
 			result <- .flowMap(transition, ci, cj, tc)
 		}
 		else{stop("no method available")}
@@ -91,8 +91,8 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 		#check if Transition and RasterLayers coincide
 		transition <- .transitionSolidify(transition)
 		tc <- transitionCells(transition)
-		ci <- which(values(origin))
-		cj <- which(values(goal))
+		ci <- which(getValues(origin))
+		cj <- which(getValues(goal))
 		result <- .randomShPaths(transition, ci, cj, theta, tc, totalNet, output)
 		return(result)
 	}

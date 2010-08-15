@@ -111,29 +111,31 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		A <- as(transitionMatrix(transition),"lMatrix")
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
-		index <- cbind(transition@transitionCells[as.integer(AIndex@i+1)],transition@transitionCells[as.integer(AIndex@j+1)]) #BUT @transitionCells -> create function extractNon0()
+		index1 <- cbind(transition@transitionCells[as.integer(AIndex@i+1)],transition@transitionCells[as.integer(AIndex@j+1)]) 
+		index2 <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1)) #BUT @transitionCells -> create function extractNon0()
 		#if symmetric? index <- index[index[,1] < index[,2],]
-		Size <- length(index[,1])
+		Size <- length(index1[,1])
 		
 		if(class(weight) == "numeric")
 		{
-			R <- 1/transition[index]
+			R <- 1/transition[index1]
 			R[R == Inf] <- 0
 		}
 		if(class(weight) == "TransitionLayer")
 		{
-			R <- 1/weight[index]
+			R <- 1/weight[index1]
 			R[R == Inf] <- 0
 		}
 		if(class(weight) == "TransitionStack")
 		{
-			R <- matrix(nrow=nlayers(weight), ncol=length(index[,1]))
+			R <- matrix(nrow=nlayers(weight), ncol=length(index1[,1]))
 			for(i in 1:nlayers(weight))
 			{
-				R[i,] <- 1/weight[[i]][index] 
+				R[i,] <- 1/weight[[i]][index1] 
 			}
 			R[R == Inf] <- 0
 		}
+
 		result <- list(transition=transition,
 						type=type,
 						fromCoords=fromCoords,
@@ -141,7 +143,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 						fromCells=fromCells,
 						indexCoords=indexCoords, 
 						indexOrigin=indexOrigin,
-						index=index,
+						index=index2,
 						Size=Size,
 						A=A,
 						R=R)

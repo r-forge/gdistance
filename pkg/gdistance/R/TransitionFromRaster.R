@@ -16,7 +16,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 {
 			transition <- new("TransitionLayer",nrows=nrow(object),ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),projection=projection(object, asText=FALSE))
 			transitionMatr <- transitionMatrix(transition)
-			adj <- adjacency(object,which(!is.na(values(object))),which(!is.na(values(object))),directions=directions)
+			adj <- adjacency(object,which(!is.na(getValues(object))),which(!is.na(getValues(object))),directions=directions)
 			if(symm){adj <- adj[adj[,1] < adj[,2],]}
 			transition.values <- apply(cbind(getValues(object)[adj[,1]],getValues(object)[adj[,2]]),1,transitionFunction)
 			if(!all(transition.values>=0)){warning("transition function gives negative values")}
