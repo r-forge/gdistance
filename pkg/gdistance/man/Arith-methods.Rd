@@ -9,7 +9,7 @@
 \alias{Arith,TransitionLayer,TransitionStack-method}
 \alias{Arith,TransitionStack,TransitionLayer-method}
 \alias{Arith,TransitionStack,ANY-method}
-
+\alias{Arith,ANY,TransitionStack-method}
 \alias{Arith,TransitionLayer,TransitionStack-method}
 
 \alias{Math-methods}

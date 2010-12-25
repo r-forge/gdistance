@@ -8,7 +8,7 @@
 {
 	transitionMatr <- as(transition,"sparseMatrix")
 	transition.dgT <- as(transitionMatr,"dgTMatrix")
-	adjacency <- cbind(transitionCells(transition)[transition.dgT@i+1],transitionCells(transition)[transition.dgT@j+1])
+	adjacency <- cbind(transition.dgT@i+1,transition.dgT@j+1)
 	return(adjacency)
 }
 
@@ -17,12 +17,12 @@
 	if(class(Coords) == "numeric")
 	{
 		if(length(Coords) == 2) {Coords <- t(as.matrix(Coords))} 
-		else{stop("coordinates given as a vector but it does not have a length of two")}
+		else{stop("coordinates given as a vector, but the vector does not have a length of two")}
 	}
 	
 	if(class(Coords) == "matrix")
 	{
-		if(!(ncol(Coords) == 2)){stop("coordinates given as a matrix but it does not have two columns")}
+		if(!(ncol(Coords) == 2)){stop("coordinates given as a matrix, but the matrix does not have two columns")}
 	}	
 
 	if(class(Coords) == "SpatialPoints")
@@ -35,7 +35,7 @@
 .connected.components <- function(transition)
 {
 	adj.graph <- graph.adjacency(transition@transitionMatrix)
-	clustermembership <- cbind(transitionCells(transition),as.integer(clusters(adj.graph)$membership)+1)
+	clustermembership <- cbind(1:ncell(transition),as.integer(clusters(adj.graph)$membership)+1)
 	return(clustermembership)
 }
 
@@ -121,7 +121,7 @@
 {
 	transitionMatr <- as(transition,"sparseMatrix")
 	selection <- which(rowMeans(transitionMatr)>1e-40)
-	transition@transitionCells <- transition@transitionCells[selection]
+	transition@transitionCells <- (1:ncell(transition))[selection]
 	transitionMatr <- transitionMatr[selection,selection]
 	transitionMatrix(transition) <- transitionMatr
 	return(transition)

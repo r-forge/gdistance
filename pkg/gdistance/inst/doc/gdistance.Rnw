@@ -43,7 +43,7 @@ foo <- packageDescription("gdistance")
 This vignette describes \verb@gdistance@, an \R package which provides functionality to calculate various geographic distance measures. 
 Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related 
 than distant things” (Tobler 1970). 
-In other words, mutual distances can be used to predict similarity and dissimilarity in geographical space, 
+In other words, mutual distances can be used to predict differences in geographical space, 
 the main \emph{explanandum} of geography. 
 
 Similarity is related to the intensity of interaction between spatial elements. 
@@ -52,14 +52,14 @@ A higher intensity of interaction is expected when this supposes less effort or 
 Geographic distance is indicative of travel effort and time, and therefore a predictor of similarity.
 
 Sewall Wright's (1943) idea of `isolation by distance' in genetics is a good illustration of the principle.
-If movement of reproducing individuals is random, it is expected that genetic differentiation (dissimilarity) 
+If movement of reproducing individuals is random and limited, it is expected that genetic differentiation (dissimilarity) 
 between populations in a homogeneous space is a linear function of the (logarithm of) the distance between them.
-Nathan Mantel (1967), working in the context of spatial epidemiology, provided a first formal statistical test 
+Working on the spatial clustering of diseases, Nathan Mantel (1967) provided a first formal statistical test 
 for the relation between geographical distance and similarity. 
 
 The most commonly used geographic distance measure is the great-circle distance, which represents the shortest line 
 between origin and destination, taking into account the curvature of the earth.
-However, the great-circle distance does not correspond very well to expected travel time in all cases. 
+However, the great-circle distance does not correspond very well to expected travel time/effort in all cases. 
 Travel time depends on the means of transport, the mode of route-finding, and the characteristics of landscapes and infrastructure. 
 The great-circle distance could be considered as referring to a special mode of travel: goal-directed movement with no obstacles, 
 `as the crow flies'.
@@ -123,27 +123,35 @@ install.packages("gdistance",
 <<gdistance-2>>=
 library(gdistance)
 @
-\section{Class Transition}
+\section{Transition* classes}
 To make distance calculations as flexible as possible, distances and other measures are calculated in various steps.
-The central class in \verb@gdistance@ is the S4 class \verb@Transition@, and most operations have an object of this class as input or output.
-\verb@Transition@ objects can be constructed from an object of class \verb@RasterLayer@ or \verb@RasterBrick@. 
+The central classes in \verb@gdistance@ are the S4 classes \verb@TransitionLayer@ and \verb@TransitionStack@. 
+Most operations have an object of one of these classes either as input or output.
+\verb@Transition*@ objects can be constructed from an object of class \verb@RasterLayer@, \verb@RasterStack@ or \verb@RasterBrick@. 
 These classes are from \verb@raster@, a memory-efficient and user-friendly R package which contains complete geographical grid functionality. 
-The class \verb@Transition@ takes the necessary geographic references (projection, resolution, extent) from the original \verb@Raster*@ object. 
-It also contains a transition matrix which specifies the probability or `conductance' 
-of movements between cells.
-It is not strange to use the word `conductance' in this context, as transition matrices can be thought of as analogous to electrical networks (McRae 2006).
+The class \verb@Transition*@ takes the necessary geographic references (projection, resolution, extent) from the original \verb@Raster*@ object. 
+It also contains a transition matrix which specifies the probability 
+of movements between cells or in more general terms the `conductance' of inter-cell connections.
 Each row and column in the transition matrix represents a cell in the original \verb@Raster*@ object.
 In most cases, cells are connected only with adjacent cells.
-Consequently, a transition matrix with `conductance' values contains only a small fraction of non-zero values.
-Therefore, it is stored as a \emph{sparse} matrix, which only records the non-zero values and information about their location in the matrix.
+Consequently, a transition matrix with conductance values contains only a small fraction of non-zero values.
+
+For first time users, the use of conductance values may be counterintuitive, as other software generally uses friction surfaces to calculate distances.
+However, the relation with friction is straightforward: conductance is the \emph{reciprocal} of friction (1/friction).
+It is not strange to use the word `conductance' in this context (or to use resistance as a synonym for friction). 
+There is an analogy between random walks on geographical grids and electrical current in a mesh of resistors (McRae et al. 2008).
+Calculations of `resistance distance' (see below) take advantage of this analogy.
+Another advantage of using conductance is that it makes it possible to store the values very efficiently as a so-called \emph{sparse} matrix. 
+Sparse matrices only record the non-zero values and information about their location in the matrix.
+The many zero values do not occupy memory.
 The package \verb@gdistance@ makes use of sparse matrix classes and methods from the package \verb@Matrix@, 
 which gives access to fast procedures implemented in the C language.
 
-A first step in any analysis with gdistance is the construction of an object of the class \verb@Transition@.
-The construction of a \verb@Transition@ object from a \verb@Raster*@ object is straightforward. 
+A first step in any analysis with gdistance is the construction of an object of the class \verb@Transition*@.
+The construction of a \verb@Transition*@ object from a \verb@Raster*@ object is straightforward. 
 The user can define a function to calculate the transition/conductance values from the values of each pair of cells to be connected.
 Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
-We then create a Transition object. 
+We then create a Transition* object. 
 The transition value between each pair of cells is the mean of the two cell values.
 
 <<gdistance-3>>=
@@ -164,7 +172,7 @@ This can make distance calculations more accurate.
 and the documentation of this function illustrates nicely why connecting in 16 directions 
 can increase the accuracy of the calculations \url{http://grass.itc.it/grass64/manuals/html64_user/r.cost.html}.}
 
-If we inspect the object we created, we see that the resulting \verb@Transition@ object keeps much information from 
+If we inspect the object we created, we see that the resulting \verb@TransitionLayer@ object keeps much information from 
 the original \verb@RasterLayer@ object.
 <<gdistance-4>>=
 tr1
@@ -183,7 +191,7 @@ class(transitionMatrix(tr2))
 @
 \noindent The sparse matrix class \verb@dsCMatrix@ is symmetric and contains only half of the matrix. 
 The class \verb@dgCMatrix@ can hold an asymmetric matrix.
-Different mathematical operations can be done with \verb@Transition@ objects. This makes it possible to flexibly model 
+Different mathematical operations can be done with \verb@Transition*@ objects. This makes it possible to flexibly model 
 different components of landscape friction.
 <<gdistance-6>>=
 tr3 <- tr1*tr2
@@ -199,11 +207,12 @@ tr3[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
 tr3[1:9,1:9] <- tr2[1:9,1:9]
 tr3[1:5,1:5]
 @
-Some functions require that \verb@Transition@ objects do not contain any isolated `clumps'. 
-This can be avoided when creating \verb@Transition@ objects, 
+
+Some functions require that \verb@Transition*@ objects do not contain any isolated `clumps'. 
+This can be avoided when creating \verb@Transition*@ objects, 
 for instance by giving conductance values between all adjacent cells some minimum value.
-Also, it can be checked visually. Here are a few ways to visualize a \verb@Transition@ object.
-\pagebreak[4]
+Also, it can be checked visually. Here are a few ways to visualize a \verb@Transition*@ object.
+%\pagebreak[4]
 <<gdistance-8, eval=FALSE>>=
 image(transitionMatrix(tr1))
 @
@@ -221,14 +230,17 @@ plot(TransitionMap(tr1))
 \clearpage
 \section{Correcting inter-cell transition values}
 The function \verb@TransitionFromRaster@ calculates transition values based on the values of adjacent cells in the input raster.
-However, diagonally connected cells are more remote from each other that orthogonally connected cells.
-Moreover, on equirectangular (lonlat) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
-Therefore, the values in the transition matrix need to be corrected for this distortion.
-<<gdistance-8>>=
+However, the centres of diagonally connected cells are more remote from each other than in the case of orthogonally connected cells.
+Secondly, on equirectangular (lonlat) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
+Therefore, the values in the transition matrix need to be corrected for these two types of distortion.
+Both types of distortion can be corrected by dividing each transition matrix value between the inter-cell distance.
+This is what function \verb@geoCorrection@ does for us.
+
+<<gdistance-9>>=
 tr1CorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
-tr3CorrC <- geoCorrection(tr3, type="c", multpl=FALSE)
+tr2CorrC <- geoCorrection(tr2, type="c", multpl=FALSE)
 @
-The function \verb@geoCorrection@ simply divides each transition matrix value between the inter-cell distance.
+
 For random walks on lonlat grids, there is an additional consideration to be made. 
 The number of connections in N-S direction remains equal when moving from the equator to the poles.
 This is problematic, because random walks can be seen as analogous to electrical current through a networks of resistors.
@@ -239,52 +251,55 @@ The function geoCorrection corrects this distortion by multiplying the
 N-S transition values with the cosine of the average latitude of the cell centres.
 This is done with function \verb@geoCorrection@, by setting the argument \verb@type@ to “r", 
 
-<<gdistance-9>>=
+<<gdistance-10>>=
 tr1CorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
 @
 
-When similar \verb@Transition@ objects with equal resolution and extent need to be corrected repetitively, computational effort may be reduced by
-preparing an object that only needs to be multiplied with the \verb@Transition@ object to produce a corrected version of it.
+When similar \verb@Transition*@ objects with equal resolution and extent need to be corrected repetitively, computational effort may be reduced by
+preparing an object that only needs to be multiplied with the \verb@Transition*@ object to produce a corrected version of it.
 The following is equivalent to the previous procedure.
 
-<<gdistance-10>>=
+<<gdistance-11>>=
 tr1CorrMatrix <- geoCorrection(tr1, type="r", multpl=TRUE)
 tr1CorrR <- tr1 * tr1CorrMatrix
 @
 
 \noindent Object \verb@trCorr1Matrix@ is only calculated once.
-It can be multiplicated with Transition objects, as long as they have the same extent, resolution, and directions of cell connections.
+It can be multiplicated with \verb@Transition*@ objects, as long as they have the same extent, resolution, and directions of cell connections.
 The user needs to take special care that the geo-correction multiplication matrix (\verb@tr1CorrMatrix@) contains all non-zero values that are
-present in the \verb@Transition@ object with which it will be multiplied (\verb@tr1@). 
-\footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition object with cells connected with value 1.}
+present in the \verb@Transition*@ object with which it will be multiplied (\verb@tr1@). 
+\footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition* object with cells connected with value 1.}
 
 \section{Calculating distances}
-With the corrected \verb@Transition@ object we can calculate distances between points.
-First, we need to have the coordinates of the points.
+With the corrected \verb@Transition*@ object we can calculate distances between points.
+It is important to note that all distance functions require a \verb@Transition*@ object with conductance values,
+even though distances will be expressed in 1/conductance (friction or resistance) units.
+
+To calculate distances, we need to have the coordinates of point locations.
 This is done by creating a two-row matrix of coordinates.
 Functions will also accept a \verb@SpatialPoints@ object or, if there is only one point, a vector of length two.
 
-<<gdistance-11>>=
+<<gdistance-12>>=
 sP <- cbind(c(65, 5, -65), c(55, 35,-35))
 @
 
 \noindent Calculating a distance matrix is straightforward now.
 
-<<gdistance-12>>=
+<<gdistance-13>>=
 costDistance(tr1CorrC, sP)
-costDistance(tr3CorrC, sP)
+costDistance(tr2CorrC, sP)
 resistanceDistance(tr1CorrR, sP)
 @
 
 \section{Dispersal paths}
 
-To visualize dispersal paths, we have the function passage(). 
+To visualize dispersal paths, we use the function passage(). 
 This function can be used for both random walks and randomised shortest paths.
 The function calculates the number of passages through cells before arriving in the destination cell.
 Either the total or net number of passages can be calculated.
 The net number of passages is the number of passages that are not reciprocated by a passage in the opposite direction.
 
-<<gdistance-13>>=
+<<gdistance-14>>=
 origin <- SpatialPoints(cbind(105,-55))
 goal <- SpatialPoints(cbind(-105,55))
 rSPraster <- passage(tr1, origin, goal, theta=2)
@@ -299,12 +314,41 @@ plot(rSPraster)
 
 \section{Path overlap and non-overlap}
 
-With the function pathInc() we can calculate measures of path overlap and non-overlap.
-These measures can be used to predict patterns of diversity resulting from a single, common source.
-If the argument type contains two elements (divergent and joint), the result is a list.
+One of the specific uses, for which package gdistance was created,
+is to look at trajectories coming from the same source (van Etten and Hijmans 2010). 
 
-<<gdistance-13>>=
-pathInc(tr1CorrC, sP[1,], sP[2:3], type=c("divergent","joint"))
+The degree of coincidence of two trajectories can be visualized by multiplying the probabilities of passage.
+
+<<gdistance-15>>=
+r1 <- passage(tr1, origin, sP[1,], theta=2)
+r2 <- passage(tr1, origin, sP[2,], theta=2)
+rJoint <- r1 * r2
+@
+\begin{figure}[!ht]
+<<label=figure4,fig=TRUE,height = 4.5 >>=
+plot(rJoint)
+@
+\end{figure}
+
+
+<<gdistance-16>>=
+rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0)
+@
+
+\begin{figure}[!ht]
+<<label=figure5,fig=TRUE,height = 4.5 >>=
+plot(rDiv)
+@
+\end{figure}
+\clearpage
+
+With the function pathInc() we can calculate measures of path overlap and non-overlap
+for a large number of points.
+These measures can be used to predict patterns of diversity if these are due to dispersal from a single common source (van Etten and Hijmans 2010).
+If the argument type contains two elements (divergent and joint), the result is a list of distances matrices.
+
+<<gdistance-17>>=
+pathInc(tr1CorrC, sP[1,], sP[2:3,], type=c("divergent","joint"))
 @
 
 \section{References}
@@ -312,18 +356,18 @@ pathInc(tr1CorrC, sP[1,], sP[2:3], type=c("divergent","joint"))
 
 \noindent Mantel, N. 1967. The detection of disease clustering and a generalized regression approach. \emph{Cancer Research} 27:209-220.
 
+\noindent McRae B.H. 2006. Isolation by resistance. \emph{Evolution} 60: 1551–1561.
 
 \noindent McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. 
 \emph{Ecology} 89:2712-2724.
-
   
 \noindent Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. 
 \emph{Neural Computation}, 21(8):2363-2404.
 
-
 \noindent Tobler W. 1970. A computer model simulating urban growth in the Detroit region. 
 \emph{Economic Geography}, 46(2):234-240.
 
+\noindent van Etten, J., and R.J. Hijmans. 2010. A geospatial modelling approach integrating archaeobotany and genetics to trace the origin and dispersal of domesticated plants. \emph{PLoS ONE} 5(8): e12060.
 
 \noindent Wright, S. 1943. Isolation by distance. \emph{Genetics} 28: 114–138.
 \end{hangparas}

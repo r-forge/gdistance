@@ -9,7 +9,6 @@
 \usage{
 TransitionFromRaster (object, transitionFunction, directions, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ RasterLayer or RasterBrick }
   \item{transitionFunction}{ Function to calculate transition values from grid values}
@@ -17,9 +16,36 @@ TransitionFromRaster (object, transitionFunction, directions, ...)
   \item{...}{ Additional arguments, see below }
 }
 \details{
-When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(a,b) = f(b,a) (a commutative function). TransitionFromRaster() does no commutativity check.
+Users may use one of three methods to construct a Transition* object with this function.
 
-To obtain an asymmetric transition matrix, an additional argument `symm' should be set to FALSE.
+1) TransitionLayer from RasterLayer
+
+\code{TransitionFromRaster(object, transisitonFunction, directions, symm)}
+
+When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(i,j) = f(j,i) (a commutative function). 
+The function \code{TransitionFromRaster} does no commutativity check.
+To obtain an asymmetric transition matrix, a non-commutative function should be supplied and an additional argument `symm' should be set to FALSE.
+
+2) TransitionLayer from RasterBrick
+
+\code{TransitionFromRaster(object, transisitonFunction="mahal", directions)}
+
+This method serves to summarize several layers of data in a single distance measure.
+The distance between adjacent cells is the normalized reciprocal of the Mahalanobis distance (mean distance / (mean distance + distance ij).
+
+3) TransitionStack from RasterLayer
+
+\code{TransitionFromRaster(object, transisitonFunction="barriers", directions, intervalBreaks)}
+
+This method creates a TransitionStack with each layer containing a discrete boundary between areas in \code{object}.
+Areas are defined by intervals in \code{object}.
+The argument \code{intervalBreaks} is a vector of interval breaks corresponding to the values in \code{object}.
+
+If between a pair of cells i and j, min(i,j) < break AND max(i,j) > break, then the value ij in the transition matrix becomes 1.
+All other values in the transition matrix remain 0.
+In contrast with the above methods, this method produces resistance matrices by default.
+The package classInt offers several methods to define intervals.
+
 }
 \value{
 Transition object

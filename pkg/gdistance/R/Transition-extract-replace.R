@@ -32,7 +32,8 @@ setGeneric("transitionCells", function(transition = "TransitionLayer") standardG
 
 setMethod ("transitionCells", signature(transition = "TransitionLayer"),
 	function(transition){
-		transition@transitionCells
+		if(!(transition@transitionCells == 0)){return(transition@transitionCells)}
+		else{return(1:ncell(transition))}
 	}
 )
 
@@ -59,59 +60,25 @@ setReplaceMethod ("matrixValues", signature(transition = "TransitionLayer", valu
 
 setMethod("[", signature(x = "TransitionLayer", i="numeric", j="numeric", drop="missing"), function(x,i,j)
 	{
-		i <- as.integer(i)
-		if (!((all(i %in% transitionCells(x)) || all(-i %in% transitionCells(x))) && (all(j %in% transitionCells(x)) || all(-j %in% transitionCells(x))))){stop("wrong cell numbers")}
-		else
-		{
-			if (all(i %in% transitionCells(x)))
-			{
-				indi <- match(i,transitionCells(x))
-				indj <- match(j,transitionCells(x))
-				tm <- transitionMatrix(x)
-				tm <- tm[indi,indj]
-			}
-			if (all(-i %in% transitionCells(x)))
-			{
-				indi <- match(-i,transitionCells(x))
-				indj <- match(-j,transitionCells(x))
-				tm <- transitionMatrix(x)
-				tm <- tm[-indi,-indj]
-			}
-		}
-	return(tm)
+		tm <- transitionMatrix(x)
+		tm <- tm[i,j]
+		return(tm)
 	}
 )
 
 setMethod("[", signature(x = "TransitionLayer", i="matrix", j="missing", drop="missing"), function(x,i)
 	{
-		if (!(all(i[,1] %in% transitionCells(x))  && all(i[,2] %in% transitionCells(x)))){stop("wrong cell numbers")}
-		else
-		{
-			indi <- match(i[,1],transitionCells(x))
-			indj <- match(i[,2],transitionCells(x))
-			ind <- cbind(indi,indj)
-			tm <- as(x,"sparseMatrix")
-			tm <- tm[ind]
-		}
-	return(tm)
+		tm <- as(x,"sparseMatrix")
+		tm <- tm[i]
+		return(tm)
 	}
 )
 
 setMethod("[<-", signature(x = "TransitionLayer", i="matrix", j="missing", value="ANY"),
 		function(x, i, value){
-			if (!all(i[,1] %in% transitionCells(x)) || !all(i[,2] %in% transitionCells(x))){stop("wrong cell numbers")}
-			else
-			{
-				if (!all(i %in% transitionCells(x)))
-				{
-					ind1 <- match(i[,1],transitionCells(x))
-					ind2 <- match(i[,2],transitionCells(x))
-					ind <- cbind(ind1,ind2)
-					tm <- transitionMatrix(x)
-					tm[ind] <- value
-					x@transitionMatrix <- tm
-				}
-			}
+			tm <- transitionMatrix(x)
+			tm[i] <- value
+			x@transitionMatrix <- tm
 			return(x)
 		}
 )
@@ -119,18 +86,9 @@ setMethod("[<-", signature(x = "TransitionLayer", i="matrix", j="missing", value
 setMethod("[<-", signature(x = "TransitionLayer", i="numeric", j="numeric", value="ANY"),
 		function(x, i, j, value)
 		{
-			#stop("not yet implemented; request package author to implement this method")
-			i <- as.integer(i)
-			j <- as.integer(j)
-			if (!((all(i %in% transitionCells(x)) || all(-i %in% transitionCells(x))) && (all(j %in% transitionCells(x)) || all(-j %in% transitionCells(x))))){stop("wrong cell numbers")}
-			else
-			{
-				ind1 <- match(i,transitionCells(x))
-				ind2 <- match(j,transitionCells(x))
-				tm <- transitionMatrix(x)
-				tm[ind1,ind2] <- value
-				transitionMatrix(x) <- tm
-			}
+			tm <- transitionMatrix(x)
+			tm[i,j] <- value
+			transitionMatrix(x) <- tm
 			return(x)
 		}
 )
@@ -169,9 +127,30 @@ setMethod("[[", signature(x = "TransitionStack", i="numeric", j="missing"), func
 			if(length(i)>1)
 			{
 				result <- x
-				result@transition <- x@transition[[i]]
+				result@transition <- x@transition[i]
 			}
 		}
-	return(result)
+		return(result)
+	}
+)
+
+setMethod("[[<-", signature(x = "TransitionStack", i="numeric", j="missing", value="TransitionData"), function(x,i, value)
+	{
+		x@transition[[i]] <- value
+		return(x)
+	}
+)
+
+setGeneric("transitionData", function(transition) standardGeneric("transitionData"))
+
+setMethod ("transitionData", signature(transition = "TransitionLayer"),
+	function(transition){
+		as(transition, "TransitionData")
+	}
+)
+
+setMethod ("transitionData", signature(transition = "TransitionStack"),
+	function(transition){
+		transition@transition
 	}
 )

@@ -20,8 +20,8 @@ setMethod("shortestPath", signature(transition = "TransitionLayer", origin = "Co
 {
 		originCells <- cellFromXY(transition, origin)
 		goalCells <- cellFromXY(transition, goal)
-		indexOrigin <- match(originCells,transitionCells(transition)) - 1
-		indexGoal <- match(goalCells,transitionCells(transition)) - 1
+		indexOrigin <- originCells - 1
+		indexGoal <- goalCells - 1
 		if(isSymmetric(transitionMatrix(transition))) {mode <- "undirected"} else {mode <- "directed"}
 		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode=mode, weighted=TRUE)
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight

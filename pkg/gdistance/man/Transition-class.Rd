@@ -2,14 +2,17 @@
 \docType{class}
 \alias{TransitionLayer-class}
 \alias{TransitionStack-class}
+\alias{TransitionData-class}
 \alias{coerce,TransitionLayer,sparseMatrix-method}
 \alias{coerce,TransitionLayer,RasterLayer-method}
 \alias{coerce,TransitionLayer,TransitionStack-method}
-\alias{coerce,TransitionData,TransitionLayer-method}
+\alias{coerce,TransitionLayer,TransitionData-method}
 \alias{coerce,RasterLayer,TransitionLayer-method}
+\alias{coerce,TransitionData,sparseMatrix-method}
 
 \alias{initialize,TransitionLayer-method}
 \alias{initialize,TransitionStack-method}
+\alias{initialize,TransitionData-method}
 
 \alias{show,TransitionLayer-method}
 \alias{show,TransitionStack-method}
@@ -32,11 +35,11 @@ b. information on the extent, resolution and projection of the underlying raster
 
 All slots belong to these two elements from other package, except two additional slots:
 
-1. slot transitionCells, which contains the cell numbers of the cells included in the transition matrix;
+1. slot transitionCells, which is only used internally in the package;
 
 2. slot matrixValues indicates if the nonzero values of the transition matrix contains conductance or resistance values.
 
-Class TransitionStack contains various transition matrices. 
+Class TransitionStack contains various transition matrices as a list. 
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Transition", nrows, ncols, xmin, xmax, ymin, ymax, projection)}.

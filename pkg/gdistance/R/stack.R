@@ -6,25 +6,29 @@
 
 setMethod("stack", signature(x="TransitionLayer"), function(x, ...) 
 	{
-		newStack <- .stackInternal(x, ...)
+		newStack <- as(x, "TransitionStack")
+		objectList <- list(...)
+		TData <- .createTData(x, objectList)
+		newStack@transition <- TData
 		return(newStack)	
 	} 
 )
 
-.stackInternal <- function(x, ...)
-{
-	newStack <- as(x, "TransitionStack")	
-	x <- as(x, "TransitionData")
-	TLs <- list(...)
-	if (length(TLs) > 0)
+setMethod("stack", signature(x='TransitionStack'), function(x, ...) 
 	{
-		#check if equal
-		#method for ... = TransitionStack
-		for(i in 1: length(TLs)) {TLs[[i]] <- as(TLs[[i]], "TransitionData")}
-		x <- c(x, TLs)
-	}
-	newStack@transition <- x
-	return(newStack)
-}
+		newStack <- as(x, "TransitionStack")
+		objectList <- list(...)
+		TData <- .createTData(x, objectList)
+		newStack@transition <- TData
+		return(newStack)	
+	} 
+)
 
-#setMethod("stack", signature(x='TransitionStack'), 
+.createTData <- function(x, objectList)
+{
+	nobj <- length(objectList)
+	if(nobj<1) {stop("more than one object is needed to stack")}
+	TD <- transitionData(x)
+	for(i in 1:nobj) {TD <- c(TD,transitionData(objectList[[i]]))}
+	return(TD)
+}

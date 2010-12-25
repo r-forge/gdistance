@@ -1,13 +1,13 @@
 # Author: Jacob van Etten, jacobvanetten@yahoo.com
-# International Rice Research Institute
-# Date :  January 2009
+# International Rice Research Institute, IE University
+# Date :  December 2010
 # Version 1.0
 # Licence GPL v3
 
 setClass(Class="TransitionData",
 		representation = representation(
 			transitionMatrix = "sparseMatrix",
-			transitionCells = "integer",
+			transitionCells = "numeric",
 			matrixValues = "character"
 		),
 		validity = function(object){
@@ -19,11 +19,11 @@ setClass(Class="TransitionData",
 			return(cond)
 	}
 )
+
 setClass(Class="TransitionLayer",
 		contains = c("Raster", "TransitionData"),
 		validity = function(object){
-			cond <- (nrow(object) * ncol(object)) >= max(transitionCells(object))
-			return(cond)
+			return(TRUE)
 	}
 )
 
@@ -50,7 +50,7 @@ setMethod ("initialize", "TransitionLayer",
 			if(class(projection) != "CRS"){projection <- CRS(projection)}
 			.Object@crs <- projection
 			.Object@transitionMatrix <- Matrix(0,ncells,ncells)
-			.Object@transitionCells <- 1:ncells
+			.Object@transitionCells <- 0
 			.Object@matrixValues <- "conductance"
 			return(.Object)
 		}
@@ -66,7 +66,7 @@ setMethod ("initialize", "TransitionStack",
 			if(class(projection) != "CRS"){projection <- CRS(projection)}
 			.Object@crs <- projection
 			#.Object@transitionMatrix <- NULL
-			#.Object@transitionCells <- NULL
+			#.Object@transitionCells <- 0
 			#.Object@matrixValues <- NULL
 			return(.Object)
 		}
@@ -140,3 +140,4 @@ setAs("TransitionLayer", "TransitionData", function(from){
 		return(TD)
 	}
 )
+

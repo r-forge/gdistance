@@ -9,18 +9,17 @@ setGeneric("accCost", function(transition, fromCoords) standardGeneric("accCost"
 setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "Coords"), def = function(transition, fromCoords)
 	{
 		fromCoords <- .coordsToMatrix(fromCoords) 
-		fromCoordsCells <- cellFromXY(transition, fromCoords)
+		fromCells <- cellFromXY(transition, fromCoords)
+		if(!all(!is.na(fromCells))){
+			warning("some coordinates not found and omitted")
+			fromCells <- fromCells[!is.na(fromCells)]
+		}
 		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode="undirected", weighted=TRUE)
 		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
-		fromCells <- subset(fromCoordsCells, fromCoordsCells %in% transitionCells(transition))
-		if (length(fromCells) < length (fromCoordsCells)) 
-		{
-			warning(length(fromCells), " out of ", length(fromCoordsCells), " locations were found in the transition matrix.","\n")
-		}
 		shortestPaths <- rep(Inf, times=length(transitionCells(transition)))	
-		for (i in 1:length(fromCells))
+		for (i in 1:length(fromCells)) #see raster package to speed this up
 		{
-			shortestPaths <- pmin(shortestPaths,shortest.paths(adjacencyGraph, match(fromCells[i],transitionCells(transition))))
+			shortestPaths <- pmin(shortestPaths,shortest.paths(adjacencyGraph, fromCells))
 		}
 		result <- as(transition, "RasterLayer")
 		dataVector <- vector(length=ncell(result)) 
@@ -34,8 +33,8 @@ setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "Ras
 	{
 		n <- ncell(transition)
 		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))
-		fromCells <- which(!is.na(values(fromCoords)))
-		toCells <- which(is.na(values(fromCoords)))
+		fromCells <- which(!is.na(getValues(fromCoords)))
+		toCells <- which(is.na(getValues(fromCoords)))
 		accCostDist <- rep(Inf,times=n)
 		accCostDist[fromCells] <- 0
 		#while(length(fromCells)>0)

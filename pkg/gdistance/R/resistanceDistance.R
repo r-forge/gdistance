@@ -19,10 +19,16 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 		rownames(rd) <- rownames(coords)
 		colnames(rd) <- rownames(coords)
 		allFromCells <- cellFromXY(transition, coords)
+		
+		if(!all(!is.na(allFromCells))){
+			warning("some coordinates not found and omitted")
+			allFromCells <- allFromCells[!is.na(allFromCells)]
+		}
+		
 		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
 		if (length(fromCells) < length(allFromCells)) 
 		{
-			warning(length(fromCells)," out of ",length(allFromCells)," locations were found in the transition matrix. NAs introduced.")
+			warning(length(fromCells)," out of ",length(allFromCells)," locations were found in the fully connected transition matrix. NAs introduced.")
 		}
 		else{}
 		fromCells <- unique(allFromCells)

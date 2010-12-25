@@ -33,10 +33,14 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 \examples{
 #create a new raster and set all its values to unity.
 r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,rep(1,ncell(raster)))
+r <- setValues(r,runif(ncell(r),0,1))
 
 #create a Transition object from the raster
 tr <- TransitionFromRaster(r,mean,8)
+
+#asymmetric
+ncf <- function(x) max(x) - x[1] + x[2]
+tr2 <- TransitionFromRaster(r,ncf,8, symm=FALSE)
 
 #create two sets of coordinates
 sP1 <- cbind(c(65,5,-65),c(55,35,-35))
@@ -44,9 +48,12 @@ sP2 <- cbind(c(50,15,-40),c(80,20,-5))
 
 #from and to identical
 costDistance(tr,sP1)
+costDistance(tr2,sP1)
 
 #from and to different
 costDistance(tr,sP1,sP2)
+costDistance(tr2,sP1,sP2)
+
 }
 \keyword{ spatial }
 
