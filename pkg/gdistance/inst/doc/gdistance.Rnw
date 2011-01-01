@@ -455,10 +455,29 @@ This is a consequence of the asymmetry of the Hiking Function.
 <<gdistance-22>>=
 Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
 genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
+genDist <- as.dist(genDist)
 popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
 
-#plot(Europe)
-#points(as.matrix(popCoord[c("x","y")]))
+plot(Europe)
+pC <- as.matrix(popCoord[c("x","y")])
+text(pC[,1],pC[,2],unlist(popCoord["Population"]),cex=.7)
+
+Europe[is.na(Europe)] <- 0
+Europe <- aggregate(Europe,3) 
+tr <- TransitionFromRaster(Europe, mean, directions=8)
+tr <- geoCorrection(tr, "c")
+origin <- unlist(popCoord[22,c("x","y")])
+
+
+pI <- pathInc(tr, origin=origin, fromCoords=pC, type="joint", theta=2)
+
+
+geoDist <- matrix(nrow=23,ncol=23)
+for (i in 1:23){geoDist[,i] <- pointDistance(pC[i,], pC, longlat=TRUE)}
+geoDist <- as.dist(geoDist)
+
+cor(genDist,pI)
+cor(genDist,geoDist)
 @
 
 \section{References}
