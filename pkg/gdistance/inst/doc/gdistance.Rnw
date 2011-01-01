@@ -455,7 +455,10 @@ This is a consequence of the asymmetry of the Hiking Function.
 <<gdistance-22>>=
 Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
 genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
-popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
+popCoord <- SpatialPoints(read.csv(system.file("external/popCoordinates.csv", package="gdistance")))
+
+plot(Europe)
+points(popCoord[c("x","y")])
 @
 
 \section{References}
