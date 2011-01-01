@@ -25,7 +25,7 @@
 		if(!(ncol(Coords) == 2)){stop("coordinates given as a matrix, but the matrix does not have two columns")}
 	}	
 
-	if(class(Coords) == "SpatialPoints")
+	if(inherits(Coords, "SpatialPoints"))  
 	{
 		Coords <- coordinates(Coords)
 	}

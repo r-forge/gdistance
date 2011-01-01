@@ -7,15 +7,16 @@
   Calculates the shortest path from an origin to a goal. 
 }
 \usage{
-shortestPath(transition, origin, goal)
+shortestPath(transition, origin, goal, output)
 }
 \arguments{
-  \item{transition}{Object of class Transition}
+  \item{transition}{\code{TransitionLayer} object}
   \item{origin}{SpatialPoints, vector or matrix with coordinates}
   \item{goal}{SpatialPoints, vector or matrix with coordinates}
+  \item{output}{Class of desired output object; either "TransitionLayer" (default) or "SpatialLines"}
 }
 \details{
-  If there is more than one path, transition values get values below 1.
+  If there is more than one path either (1) transition values in the TransitionLayer get values of 1 / number of paths or (2) the SpatialLines object will contain more than one line.
 }
 \value{
   Transition object.
@@ -25,21 +26,22 @@ shortestPath(transition, origin, goal)
 
 \seealso{ \code{\link[gdistance]{costDistance}}, \code{\link[gdistance]{accCost}} }
 \examples{
-#create a new raster and set all its values to a random value.
-raster <- raster(nrows=18, ncols=36) 
-raster <- setValues(raster,runif(ncell(raster), 0.4, 0.6))
+  #Create a new raster and set all its values to a random value.
+  r <- raster(nrows=18, ncols=36) 
+  r <- setValues(r,runif(ncell(r), 0.4, 0.6))
 
-#create a Transition object from the raster
-tr <- TransitionFromRaster(raster,mean,8)
-trC <- geoCorrection(tr, type="c")
+  #Create a Transition object from the raster
+  tr <- TransitionFromRaster(r,mean,8)
+  trC <- geoCorrection(tr, type="c")
 
-#create two coordinates
-sP1 <- SpatialPoints(cbind(-105,55))
-sP2 <- SpatialPoints(cbind(105,-55))
+  #Create two sets of coordinates
+  sP1 <- SpatialPoints(cbind(-105,55))
+  sP2 <- SpatialPoints(cbind(105,-55))
 
-#calculate the shortest path
-sPath <- shortestPath(tr, sP1, sP2)
-plot(TransitionMap(sPath))
+  #Calculate the shortest path
+  sPath <- shortestPath(tr, sP1, sP2)
+  sPath <- shortestPath(tr, sP1, sP2, output="SpatialLines")
+  plot(TransitionMap(sPath))
 }
 
 \keyword{ spatial }

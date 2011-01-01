@@ -10,7 +10,7 @@
 TransitionFromRaster (object, transitionFunction, directions, ...)
 }
 \arguments{
-  \item{object}{ RasterLayer or RasterBrick }
+  \item{object}{ \code{RasterLayer} or \code{RasterBrick} (raster package) }
   \item{transitionFunction}{ Function to calculate transition values from grid values}
   \item{directions}{ Directions in which cells are connected (4, 8, 16, or other), see \code{\link[raster]{adjacency}} }
   \item{...}{ Additional arguments, see below }
@@ -18,7 +18,7 @@ TransitionFromRaster (object, transitionFunction, directions, ...)
 \details{
 Users may use one of three methods to construct a Transition* object with this function.
 
-1) TransitionLayer from RasterLayer
+1) \code{TransitionLayer} from \code{RasterLayer}
 
 \code{TransitionFromRaster(object, transisitonFunction, directions, symm)}
 
@@ -26,18 +26,18 @@ When a symmetric transition matrix is required, the user should supply a transit
 The function \code{TransitionFromRaster} does no commutativity check.
 To obtain an asymmetric transition matrix, a non-commutative function should be supplied and an additional argument `symm' should be set to FALSE.
 
-2) TransitionLayer from RasterBrick
+2) \code{TransitionLayer} from \code{RasterBrick}
 
 \code{TransitionFromRaster(object, transisitonFunction="mahal", directions)}
 
 This method serves to summarize several layers of data in a single distance measure.
 The distance between adjacent cells is the normalized reciprocal of the Mahalanobis distance (mean distance / (mean distance + distance ij).
 
-3) TransitionStack from RasterLayer
+3) \code{TransitionStack} from \code{RasterLayer}
 
 \code{TransitionFromRaster(object, transisitonFunction="barriers", directions, intervalBreaks)}
 
-This method creates a TransitionStack with each layer containing a discrete boundary between areas in \code{object}.
+This method creates a \code{TransitionStack} with each layer containing a discrete boundary between areas in \code{object}.
 Areas are defined by intervals in \code{object}.
 The argument \code{intervalBreaks} is a vector of interval breaks corresponding to the values in \code{object}.
 
@@ -53,19 +53,19 @@ Transition object
 
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 \examples{
-#create a new raster and set all its values to unity.
-r <- raster(nrows=18, ncols=36) 
-r <- setValues(r, runif(ncell(r)))
+  #Create a new raster and set all its values to unity.
+  r <- raster(nrows=18, ncols=36) 
+  r <- setValues(r, runif(ncell(r)))
 
-#create a Transition object from the raster
-tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
-tr #the sparse matrix is of class dsCMatrix (symmetric)
+  #Create a Transition object from the raster
+  tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
+  tr #the sparse matrix is of class dsCMatrix (symmetric)
 
-#create an asymmetric transition matrix
-#first, an arbitrary non-commutative function 
-f <- function(x) max(x) - x[1] + x[2] 
-tr2 <- TransitionFromRaster(r, f, 4, symm=FALSE)
-tr2 #the sparse matrix is of class dgCMatrix (asymmetric)
+  #Create an asymmetric transition matrix
+  #first, an arbitrary non-commutative function 
+  f <- function(x) max(x) - x[1] + x[2] 
+  tr2 <- TransitionFromRaster(r, f, 4, symm=FALSE)
+  tr2 #the sparse matrix is of class dgCMatrix (=asymmetric)
 }
 \keyword{ spatial }
 

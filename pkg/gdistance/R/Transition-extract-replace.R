@@ -68,7 +68,7 @@ setMethod("[", signature(x = "TransitionLayer", i="numeric", j="numeric", drop="
 
 setMethod("[", signature(x = "TransitionLayer", i="matrix", j="missing", drop="missing"), function(x,i)
 	{
-		tm <- as(x,"sparseMatrix")
+		tm <- transitionMatrix(x)
 		tm <- tm[i]
 		return(tm)
 	}

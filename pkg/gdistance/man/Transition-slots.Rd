@@ -15,7 +15,7 @@
 \alias{transitionData,TransitionStack-method}
 \alias{transitionMatrix,TransitionData-method}
 
-\title{Extract or change elements of Transition objects}
+\title{Extract or change elements of Transition* objects}
 \description{
 These functions are to be used to access slots of Transition* objects.
 }

@@ -12,4 +12,18 @@
 Methods for functions \code{[} and \code{[<-} for object of the class TransitionLayer.
 Methods for functions \code{[[} and \code{[[<-} for object of the class TransitionStack.
 }
+\examples{
+  #Create a new raster and set all its values to unity.
+  raster <- raster(nrows=18, ncols=36) 
+  raster <- setValues(raster,rep(1,ncell(raster)))
+
+  #Create TransitionLayer objects
+  tr1 <- TransitionFromRaster(raster,mean,4)
+  tr2 <- tr1
+
+  #Extracting and replacing
+  tr1[cbind(1:9,1:9)] <- tr2[cbind(1:9,1:9)]
+  tr1[1:9,1:9] <- tr2[1:9,1:9]
+  tr1[1:5,1:5]
+}
 \keyword{methods}

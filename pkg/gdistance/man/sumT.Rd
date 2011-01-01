@@ -9,17 +9,17 @@ sumT(transition1, transition2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition1}{object of class Transition}
-  \item{transition2}{object of class Transition}  
+  \item{transition1}{ \code{TransitionLayer} object}
+  \item{transition2}{ \code{TransitionLayer} object}  
 }
 \details{
 This function is meant to sum Transition objects taking the resistance values instead of the conductance values. In other words, the function calculates the reciprocal of the summed reciprocals. 
 
-If matrixValues(transition) is equal to "conductance" the reciprocal of the values is taken (1 / conductance), if it is equal to "resistance", the values are used. 
+If \code{matrixValues(tr)} is equal to "conductance" the reciprocal of the values is taken (1 / conductance), if it is equal to "resistance", the values are used. 
 
 Zero values are ignored, but caution is required with floating point operations resulting in near-zero values.
 
-To treat a Transition object as containing resistance values instead of conductance values, use \code{matrixValues()<-"resistance"}.
+To treat a Transition object as containing resistance values instead of conductance values, use \code{matrixValues(tr)<-"resistance"}.
 }
 \value{
 Transition object containing conductance values.
@@ -29,7 +29,20 @@ This function is useful to create barriers (with a certain resistance), with the
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
 \examples{
-#example
+  #Create a new raster and set all its values to unity.
+  raster <- raster(nrows=18, ncols=36) 
+  raster <- setValues(raster,rep(1,ncell(raster)))
+
+  #Create TransitionLayer objects
+  tr1 <- TransitionFromRaster(raster,mean,4)
+  tr2 <- tr1
+  matrixValues(tr1)
+  
+  #Set one to resistance
+  matrixValues(tr2) <- "resistance"
+  
+  #Sum the two objects
+  sumT(tr1,tr2)
 }
 \keyword{ spatial }
 

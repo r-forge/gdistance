@@ -14,40 +14,23 @@ setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "Coo
 			warning("some coordinates not found and omitted")
 			fromCells <- fromCells[!is.na(fromCells)]
 		}
-		adjacencyGraph <- graph.adjacency(transitionMatrix(transition), mode="undirected", weighted=TRUE)
-		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight
-		shortestPaths <- rep(Inf, times=length(transitionCells(transition)))	
-		for (i in 1:length(fromCells)) #see raster package to speed this up
-		{
-			shortestPaths <- pmin(shortestPaths,shortest.paths(adjacencyGraph, fromCells))
-		}
+			tr <- transitionMatrix(transition)
+		tr <- rBind(tr,rep(0,nrow(tr)))
+		tr <- cBind(tr,rep(0,nrow(tr)))
+	
+		startNode <- nrow(tr) #extra node to serve as origin
+		adjP <- cbind(rep(startNode, times=length(fromCells)), fromCells)
+	
+		tr[adjP] <- Inf
+	
+		adjacencyGraph <- graph.adjacency(tr, mode="directed", weighted=TRUE)
+		E(adjacencyGraph)$weight <- 1/E(adjacencyGraph)$weight		
+	
+		shortestPaths <- shortest.paths(adjacencyGraph, v=startNode-1)[-startNode]
+
 		result <- as(transition, "RasterLayer")
-		dataVector <- vector(length=ncell(result)) 
-		dataVector[transitionCells(transition)] <- shortestPaths
-		result <- setValues(result, dataVector)	
+		result <- setValues(result, shortestPaths)	
 		return(result)
 	}
 )
 
-setMethod("accCost", signature(transition = "TransitionLayer", fromCoords = "RasterLayer"), def = function(transition, fromCoords)
-	{
-		n <- ncell(transition)
-		directions <- max(rowSums(as(transitionMatrix(transition),"lMatrix")))
-		fromCells <- which(!is.na(getValues(fromCoords)))
-		toCells <- which(is.na(getValues(fromCoords)))
-		accCostDist <- rep(Inf,times=n)
-		accCostDist[fromCells] <- 0
-		#while(length(fromCells)>0)
-		#{			
-		#	adj <- adjacency(transition,fromCells=fromCells,toCells=toCells,directions=directions)
-		#	transitionValues <- accCostDist[adj[,1]] + 1/transition[adj]
-		#	tValSmaller <- transitionValues < accCostDist[adj[,2]]
-		#	fromCells <- adj[tValSmaller,2]
-		#	#accCostDist <- igroupMins(c(transitionValues[tValSmaller],accCostDist),c(fromCells,1:n))
-		#	fromCells <- unique(fromCells)
-		#}
-		result <- as(transition, "RasterLayer")
-		result <- setValues(result, accCostDist)	
-		return(result)
-	}
-)

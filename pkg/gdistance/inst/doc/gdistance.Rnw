@@ -1,4 +1,4 @@
-% \VignetteIndexEntry{R package gdistance: distances and movements on geographical grids}
+% \VignetteIndexEntry{R package gdistance: distances and routes on geographical grids}
 % \VignetteDepends{Matrix, methods, igraph, raster, gdistance}
 % \VignetteKeyword{spatial}
 
@@ -31,80 +31,46 @@ options(keep.source = TRUE, width = 60)
 foo <- packageDescription("gdistance")
 @
 
-\title{R package gdistance: distances and movements on geographical grids (version \Sexpr{foo$Version})}
+\title{R package gdistance: distances and routes on geographical grids (version \Sexpr{foo$Version})}
 \author{Jacob van Etten}
 \maketitle
 
 \pagestyle{myheadings}
-\markboth{gdistance: geographic distances and movements}{Jacob van Etten}
+\markboth{gdistance: geographic distances and routes}{Jacob van Etten}
 
 \section{Introduction}
 
-This vignette describes \verb@gdistance@, an \R package which provides functionality to calculate various geographic distance measures. 
-Tobler's First Law of Geography states that “everything is related to everything else, but near things are more related 
-than distant things” (Tobler 1970). 
-In other words, mutual distances can be used to predict differences in geographical space, 
-the main \emph{explanandum} of geography. 
-
-Similarity is related to the intensity of interaction between spatial elements. 
-More frequent exchange of materials and information will lead to an increased similarity between two places. 
-A higher intensity of interaction is expected when this supposes less effort or travel time. 
-Geographic distance is indicative of travel effort and time, and therefore a predictor of similarity.
-
-Sewall Wright's (1943) idea of `isolation by distance' in genetics is a good illustration of the principle.
-If movement of reproducing individuals is random and limited, it is expected that genetic differentiation (dissimilarity) 
-between populations in a homogeneous space is a linear function of the (logarithm of) the distance between them.
-Working on the spatial clustering of diseases, Nathan Mantel (1967) provided a first formal statistical test 
-for the relation between geographical distance and similarity. 
-
+This vignette describes \verb@gdistance@, an \R package which provides functionality to calculate various distance measures and routes
+in heterogeneous geographic spaces represented as grids.
+Distances are fundamental to geospatial analysis (Tobler 1970).
 The most commonly used geographic distance measure is the great-circle distance, which represents the shortest line 
-between origin and destination, taking into account the curvature of the earth.
-However, the great-circle distance does not correspond very well to expected travel time/effort in all cases. 
-Travel time depends on the means of transport, the mode of route-finding, and the characteristics of landscapes and infrastructure. 
-The great-circle distance could be considered as referring to a special mode of travel: goal-directed movement with no obstacles, 
+between two points, taking into account the curvature of the earth.
+However, the great-circle distance does not correspond very well to expected travel time/effort between two points. 
+Travel time and the real distance travelled depend on the means of transport, the mode of route-finding, and the characteristics of landscapes and infrastructure. 
+The great-circle distance could be considered as referring to a special case: goal-directed movement with no obstacles, 
 `as the crow flies'.
 Other distance measures are needed when travel is not (or less) goal-directed and landscape characteristics affect movement 
-in a spatially heterogeneous way. 
-Package \verb@gdistance@ was created to calculate distances using geographical grids (rasters) to represent landscape heterogeneity.
-It provides the following distance measures.
+in a spatially heterogeneous way.
+Package \verb@gdistance@ was created to calculate distances and determine routes using geographical grids (rasters) to represent landscape heterogeneity.
+It provides the following distance and route calculations.
 \begin{itemize}
 \item{The least-cost distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' 
 of the landscape.}
-\item{A very different form of movement in geographical space is the random walk, which has no predetermined destination 
-(`drunkard's walk'). Resistance distance reflects (Brownian) random walks in geographical space (McRae 2006).}
+\item{A second type of route-finding is the random walk, which has no predetermined destination 
+(`drunkard's walk'). Resistance distance reflects the travel time from origin to goal of the average (Brownian) random walk (McRae 2006).}
 \item{`Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks, 
 recently introduced by Saerens et al. (2009).}
 \end{itemize} 
 
-Similarity between geographical elements is not necessarily caused by direct spatial interaction between two points. 
-It may reflect diffusion starting from an independent, third point or area, which functions as a common source. 
-For instance, diffusion from a single origin explains much of the current geographical patterns of human genetic diversity.
-Prehistoric humans populated the globe spreading from an origin in Africa to other continents. 
+The gdistance package also contains specific functionality for geographical genetic analyses.
+The direct relation between genetic and geographic distances is known as \emph{isolation by distance} (Wright 1943).
+Recent work has expanded this relationship to random movement in heterogeneous landscapes (McRae 2006).
+Also, the geography of dispersal routes can explain observed geospatial patterns of genetic diversity.
+For instance, diffusion from a single origin (Africa) explains much of the current geographical patterns of human genetic diversity (Ramachandran 2005).
 As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
 they share their prehistoric migration history.
-
-The package also makes it possible to calculate the dispersal paths, and visualize them as a grid with cell values representing 
-the probability of passage. 
-This can be done using two different algorithms: random walk or randomised shortest paths.
-To predict similarity based on trajectories from a common origin, \verb@gdistance@ can calculate for each pair of points which parts of 
-their dispersal trajectories overlap and which parts diverge. 
-Trajectory overlap and non-overlap can then be used to predict similarity, as if they were geographic distances. 
-
-The package is currently limited to the distance measures and movement models listed above and dispersal path metrics 
-derived from random walks and randomised shortest paths. 
-Random walk and randomised shortest path metrics that can be calculated with algorithms based on analytical solutions 
-using matrix solving.
-For other important models of geographical movement, like the Lévy flight or walk, similar algorithms are not yet available. 
-
-The package \verb@gdistance@ illustrates the potential of \R spatial software to advance from a map-centric approach in geo-information science 
-to a more data-centric and model-centric approach. 
-The package makes it possible to move seamlessly from geographical grids and points to transition matrices and mutual distances, 
-and (with the help of other packages) to tree representations of distances, correlation and regression with distance matrices, 
-and diversity calculations. 
-This overcomes the privileged status of map-based data representations common in dominant GIS software and integrates 
-geo-spatial analysis fully in the `programming with data' paradigm. 
-Tailoring analyses to different geo-spatial problems is made easier, which hopefully will benefit quantitative methodology 
-in geographical research.
+Other biological species have undergone similar processes of range expansion.
+The package implements measures to model dispersal histories first presented by Van Etten and Hijmans (2010).
 
 \section{Getting started}
 The latest version of the package is available from R-Forge (\url{http://R-Forge.R-project.org}).
@@ -151,20 +117,20 @@ A first step in any analysis with gdistance is the construction of an object of 
 The construction of a \verb@Transition*@ object from a \verb@Raster*@ object is straightforward. 
 The user can define a function to calculate the transition/conductance values from the values of each pair of cells to be connected.
 Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
-We then create a Transition* object. 
+We then create a \verb@TransitionLayer@ object. 
 The transition value between each pair of cells is the mean of the two cell values.
 
 <<gdistance-3>>=
 r <- raster(nrows=18, ncols=36) 
 r <- setValues(r,runif(ncell(r), min=0.4, max=0.6))
 r
-tr1 <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
+tr1 <- TransitionFromRaster(r, transitionFunction=mean, directions=8)
 @
 
-We set the \verb@directions@ argument to value 4.
-This connects all adjacent cells in 4 directions, and produces `Manhattan distances' between points. 
-Cells can also be connected in 8 or 16 connections.
-In chess terms, setting directions to 4 connects all cells with all possible one-cell rook movements, 
+We set the \verb@directions@ argument to value 8.
+This connects all adjacent cells in 8 directions. 
+Cells can also be connected in 4 or 16 connections.
+In chess terms, setting directions to 4 connects all cells with all possible one-cell rook movements (producing 'Manhattan' distances), 
 while setting directions to 8 connects with one-cell queen movements.
 With 16 directions, all cells are connected with both one-cell queen movements and one-turn knight movements.
 This can make distance calculations more accurate.
@@ -177,9 +143,9 @@ the original \verb@RasterLayer@ object.
 <<gdistance-4>>=
 tr1
 @
-It is also possible to create asymmetric matrices, in which the conductance from i to j is unequal 
-to the conductance from j back to i. 
-This is relevant for instance for modelling travel in hilly terrain. 
+It is also possible to create asymmetric matrices, in which the conductance from i to j is not always the same as 
+the conductance from j back to i. 
+This is relevant for instance for modelling travel in hilly terrain, as shown in Example 1 below. 
 A downslope traveler experiences less resistance than an upslope traveler.
 In this case, the transition function is non-commutative: $f(i,j) \neq f(j,i)$.
 The \verb@symm@ argument in \verb@TransitionFromRaster@ needs to be set to \verb@FALSE@.
@@ -191,8 +157,8 @@ class(transitionMatrix(tr2))
 @
 \noindent The sparse matrix class \verb@dsCMatrix@ is symmetric and contains only half of the matrix. 
 The class \verb@dgCMatrix@ can hold an asymmetric matrix.
-Different mathematical operations can be done with \verb@Transition*@ objects. This makes it possible to flexibly model 
-different components of landscape friction.
+Different mathematical operations can be done with \verb@Transition*@ objects. 
+This makes it possible to flexibly model different components of landscape friction.
 <<gdistance-6>>=
 tr3 <- tr1*tr2
 tr3 <- tr1+tr2
@@ -211,21 +177,27 @@ tr3[1:5,1:5]
 Some functions require that \verb@Transition*@ objects do not contain any isolated `clumps'. 
 This can be avoided when creating \verb@Transition*@ objects, 
 for instance by giving conductance values between all adjacent cells some minimum value.
-Also, it can be checked visually. Here are a few ways to visualize a \verb@Transition*@ object.
-%\pagebreak[4]
+Also, it can be checked visually. 
+Here are a few ways to visualize a \verb@Transition*@ object.
+\clearpage
 <<gdistance-8, eval=FALSE>>=
 image(transitionMatrix(tr1))
 @
 \begin{figure}[!ht]
-<<label=figure1,fig=TRUE,height = 4.5, echo=FALSE >>=
+\begin{center}
+<<label=figure1,fig=TRUE,height = 4, echo=FALSE >>=
 print(image(transitionMatrix(tr1)))
 @
-\nopagebreak[4]
+\end{center}
+\caption{Visualizing a TransitionLayer with function image()}
 \end{figure}
 \begin{figure}[!ht]
-<<label=figure2,fig=TRUE,height = 4.5 >>=
+\begin{center}
+<<label=figure2,fig=TRUE,height = 4 >>=
 plot(TransitionMap(tr1))
 @
+\end{center}
+\caption{Visualizing a TransitionLayer using the function TransitionMap()}
 \end{figure}
 \clearpage
 \section{Correcting inter-cell transition values}
@@ -265,7 +237,7 @@ tr1CorrR <- tr1 * tr1CorrMatrix
 @
 
 \noindent Object \verb@trCorr1Matrix@ is only calculated once.
-It can be multiplicated with \verb@Transition*@ objects, as long as they have the same extent, resolution, and directions of cell connections.
+It can be multiplied with \verb@Transition*@ objects, as long as they have the same extent, resolution, and directions of cell connections.
 The user needs to take special care that the geo-correction multiplication matrix (\verb@tr1CorrMatrix@) contains all non-zero values that are
 present in the \verb@Transition*@ object with which it will be multiplied (\verb@tr1@). 
 \footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition* object with cells connected with value 1.}
@@ -305,9 +277,12 @@ goal <- SpatialPoints(cbind(-105,55))
 rSPraster <- passage(tr1, origin, goal, theta=2)
 @
 \begin{figure}[!ht]
+\begin{center}
 <<label=figure3,fig=TRUE,height = 4.5 >>=
 plot(rSPraster)
 @
+\end{center}
+\caption{Probability of passage}
 \end{figure}
 \clearpage
 
@@ -325,9 +300,12 @@ r2 <- passage(tr1, origin, sP[2,], theta=2)
 rJoint <- r1 * r2
 @
 \begin{figure}[!ht]
+\begin{center}
 <<label=figure4,fig=TRUE,height = 4.5 >>=
 plot(rJoint)
 @
+\end{center}
+\caption{Overlapping part of the two routes}
 \end{figure}
 
 
@@ -336,12 +314,14 @@ rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0)
 @
 
 \begin{figure}[!ht]
+\begin{center}
 <<label=figure5,fig=TRUE,height = 4.5 >>=
 plot(rDiv)
 @
+\end{center}
+\caption{Non-overlapping part of the two routes}
 \end{figure}
 \clearpage
-
 With the function pathInc() we can calculate measures of path overlap and non-overlap
 for a large number of points.
 These measures can be used to predict patterns of diversity if these are due to dispersal from a single common source (van Etten and Hijmans 2010).
@@ -351,21 +331,149 @@ If the argument type contains two elements (divergent and joint), the result is 
 pathInc(tr1CorrC, sP[1,], sP[2:3,], type=c("divergent","joint"))
 @
 
+\section{Example 1: Hiking around Maunga Whau}
+The previous examples were somewhat theoretical, based on randomly generated values.
+Somewhat more realistic examples serve to illustrate the various uses that can be given to this package.
+
+Determining the fastest route between two points in complex terrain is useful for hikers.
+Tobler's Hiking Function provides a rough estimate for the the maximum hiking speed given the slope of the terrain (Tobler 1993).
+The maximum speed of off-path hiking (in m/s) is:
+
+\vspace{5 mm}
+speed = exp(-3.5 * abs(slope + 0.05))
+\vspace{5 mm}
+
+\noindent Note that the function is not symmetric around 0 (see figure below).
+\clearpage
+\begin{figure}[!ht]
+\begin{center}
+<<label=figure6,echo=FALSE,fig=TRUE,height = 4.5 >>=
+plot(function(x)exp(-3.5 * abs(x + 0.05)), -1, 1, xlab="slope", ylab="speed (m/s)")
+lines(cbind(c(0,0),c(0,3.5)), lty="longdash")
+@
+\end{center}
+\caption{Tobler's Hiking Function}
+\end{figure}
+
+We use the Hiking Function to determine the shortest path to hike around the volcano Maunga Whau (Auckland, New Zealand).
+First, we read in the altitude data for the volcano.
+This is a geo-referenced version of the "volcano" data available in Base \R datasets (see \verb@?volcano@ for more information).
+
+<<gdistance-18>>=
+r <- raster(system.file("external/maungawhau.grd", package="gdistance"))
+@
+
+The Hiking Function requires the slope as input.
+
+\vspace{5 mm}
+slope = difference in height / distance travelled
+\vspace{5 mm}
+
+The units of height and distance should be identical.
+Here, we use meters for both.
+We calculate the height differences between cells first.
+Then we use the function \verb@geoCorrection()@ to divide by the distance between cells.
+<<gdistance-18, keep.source=TRUE>>=
+heightDiff <- function(x){x[2] - x[1]}
+hd <- TransitionFromRaster(r,heightDiff,8,symm=FALSE)
+slope <- geoCorrection(hd, scl=FALSE)
+@
+Subsequently, we calculate the speed.
+We need to exercise special care, because the matrix values between non-adjacent cells is 0, but the slope between these cells is not 0!
+Therefore, we need to restrict the calculation to adjacent cells.
+We do this by creating an index for adjacent cells (\verb@adj@) with the function \verb@adjacency()@.
+Using this index, we extract and replace adjacent cells, without touching the other values.
+<<gdistance-19>>=
+adj <- adjacency(raster=r, fromCells = 1:ncell(r), toCells = 1:ncell(r), directions=8)
+speed <- slope
+speed[adj] <- exp(-3.5 * abs(slope[adj] + 0.05))
+@
+Now we have calculated the speed of movement between adjacent cells.
+We are close to having the final conductance values.
+Attainable speed is a measure of the ease of crossing from one cell to another on the grid.
+However, we also need to take into account the distance between cell centres.
+Travelling with the same speed, a diagonal connection between cells takes longer to cross than a straight connection.
+Therefore, we use the function \verb@geoCorrection()@ again!
+<<gdistance-20>>=
+x <- geoCorrection(speed, scl=FALSE) 
+@
+\noindent This gives our final "conductance" values.
+
+What do these "conductance" values mean?
+The function \verb@geoCorrection()@ divides the values in the matrix with the distance between cell centres.
+So, with our last command we calculated this:
+
+\vspace{5 mm}
+conductance = speed / distance
+\vspace{5 mm}
+
+\noindent This looks a lot like a measure that we are more familiar with: 
+
+\vspace{5 mm}
+travel time = distance / speed
+\vspace{5 mm}
+
+\noindent In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time.
+
+\vspace{5 mm}
+1 / travel time = speed / distance = conductance
+\vspace{5 mm}
+
+\noindent In other words, the conductance we are maximizing is the reciprocal of travel time. This is exactly equivalent to minimizing travel time!
+
+Now we define two coordinates, A and B, and determine the paths between them.
+We test if the quickest path from A to B is the same as the quickest path from B back to A.
+ 
+<<gdistance-21>>=
+A <- c(2667670,6479000)
+B <- c(2667800,6479400)
+AtoB <- shortestPath(x, A, B, output="SpatialLines")
+BtoA <- shortestPath(x, B, A,  output="SpatialLines")
+@
+<<label=figXplot,include=FALSE>>=
+plot(r)
+lines(AtoB, col="red", lwd=2)
+lines(BtoA, col="blue")
+@
+\begin{figure}
+\begin{center}
+<<label=figX,fig=TRUE,echo=FALSE>>=
+<<figXplot>>
+text(A[1]-10,A[2]-10,"A")
+text(B[1]+10,B[2]+10,"B")
+@
+\end{center}
+\caption{Quickest hiking routes around Maunga Whau}
+\label{fig:X}
+\end{figure}
+
+A small part of the A-B (red) and B-A (blue) lines in the figure do not overlap.
+This is a consequence of the asymmetry of the Hiking Function.
+
+\section{Example 2: Geographical genetics}
+
+<<gdistance-22>>=
+Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
+genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
+popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
+@
+
 \section{References}
 \begin{hangparas}{3em}{1}
-
-\noindent Mantel, N. 1967. The detection of disease clustering and a generalized regression approach. \emph{Cancer Research} 27:209-220.
 
 \noindent McRae B.H. 2006. Isolation by resistance. \emph{Evolution} 60: 1551–1561.
 
 \noindent McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. 
 \emph{Ecology} 89:2712-2724.
+
+\noindent Ramachandran S., et al. 2005. Support from the relationship of genetic and geographic distance in human populations for a serial founder effect originating in Africa. emph{Proceedings of the National Academy of Sciences} 102: 15942–15947.
   
 \noindent Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. 
 \emph{Neural Computation}, 21(8):2363-2404.
 
-\noindent Tobler W. 1970. A computer model simulating urban growth in the Detroit region. 
-\emph{Economic Geography}, 46(2):234-240.
+\noindent Tobler W. 1970. A computer movie simulating urban growth in the Detroit region. \emph{Economic Geography}, 46(2): 234-240.
+
+\noindent Tobler W. 1993. Three Presentations on Geographical Analysis and Modeling. \url{http://www.ncgia.ucsb.edu/Publications/Tech_Reports/93/93-1.PDF}
 
 \noindent van Etten, J., and R.J. Hijmans. 2010. A geospatial modelling approach integrating archaeobotany and genetics to trace the origin and dispersal of domesticated plants. \emph{PLoS ONE} 5(8): e12060.
 

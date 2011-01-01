@@ -9,7 +9,7 @@ setGeneric("geoCorrection", function(transition, type, ...) standardGeneric("geo
 
 setMethod("geoCorrection", signature(transition = "TransitionLayer", type="missing"), def = function(transition, multpl=FALSE, scl=TRUE)
 	{
-		return(geoCorrection(transition, type="c", multpl=FALSE, scl=TRUE))
+		return(geoCorrection(transition, type="c", multpl, scl))
 	}
 )
 
@@ -39,17 +39,13 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="chara
 				if(matrixValues(transition) == "resistance") {corrFactor <- 1 / (cos((pi/180) * rowMeans(cbind(correction[rows,2],correction[rows,4]))))} #high near the poles
 				correctionValues[rows] <- correctionValues[rows] * corrFactor #makes conductance lower in N-S direction towards the poles
 			}
-		}
-		else
-		{
+		} else {
 			adjacency <- .adjacency.from.transition(transition)
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
 			if(scl)
 			{
-				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="Euclidean")
-			}
-			else
-			{
+				scaleValue <- xres(transition)
+			} else {
 				scaleValue <- 1
 			}
 			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='Euclidean')/scaleValue)}
@@ -57,14 +53,14 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="chara
 		}
 		i <- as.integer(adjacency[,1] - 1)
 		j <- as.integer(adjacency[,2] - 1)
-		x <- as.vector(correctionValues)
+		x <- as.vector(correctionValues) #check for Inf values!
 		dims <- ncell(transition)
 		correctionMatrix <- new("dgTMatrix", i = i, j = j, x = x, Dim = as.integer(c(dims,dims)))
 		correctionMatrix <- (as(correctionMatrix,"sparseMatrix"))
-		if(class(transitionMatrix(transition)) == "dsCMatrix"){correctionMatrix <- forceSymmetric(correctionMatrix)}
+		if(class(transitionMatrix(transition)) == "dsCMatrix"){correctionMatrix <- forceSymmetric(correctionMatrix)} #isSymmetric?
 		if(!multpl) 
 		{
-			transitionCorrected <- correctionMatrix * as(transition, "sparseMatrix")
+			transitionCorrected <- correctionMatrix * transitionMatrix(transition)
 			transitionMatrix(transition) <- transitionCorrected
 			return(transition)
 		}	

@@ -166,7 +166,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	n <- max(Lr@Dim)
 	Lr <- Cholesky(Lr)
 
-	if(canProcessInMemory(transition, length(fromCells))) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	if(!(canProcessInMemory(transition, length(fromCells)))) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
@@ -174,7 +174,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		for(i in 1:(length(fromCells)))
 		{
 			matrixRow <- .currentM(L, Lr, A, n, indexOrigin, indexCoords[i], index)
-			Flow <- writeValues(Flow, matrixRow)
+			Flow <- writeValues(Flow, matrixRow, start=1)
 		}
 		Flow <- writeStop(Flow)
 	}
@@ -215,7 +215,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x)
 	W <- W * P 
 
-	if(canProcessInMemory(transition, length(fromCells))) 
+	if(!(canProcessInMemory(transition, length(fromCells)))) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()
@@ -224,7 +224,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		for(i in 1:(length(cj)))
 		{
 			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"))[index]
-			writeValues(Flow, matrixRow)
+			Flow <- writeValues(Flow, matrixRow, 1)
 		}
 		Flow <- writeStop(Flow)
 	}

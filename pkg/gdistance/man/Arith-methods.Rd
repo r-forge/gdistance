@@ -19,13 +19,13 @@
 \title{Arithmetic and mathematical operations with objects of Transition* classes}
 
 \description{
-  Standard arithmetic operators for computations with Transition* objects and numeric values. 
+  Standard arithmetic operators for computations with \code{Transition*} objects and numeric values. 
   Transition objects must have the same extent and resolution.
-  All arithmetic and mathematical operations that work on the sparse matrices are available for Transition* objects. 
+  All arithmetic and mathematical operations that work on the sparse matrices are available for \code{Transition*} objects. 
 }
 
 \value{
-Transition* object or numeric.
+  \code{Transition*} object or numeric.
 }
 
 \author{Jacob van Etten}
@@ -42,6 +42,9 @@ Transition* object or numeric.
   #arithmetic operations
   tr3 <- tr1 * tr2
   tr4 <- tr3 * 4
+  
+  #mathematical operations
+  tr5 <- sqrt(tr4)
 }
 
 \keyword{methods}

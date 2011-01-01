@@ -26,20 +26,15 @@ TransitionLayer and TransitionStack (or Transition*) are the core classes of the
 They are the main input into the functions to calculate distances and routes.
 
 An object of the class TransitionLayer contains two main elements:
-
 a. a transition matrix with transition values between connected cells in a raster - an object of class sparseMatrix (package Matrix); 
-
 b. information on the extent, resolution and projection of the underlying raster - an object of class Raster (package raster).
 
-
-
 All slots belong to these two elements from other package, except two additional slots:
-
 1. slot transitionCells, which is only used internally in the package;
-
 2. slot matrixValues indicates if the nonzero values of the transition matrix contains conductance or resistance values.
 
 Class TransitionStack contains various transition matrices as a list. 
+
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("Transition", nrows, ncols, xmin, xmax, ymin, ymax, projection)}.
@@ -54,10 +49,12 @@ Objects can be created by calls of the form \code{new("Transition", nrows, ncols
     \item{\code{crs}:}{Object of class \code{"CRS"} (sp package)}	
     \item{\code{extent}:}{Object of class \code{"Extent"}}
 	\item{\code{layernames}:}{Object of class \code{"vector"}}
+	
   }
 }
 \section{Extends}{
 Class \code{"\linkS4class{Raster}"}.
+
 }
 %\section{Methods}{
 %  \describe{

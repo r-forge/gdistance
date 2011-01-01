@@ -6,7 +6,7 @@
 gdistance: geographic distance calculations
 }
 \description{
-Calculate distances and other measures using models/algorithms for movements on geographic grids (least-cost, random walk, and more to come).
+Calculate distances and routes on geographic grids.
 }
 \details{
 \tabular{ll}{
@@ -19,13 +19,20 @@ LazyLoad: \tab yes\cr
 }
 Distances can be calculated following these steps. 
 
-1. Read spatial grid data into the R environment, using the raster package. The resulting object can either be a RasterLayer or a RasterStack. All data have to be read into memory to be used by gdistance.
+1. Read spatial grid data into the R environment, using the raster package. Function: \code{\link[raster:raster]{raster}}.
 
-2. Construct from grid data an object of the class Transition. This object holds basic geographic information about the grid and a matrix with transition values for movements between grid cells. 
+2. Construct an object of the class TransitionLayer or TransitionStack. Function: \code{\link[gdistance:TransitionFromRaster]{TransitionFromRaster}}.
 
-3. Correct the transition matrix for different distances between the cells due to diagonal movements and projection distortions.
+3. Correct diagonal connections and projection distortions. Function: \code{\link[gdistance:geoCorrection]{geoCorrection}}.
 
-4. Calculate distances from the Transition object. Outputs include matrices of mutual distances between spatial points or rasters with distance surfaces from one or more points.
+4. Get coordinates for the starting and end points of routes. 
+
+5. Calculate distances and routes. Functions: \code{\link[gdistance:accCost]{accCost}}, 
+\code{\link[gdistance:costDistance]{costDistance}}, 
+\code{\link[gdistance:resistanceDistance]{resistanceDistance}},
+\code{\link[gdistance:shortestPath]{shortestPath}},
+\code{\link[gdistance:passage]{passage}},
+\code{\link[gdistance:pathInc]{pathInc}}.
 }
 \author{
 Jacob van Etten \email{jacobvanetten@yahoo.com}
@@ -43,13 +50,4 @@ Jacob van Etten \email{jacobvanetten@yahoo.com}
 \keyword{spatial}
 \seealso{
 \code{\link[raster:raster-package]{raster}}
-}
-\examples{
-#Create a raster (with raster package)
-
-#Create a Transition object
-
-#Correct for the projection distortion
-
-#Calculate distances
 }

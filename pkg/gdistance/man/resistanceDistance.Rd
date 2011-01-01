@@ -10,7 +10,7 @@ resistanceDistance (transition, coords)
 }
 
 \arguments{
-  \item{transition}{ transition object (Transition class) }
+  \item{transition}{ \code{TransitionLayer} object) }
   \item{coords}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}  
 
 }
@@ -19,14 +19,12 @@ resistanceDistance (transition, coords)
 
   The function implements the algorithm given by Fouss et al. (2007).
 
-  Before calculating resistance distances from a Transition object, see if you need to apply the function \code{\link{geoCorrection}}. 
+  Before calculating resistance distances from a \code{TransitionLayer} object, see if you need to apply the function \code{\link{geoCorrection}}. 
 }
 \value{
-distance matrix (dist) or matrix
+distance matrix (S3 class dist or matrix)
 }
-\note{
-  Before calculating resistance distances from a Transition object, see if you need to apply the function \code{\link{geoCorrection}}).
-}
+
 \references{ 
 Chandra, A.K., Raghavan, P., Ruzzo, W.L., Smolensy, R. & Tiwari, P. 1996. The electrical resistance of a graph captures its commute and cover times. \emph{Computational Complexity}, 6(4), 312-340.
 
@@ -39,18 +37,18 @@ McRae, B.H. 2006. Isolation by resistance. \emph{Evolution} 60(8), 1551-1561.
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
 \seealso{ \code{\link{geoCorrection}} }
 \examples{
-#create a new raster and set all its values to unity.
+#Create a new raster and set all its values to unity.
 raster <- raster(nrows=18, ncols=36) 
 raster <- setValues(raster,rep(1,ncell(raster)))
 
-#create a Transition object from the raster
+#Create a Transition object from the raster
 tr <- TransitionFromRaster(raster,mean,4)
 
-#create two sets of coordinates
+#Create two sets of coordinates
 sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
 sP2 <- SpatialPoints(cbind(c(50,15,-40),c(80,20,-5)))
 
-#calculate the resistance distance between the points
+#Calculate the resistance distance between the points
 resistanceDistance(tr,sP1)
 
 }
