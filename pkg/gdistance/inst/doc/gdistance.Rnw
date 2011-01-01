@@ -458,7 +458,7 @@ genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance")
 popCoord <- SpatialPoints(read.csv(system.file("external/popCoordinates.csv", package="gdistance")))
 
 plot(Europe)
-points(popCoord[c("x","y")])
+#points(as.matrix(popCoord[c("x","y")]))
 @
 
 \section{References}

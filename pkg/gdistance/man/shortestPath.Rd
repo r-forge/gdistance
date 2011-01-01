@@ -39,9 +39,10 @@ shortestPath(transition, origin, goal, output)
   sP2 <- SpatialPoints(cbind(105,-55))
 
   #Calculate the shortest path
-  sPath <- shortestPath(tr, sP1, sP2)
-  sPath <- shortestPath(tr, sP1, sP2, output="SpatialLines")
-  plot(TransitionMap(sPath))
+  sPath1 <- shortestPath(tr, sP1, sP2)
+  sPath2 <- shortestPath(tr, sP1, sP2, output="SpatialLines")
+  plot(TransitionMap(sPath1))
+  lines(sPath2)
 }
 
 \keyword{ spatial }
