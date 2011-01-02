@@ -102,7 +102,7 @@ Each row and column in the transition matrix represents a cell in the original \
 In most cases, cells are connected only with adjacent cells.
 Consequently, a transition matrix with conductance values contains only a small fraction of non-zero values.
 
-For first time users, the use of conductance values may be counterintuitive, as other software generally uses friction surfaces to calculate distances.
+For first-time users, the use of conductance values may be counterintuitive, as other software generally uses friction surfaces to calculate distances.
 However, the relation with friction is straightforward: conductance is the \emph{reciprocal} of friction (1/friction).
 It is not strange to use the word `conductance' in this context (or to use resistance as a synonym for friction). 
 There is an analogy between random walks on geographical grids and electrical current in a mesh of resistors (McRae et al. 2008).
@@ -452,36 +452,68 @@ This is a consequence of the asymmetry of the Hiking Function.
 
 \section{Example 2: Geographical genetics}
 
+Genetic diversity of humans on a global scale shows the signs of the prehistoric expansion out of Africa (Ramachandran 2005).
+Within a single continent, however, human genetic diversity may have to do with more recent events.
+Let´s look at diversity in Europe, using the data presented by Balaresque et al. (2010).
+Within Europe, genetic diversity is often thought to be a result of the migration of early Neolithic farmers from Anatolia (Turkey) to the west.
+First we read in the data, including the coordinates of the populations (Figure 8) and mutual genetic distances.\footnote{Genetic distances were calculated from the haplotype data presented in the supplementary material as the negative logarithm of the shared proportion of alleles.} 
+
 <<gdistance-22>>=
 Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
+Europe[is.na(Europe)] <- 0
 genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
 genDist <- as.dist(genDist)
 popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
-
-plot(Europe)
 pC <- as.matrix(popCoord[c("x","y")])
+@
+\begin{figure}
+\begin{center}
+<<label=fig8,fig=TRUE,echo=FALSE>>=
+plot(Europe)
 text(pC[,1],pC[,2],unlist(popCoord["Population"]),cex=.7)
+@
+\end{center}
+\caption{Map of genotyped populations}
+\label{fig:eight}
+\end{figure}
 
-Europe[is.na(Europe)] <- 0
-Europe <- aggregate(Europe,3) 
-tr <- TransitionFromRaster(Europe, mean, directions=8)
-tr <- geoCorrection(tr, "c")
-origin <- unlist(popCoord[22,c("x","y")])
+Then we create three geographical distance matrices.
+The first corresponds to the great-circle distance between populations.
+The second is the least-cost path between locations. Travel is restricted to the land mass.
+The third is the resistance distance, which is related to the random-walk travel time between points (McRae 2006).
 
-
-pI <- pathInc(tr, origin=origin, fromCoords=pC, type="joint", theta=2)
-
-
+<<gdistance-23>>=
 geoDist <- matrix(nrow=23,ncol=23)
 for (i in 1:23){geoDist[,i] <- pointDistance(pC[i,], pC, longlat=TRUE)}
+#geoDist <- pointDistance(pC, longlat=TRUE)
 geoDist <- as.dist(geoDist)
-
-cor(genDist,pI)
+Europe <- aggregate(Europe,3)
+tr <- TransitionFromRaster(Europe, mean, directions=8)
+tr <- geoCorrection(tr, "c")
+tR <- geoCorrection(tr, "r")
+cosDist <- costDistance(tr,pC)
+resDist <- resistanceDistance(tR,pC)
 cor(genDist,geoDist)
+cor(genDist,cosDist)
+cor(genDist,resDist)
 @
+
+Interestingly, the great-circle distance between points turns out to be the best predictor of genetic distance.
+But how well does a wave of expansion from Anatolia explain the spatial pattern?
+
+<<gdistance-24>>=
+origin <- unlist(popCoord[22,c("x","y")])
+pI <- pathInc(tr, origin=origin, fromCoords=pC, type="joint", theta=2)
+cor(genDist,pI)
+@
+
+At first sight, the wave of expansion model explains the spatial pattern well.
+Additional work would be needed to compare the different models more rigorously.
 
 \section{References}
 \begin{hangparas}{3em}{1}
+
+\noindent Balaresque P., et al. 2010. A predominantly Neolithic origin for European paternal lineages. \emph{PLoS Biology} 8(1): e1000285.
 
 \noindent McRae B.H. 2006. Isolation by resistance. \emph{Evolution} 60: 1551–1561.
 
