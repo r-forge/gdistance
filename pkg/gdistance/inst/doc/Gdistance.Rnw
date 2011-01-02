@@ -70,7 +70,7 @@ Package \verb@gdistance@ uses functionality from a number of other \R packages.
 The most important among these packages is \verb@raster@.
 To use \verb@gdistance@ and to understand the details of this vignette, the reader has to be familiar with the basic functionality of \verb@raster@.
 
-\section{Getting started}
+\section{Getting the package}
 The latest version of the package is available from R-Forge (\url{http://R-Forge.R-project.org}).
 The package depends on a number of other packages: \verb@Matrix@ (comes with R as a recommended package), 
 igraph and \verb@raster@ (both available from CRAN).
@@ -198,7 +198,7 @@ plot(TransitionMap(tr1))
 \caption{Visualizing a TransitionLayer using the function TransitionMap()}
 \end{figure}
 \clearpage
-\section{Correcting inter-cell conductance/resistance values}
+\section{Correcting inter-cell conductance values}
 The function \verb@TransitionFromRaster@ calculates transition values based on the values of adjacent cells in the input raster.
 However, the centres of diagonally connected cells are more remote from each other than in the case of orthogonally connected cells.
 Secondly, on equirectangular (lonlat) projection grids, W-E connections are longer at the equator and become shorter towards the poles.
