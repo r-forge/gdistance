@@ -340,7 +340,7 @@ The maximum speed of off-path hiking (in m/s) is:
 speed = exp(-3.5 * abs(slope + 0.05))
 \vspace{5 mm}
 
-\noindent Note that the function is not symmetric around 0 (see figure below).
+\noindent Note that the function is not symmetric around 0 (see Figure 6).
 \clearpage
 \begin{figure}[!ht]
 \begin{center}
@@ -524,7 +524,7 @@ Bug reports and requests for additional functionality can be mailed to jacobvane
 \noindent McRae B.H., B.G. Dickson, and T. Keitt. 2008. Using circuit theory to model connectivity in ecology, evolution, and conservation. 
 \emph{Ecology} 89:2712-2724.
 
-\noindent Ramachandran S., et al. 2005. Support from the relationship of genetic and geographic distance in human populations for a serial founder effect originating in Africa. emph{Proceedings of the National Academy of Sciences} 102: 15942–15947.
+\noindent Ramachandran S., et al. 2005. Support from the relationship of genetic and geographic distance in human populations for a serial founder effect originating in Africa. \emph{PNAS} 102: 15942–15947.
   
 \noindent Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path problems: two related models. 
 \emph{Neural Computation}, 21(8):2363-2404.
