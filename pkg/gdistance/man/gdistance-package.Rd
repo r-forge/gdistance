@@ -21,7 +21,7 @@ Distances can be calculated following these steps.
 
 1. Read spatial grid data into the R environment, using the raster package. Function: \code{\link[raster:raster]{raster}}.
 
-2. Construct an object of the class TransitionLayer or TransitionStack. Function: \code{\link[gdistance:TransitionFromRaster]{TransitionFromRaster}}.
+2. Construct an object of the class TransitionLayer or TransitionStack. Function: \code{\link[gdistance:transition]{transition}}.
 
 3. Correct diagonal connections and projection distortions. Function: \code{\link[gdistance:geoCorrection]{geoCorrection}}.
 

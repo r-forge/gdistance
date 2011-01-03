@@ -46,7 +46,7 @@ raster <- raster(nrows=18, ncols=36)
 raster <- setValues(raster,rep(1,ncell(raster)))
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(raster,mean,4)
+tr <- transition(raster,mean,4)
 trC <- geoCorrection(tr, type="c")
 trR <- geoCorrection(tr, type="r")
 

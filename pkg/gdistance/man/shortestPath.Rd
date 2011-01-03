@@ -7,15 +7,17 @@
   Calculates the shortest path from an origin to a goal. 
 }
 \usage{
-shortestPath(transition, origin, goal, output)
+shortestPath(transition, origin, goal, ...)
 }
 \arguments{
   \item{transition}{\code{TransitionLayer} object}
   \item{origin}{SpatialPoints, vector or matrix with coordinates}
   \item{goal}{SpatialPoints, vector or matrix with coordinates}
-  \item{output}{Class of desired output object; either "TransitionLayer" (default) or "SpatialLines"}
+  \item{...}{Additional argument: output}
 }
 \details{
+  As an additional argument output, the desired output object can be specified: either "TransitionLayer" (default) or "SpatialLines".
+
   If there is more than one path either (1) transition values in the TransitionLayer get values of 1 / number of paths or (2) the SpatialLines object will contain more than one line.
 }
 \value{
@@ -31,7 +33,7 @@ shortestPath(transition, origin, goal, output)
   r <- setValues(r,runif(ncell(r), 0.4, 0.6))
 
   #Create a Transition object from the raster
-  tr <- TransitionFromRaster(r,mean,8)
+  tr <- transition(r,mean,8)
   trC <- geoCorrection(tr, type="c")
 
   #Create two sets of coordinates
@@ -41,7 +43,7 @@ shortestPath(transition, origin, goal, output)
   #Calculate the shortest path
   sPath1 <- shortestPath(tr, sP1, sP2)
   sPath2 <- shortestPath(tr, sP1, sP2, output="SpatialLines")
-  plot(TransitionMap(sPath1))
+  plot(raster(sPath1))
   lines(sPath2)
 }
 

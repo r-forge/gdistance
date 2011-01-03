@@ -12,9 +12,14 @@ setGeneric("resistanceDistance", function(transition, coords) standardGeneric("r
 
 setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords = "Coords"), def = function(transition, coords) 
 	{
-		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in Transition object")}
+		return(.rD(transition, coords))
+	}
+)
+
+.rD <- function(transition, coords){
+		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in TransitionLayer object")}
 		coords <- .coordsToMatrix(coords)
-		transition <- .transitionSolidify(transition)
+
 		rd <- matrix(NA,nrow=length(coords[,1]),ncol=length(coords[,1]))
 		rownames(rd) <- rownames(coords)
 		colnames(rd) <- rownames(coords)
@@ -24,7 +29,8 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 			warning("some coordinates not found and omitted")
 			allFromCells <- allFromCells[!is.na(allFromCells)]
 		}
-		
+
+		transition <- .transitionSolidify(transition)		
 		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
 		if (length(fromCells) < length(allFromCells)) 
 		{
@@ -52,12 +58,11 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 		}
 		Lplus <- Lplus / C
 		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
-		+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) * sum(transitionMatrix(transition))
+			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) * sum(transitionMatrix(transition))
 		index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
 		rd[index1,index1] <- rdSS[index2,index2]
 		rd <- as.dist(rd)
 		attr(rd, "method") <- "resistance"
 		return(rd)
-	}
-)
+}

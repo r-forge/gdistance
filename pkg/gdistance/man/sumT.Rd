@@ -34,7 +34,7 @@ This function is useful to create barriers (with a certain resistance), with the
   raster <- setValues(raster,rep(1,ncell(raster)))
 
   #Create TransitionLayer objects
-  tr1 <- TransitionFromRaster(raster,mean,4)
+  tr1 <- transition(raster,mean,4)
   tr2 <- tr1
   matrixValues(tr1)
   

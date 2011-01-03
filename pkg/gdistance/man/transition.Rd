@@ -1,13 +1,13 @@
-\name{TransitionFromRaster }
-\alias{TransitionFromRaster }
-\alias{TransitionFromRaster,RasterLayer-method}
-\alias{TransitionFromRaster,RasterBrick-method}
+\name{transition }
+\alias{transition }
+\alias{transition,RasterLayer-method}
+\alias{transition,RasterBrick-method}
 \title{ Create an object of the class Transition }
 \description{
   Create a Transition object from a RasterLayer or RasterBrick object. Transition values are calculated with a user-defined function from the grid values.
 }
 \usage{
-TransitionFromRaster (object, transitionFunction, directions, ...)
+transition (object, transitionFunction, directions, ...)
 }
 \arguments{
   \item{object}{ \code{RasterLayer} or \code{RasterBrick} (raster package) }
@@ -20,22 +20,22 @@ Users may use one of three methods to construct a Transition* object with this f
 
 1) \code{TransitionLayer} from \code{RasterLayer}
 
-\code{TransitionFromRaster(object, transisitonFunction, directions, symm)}
+\code{transition(object, transisitonFunction, directions, symm)}
 
 When a symmetric transition matrix is required, the user should supply a transitionFunction f that obeys f(i,j) = f(j,i) (a commutative function). 
-The function \code{TransitionFromRaster} does no commutativity check.
+The function \code{transition} does no commutativity check.
 To obtain an asymmetric transition matrix, a non-commutative function should be supplied and an additional argument `symm' should be set to FALSE.
 
 2) \code{TransitionLayer} from \code{RasterBrick}
 
-\code{TransitionFromRaster(object, transisitonFunction="mahal", directions)}
+\code{transition(object, transisitonFunction="mahal", directions)}
 
 This method serves to summarize several layers of data in a single distance measure.
 The distance between adjacent cells is the normalized reciprocal of the Mahalanobis distance (mean distance / (mean distance + distance ij).
 
 3) \code{TransitionStack} from \code{RasterLayer}
 
-\code{TransitionFromRaster(object, transisitonFunction="barriers", directions, intervalBreaks)}
+\code{transition(object, transisitonFunction="barriers", directions, intervalBreaks)}
 
 This method creates a \code{TransitionStack} with each layer containing a discrete boundary between areas in \code{object}.
 Areas are defined by intervals in \code{object}.
@@ -58,13 +58,13 @@ Transition object
   r <- setValues(r, runif(ncell(r)))
 
   #Create a Transition object from the raster
-  tr <- TransitionFromRaster(r, transitionFunction=mean, directions=4)
+  tr <- transition(r, transitionFunction=mean, directions=4)
   tr #the sparse matrix is of class dsCMatrix (symmetric)
 
   #Create an asymmetric transition matrix
   #first, an arbitrary non-commutative function 
   f <- function(x) max(x) - x[1] + x[2] 
-  tr2 <- TransitionFromRaster(r, f, 4, symm=FALSE)
+  tr2 <- transition(r, f, 4, symm=FALSE)
   tr2 #the sparse matrix is of class dgCMatrix (=asymmetric)
 }
 \keyword{ spatial }

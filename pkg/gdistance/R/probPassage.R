@@ -10,7 +10,7 @@
 
 #with a separate function, it should be possible to calculate and compare these objects efficiently
 #this could be done with preset functions OR customer designed functions
-#TransitionMap should be improved in functionality
+#raster should be improved in functionality
 
 setGeneric("passage", function(transition, origin, goal, theta, ...) standardGeneric("passage"))
 
@@ -21,10 +21,10 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 		
 		if(totalNet=="net" & output=="RasterLayer")
 		{
-			transition <- .transitionSolidify(transition)
 			tc <- transitionCells(transition)
 			cellnri <- cellFromXY(transition, origin)
 			cellnrj <- cellFromXY(transition, goal)
+			transition <- .transitionSolidify(transition)
 			ci <- match(cellnri,tc)
 			cj <- match(cellnrj,tc)
 			result <- .flowMap(transition, ci, cj, tc)
@@ -74,10 +74,11 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 
 setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords", goal = "Coords", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
 	{
-		transition <- .transitionSolidify(transition)
-		tc <- transitionCells(transition)
 		cellnri <- cellFromXY(transition, origin)
 		cellnrj <- cellFromXY(transition, goal)
+		transition <- .transitionSolidify(transition)
+		tc <- transitionCells(transition)
+
 		ci <- match(cellnri,tc)
 		cj <- match(cellnrj,tc)
 		
@@ -89,10 +90,10 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterLayer", goal = "RasterLayer", theta="numeric"), def = function(transition, origin, goal, theta, totalNet="net", output="RasterLayer")
 	{
 		#check if Transition and RasterLayers coincide
-		transition <- .transitionSolidify(transition)
-		tc <- transitionCells(transition)
 		ci <- which(getValues(origin))
 		cj <- which(getValues(goal))
+		transition <- .transitionSolidify(transition)
+		tc <- transitionCells(transition)
 		result <- .randomShPaths(transition, ci, cj, theta, tc, totalNet, output)
 		return(result)
 	}

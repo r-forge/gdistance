@@ -4,9 +4,9 @@
 # Version 1.0
 # Licence GPL v3
 
-setGeneric("TransitionFromRaster", function(object, transitionFunction, directions, ...) standardGeneric("TransitionFromRaster"))
+setGeneric("transition", function(object, transitionFunction, directions, ...) standardGeneric("transition"))
 
-setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = function(object, transitionFunction, directions, symm=TRUE, ...)
+setMethod("transition", signature(object = "RasterLayer"), def = function(object, transitionFunction, directions, symm=TRUE, ...)
 		{
 			if(class(transitionFunction)=="character") 
 			{
@@ -45,8 +45,8 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 	maxVal <- max(getValues(x))
 	minVal <- min(getValues(x))
 	
-	Xmin <- TransitionFromRaster(x, min, 8)
-	Xmax <- TransitionFromRaster(x, max, 8)
+	Xmin <- transition(x, min, 8)
+	Xmax <- transition(x, max, 8)
 	index1 <- adjacency(x, 1:ncell(x), 1:ncell(x), directions)
 	XminVals <- Xmin[index1]
 	XmaxVals <- Xmax[index1]
@@ -63,7 +63,7 @@ setMethod("TransitionFromRaster", signature(object = "RasterLayer"), def = funct
 	return(Xstack)
 }
 
-setMethod("TransitionFromRaster", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
+setMethod("transition", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{
 			if(transitionFunction != "mahal")
 			{

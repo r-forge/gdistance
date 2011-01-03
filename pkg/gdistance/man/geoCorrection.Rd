@@ -40,7 +40,7 @@ For repetitive correction of similar Transition objects, it is helpful to have a
 \examples{
 r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
-tr <- TransitionFromRaster(r, mean, directions=8)
+tr <- transition(r, mean, directions=8)
 
 #directly
 tr1 <- geoCorrection(tr, type="c", multpl=FALSE)

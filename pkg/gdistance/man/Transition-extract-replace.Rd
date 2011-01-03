@@ -18,7 +18,7 @@ Methods for functions \code{[[} and \code{[[<-} for object of the class Transiti
   raster <- setValues(raster,rep(1,ncell(raster)))
 
   #Create TransitionLayer objects
-  tr1 <- TransitionFromRaster(raster,mean,4)
+  tr1 <- transition(raster,mean,4)
   tr2 <- tr1
 
   #Extracting and replacing

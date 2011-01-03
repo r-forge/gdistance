@@ -51,7 +51,7 @@ van Etten, J., and R.J. Hijmans. 2010. A geospatial modelling approach integrati
 #Create TransitionLayer
 r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
-tr <- TransitionFromRaster(r,mean,directions=4)
+tr <- transition(r,mean,directions=4)
 
 #Two different types of correction are required
 trR <- geoCorrection(tr, type="r", multpl=FALSE)

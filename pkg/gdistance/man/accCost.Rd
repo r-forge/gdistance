@@ -29,7 +29,7 @@ E.W. Dijkstra. 1959. A note on two problems in connexion with graphs. \emph{Nume
 \examples{
 r <- raster(ncol=36,nrow=18)
 r <- setValues(r,rep(1,times=ncell(r)))
-tr <- TransitionFromRaster(r, mean, directions=8)
+tr <- transition(r, mean, directions=8)
 tr <- geoCorrection(tr, type="c", multpl=FALSE)
 cmd <- accCost(tr, c(0,0))
 }

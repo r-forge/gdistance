@@ -10,16 +10,16 @@ costDistance(transition, fromCoords, toCoords)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition}{ transition matrix (class \code{TransitionLayer}) }
+  \item{transition}{ object of class \code{TransitionLayer} }
   \item{fromCoords}{ first set of point locations (of \code{SpatialPoints}, matrix or numeric class)}  
   \item{toCoords}{ second, optional set of point locations (of \code{SpatialPoints}, matrix or numeric class)}
 }
 \details{
-Cost units between cells are defined as the reciprocal of the values in the transition matrix (in \code{transition} argument).
+Cost units between cells are defined as the reciprocal of the values in the transition matrix.
 
 The function uses Dijkstra's algorithm, as implemented in the igraph package.
 
-A projection correction is needed for accuracy in the case of grid data for a latlon raster (see function \code{\link{geoCorrection}}). 
+A projection correction is needed for accuracy in the case of grid data for a longlat raster (see function \code{\link{geoCorrection}}). 
 }
 \value{
 distance matrix (S3 class dist or matrix)
@@ -37,11 +37,11 @@ r <- raster(nrows=18, ncols=36)
 r <- setValues(r,runif(ncell(r),0,1))
 
 #create a Transition object from the raster
-tr <- TransitionFromRaster(r,mean,8)
+tr <- transition(r,mean,8)
 
 #asymmetric
 ncf <- function(x) max(x) - x[1] + x[2]
-tr2 <- TransitionFromRaster(r,ncf,8, symm=FALSE)
+tr2 <- transition(r,ncf,8, symm=FALSE)
 
 #create two sets of coordinates
 sP1 <- cbind(c(65,5,-65),c(55,35,-35))

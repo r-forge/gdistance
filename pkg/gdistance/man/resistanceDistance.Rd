@@ -42,7 +42,7 @@ raster <- raster(nrows=18, ncols=36)
 raster <- setValues(raster,rep(1,ncell(raster)))
 
 #Create a Transition object from the raster
-tr <- TransitionFromRaster(raster,mean,4)
+tr <- transition(raster,mean,4)
 
 #Create two sets of coordinates
 sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))

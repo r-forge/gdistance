@@ -93,8 +93,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 {
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
 
-		transition <- .transitionSolidify(transition)
 		originCell <- cellFromXY(transition, origin)
+		transition <- .transitionSolidify(transition)
+
 		if (!(originCell %in% transitionCells(transition))) {stop("the origin was not found in the transition matrix")} 
 
 		allFromCells <- cellFromXY(transition, fromCoords)

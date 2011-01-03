@@ -36,7 +36,7 @@
   raster <- setValues(raster,rep(1,ncell(raster)))
 
   #create TransitionLayer objects
-  tr1 <- TransitionFromRaster(raster,mean,4)
+  tr1 <- transition(raster,mean,4)
   tr2 <- tr1
 
   #arithmetic operations

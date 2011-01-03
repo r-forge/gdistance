@@ -72,39 +72,20 @@ setMethod ("initialize", "TransitionStack",
 		}
 )
 
-setMethod ("show" , "TransitionLayer", 
-		function(object) {
-			cat("class       :" , class(object), "\n")
-			cat("nrows       :" , nrow(object), "\n")
-			cat("ncols       :" , ncol(object), "\n")
-			cat("ncells      :" , nrow(object) * ncol(object), "\n")
-			cat("xmin        :" , xmin(object), "\n")
-			cat("xmax        :" , xmax(object), "\n")
-			cat("ymin        :" , ymin(object), "\n")
-			cat("ymax        :" , ymax(object), "\n")
-			cat("xres        :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
-			cat("yres        :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
-			cat("projection  :", projection(object), "\n")
-			cat("values      :", matrixValues(object), "\n")
-			cat("matrix class:", class(transitionMatrix(object)), "\n")
-		}
+setMethod ("show" , "TransitionLayer",
+       function(object) {
+               callNextMethod(object)
+               cat("values      :", matrixValues(object), "\n")
+               cat("matrix class:", class(transitionMatrix(object)), "\n")
+       }
 )
 
-setMethod ("show" , "TransitionStack", 
-		function(object) {
-			cat("class       :" , class(object), "\n")
-			cat("nrows       :" , nrow(object), "\n")
-			cat("ncols       :" , ncol(object), "\n")
-			cat("ncells      :" , nrow(object) * ncol(object), "\n")
-			cat("xmin        :" , xmin(object), "\n")
-			cat("xmax        :" , xmax(object), "\n")
-			cat("ymin        :" , ymin(object), "\n")
-			cat("ymax        :" , ymax(object), "\n")
-			cat("xres        :" , (xmax(object) - xmin(object)) / ncol(object), "\n")
-			cat("yres        :" , (ymax(object) - ymin(object)) / nrow(object), "\n")
-			cat("projection  :", projection(object), "\n")
-			cat("layers      :", nlayers(object), "\n")
-		}
+setMethod ("show" , "TransitionStack",
+       function(object) {
+               callNextMethod(object)
+               cat("values      :", matrixValues(object), "\n")
+               cat("matrix class:", class(transitionMatrix(object)), "\n")
+       }
 )
 
 setAs("TransitionLayer", "sparseMatrix", function(from){from@transitionMatrix})
