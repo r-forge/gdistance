@@ -12,8 +12,8 @@ Calculate distances and routes on geographic grids.
 \tabular{ll}{
 Package: \tab gdistance\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2008-09-26\cr
+Version: \tab 1.1-1\cr
+Date: \tab 2011-01-04\cr
 License: \tab GPL-3\cr
 LazyLoad: \tab yes\cr
 }

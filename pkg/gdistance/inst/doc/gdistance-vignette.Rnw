@@ -282,7 +282,7 @@ resistanceDistance(tr1CorrR, sP)
 
 \section{Dispersal paths}
 
-To visualize dispersal paths, we use the function passage(). 
+To determine dispersal paths with a random element, we use the function \verb@passage@. 
 This function can be used for both random walks and randomised shortest paths.
 The function calculates the number of passages through cells before arriving in the destination cell.
 Either the total or net number of passages can be calculated.
