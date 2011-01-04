@@ -79,17 +79,17 @@ Most operations have an object of one of these classes either as input or output
 These classes are from \verb@raster@, a memory-efficient and user-friendly R package which contains complete geographical grid functionality. 
 The class \verb@Transition*@ takes the necessary geographic references (projection, resolution, extent) from the original \verb@Raster*@ object. 
 It also contains a matrix which specifies the probability 
-of movements between cells or in more general terms the `conductance' of inter-cell connections.
+of movements between cells or, in more general terms, the `conductance' of inter-cell connections.
 Each row and column in the matrix represents a cell in the original \verb@Raster*@ object.
 Row/column 1 in the transition matrix corresponds to cell 1 in the original raster, and so on.
-Cell numbers in rasters go from left to right from top to bottom.
+Cell numbers in rasters go from left to right and from top to bottom.
 For instance, a 3 x 3 raster would have the following cell numbers:
 
-1 2 3
+1  2  3
 
-4 5 6
+4  5  6
 
-7 8 9
+7  8  9
 
 \noindent This raster would produce a 9 x 9 transition matrix with rows/columns numbered from 1 to 9.
 
@@ -110,7 +110,7 @@ which gives access to fast procedures implemented in the C language.
 
 A first step in any analysis with gdistance is the construction of an object of the class \verb@Transition*@.
 The construction of a \verb@Transition*@ object from a \verb@Raster*@ object is straightforward. 
-You can define a function to calculate the conductance values from the values of each pair of cells to be connected.
+We can define an arbitrary function to calculate the conductance values from the values of each pair of cells to be connected.
 Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
 We then create a \verb@TransitionLayer@ object. 
 The transition value between each pair of cells is the mean of the two cell values.
@@ -141,12 +141,12 @@ tr1
 @
 It is also possible to create asymmetric matrices, in which the conductance from i to j is not always the same as 
 the conductance from j back to i. 
-This is relevant for instance for modelling travel in hilly terrain, as shown in Example 1 below. 
-A downslope traveler experiences less resistance than an upslope traveler.
+This is relevant, among other things, for modelling travel in hilly terrain, as shown in Example 1 below. 
+On the same slope, a downslope traveler experiences less resistance than an upslope traveler.
 In this case, the function to calculate conductance values is non-commutative: $f(i,j) \neq f(j,i)$.
 The \verb@symm@ argument in \verb@transition@ needs to be set to \verb@FALSE@.
 <<gdistance-3>>=
-ncf <- function(x) max(x) - x[1] + x[2] 
+ncf <- function(x) max(x) - x[1] + x[2]
 tr2 <- transition(r, ncf, 4, symm=FALSE)
 class(transitionMatrix(tr1))
 class(transitionMatrix(tr2))
@@ -204,7 +204,7 @@ However, we can transform the transition matrix back in to a raster to visualize
 To summarize the information in transition matrix, we can take means or sums across rows or columns, for instance.
 You can do this with function \verb@raster@. 
 Applied to a \verb@TransitionLayer@, this function converts it to a \verb@RasterLayer@. 
-For the different options see \verb@?raster@. 
+For the different options see \verb@method?raster("TransitionLayer")@. 
 The default, shown in Figure 2, takes the column-wise means of the non-zero values.
 All these forms of transformation unavoidably cause information loss, of course.
 
@@ -255,9 +255,8 @@ tr1CorrR <- tr1 * tr1CorrMatrix
 
 \noindent Object \verb@trCorr1Matrix@ is only calculated once.
 It can be multiplied with \verb@Transition*@ objects, as long as they have the same extent, resolution, and directions of cell connections.
-You need to take special care that the geo-correction multiplication matrix (\verb@tr1CorrMatrix@) contains all non-zero values that are
-present in the \verb@Transition*@ object with which it will be multiplied (\verb@tr1@).
-\footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition* object with cells connected with value 1.}
+We need to take special care that the geo-correction multiplication matrix (\verb@tr1CorrMatrix@) contains all non-zero values that are
+present in the \verb@Transition*@ object with which it will be multiplied (\verb@tr1@).\footnote{A good alternative is to use geoCorrection(mulpl=FALSE) with a Transition* object with cells connected with value 1.}
 
 \section{Calculating distances}
 With the corrected \verb@Transition*@ object we can calculate distances between points.
@@ -479,16 +478,18 @@ As a result, the mutual genetic distance between a pair of humans from different
 they share their prehistoric migration history.
 
 Within a single continent, however, human genetic diversity may have to do with more recent events.
-Let´s look at diversity in Europe, using the data presented by Balaresque et al. (2010).
+Let's look at diversity in Europe, using the data presented by Balaresque et al. (2010).
 Within Europe, genetic diversity is often thought to be a result of the migration of early Neolithic farmers from Anatolia (Turkey) to the west.
 
-First we read in the data, including the coordinates of the populations (Figure 8) and mutual genetic distances.\footnote{Genetic distances were calculated from the haplotype data presented in the supplementary material as the negative logarithm of the shared proportion of alleles.} 
+First we read in the data, including the coordinates of the populations (Figure 8) and mutual genetic distances.
 <<gdistance-21>>=
 Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
 Europe[is.na(Europe)] <- 0
-genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
-genDist <- as.dist(genDist)
-popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
+data(genDist)
+#genDist <- read.csv(system.file("external/genDistance.csv", package="gdistance"))
+#genDist <- as.dist(genDist)
+#popCoord <- read.csv(system.file("external/popCoordinates.csv", package="gdistance"))
+data(popCoord)
 pC <- as.matrix(popCoord[c("x","y")])
 @
 \begin{figure}

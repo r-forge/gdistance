@@ -33,6 +33,7 @@ Distances can be calculated following these steps.
 \code{\link[gdistance:shortestPath]{shortestPath}},
 \code{\link[gdistance:passage]{passage}},
 \code{\link[gdistance:pathInc]{pathInc}}.
+
 }
 \author{
 Jacob van Etten \email{jacobvanetten@yahoo.com}

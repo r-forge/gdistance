@@ -1,33 +1,33 @@
-\name{raster}
-\alias{raster}
-%- THIS SHOULD BE A METHOD FILE, NOT DOCUMENTING A NEW FUNCTION
+\name{raster-methods}
+
+\docType{methods}
+
+\alias{raster,TransitionLayer-method}
+
 \title{ RasterLayer from TransitionLayer object }
 \description{
-  This function can be used to obtain a RasterLayer from a TransitionLayer.
-}
-\usage{
-raster(transition, reduceMethod)
-}
-\arguments{
-  \item{transition}{ object of class \code{TransitionLayer} }
-  \item{reduceMethod}{the method to reduce the transition matrix; see below for details}
-}
-\value{
-RasterLayer
-}
-\details{
-  The following methods to ``reduce" the transition matrix are available (argument \code{reduceMethod}): 
-  colSums
-  rowSums
-  colMeans
-  rowMeans
-  NZcolMeans
-  NZrowMeans
+Create a RasterLayer from a TransitionLayer with a call to the generic function \code{raster}.
 
+The n x n transition matrix of the TransitionLayer is transformed to form the values n cells of a raster.
+
+The following methods to \sQuote{reduce} the transition matrix are available with the optional argument \code{reduceMethod}):
+\itemize{
+\item{colSums}
+\item{rowSums}
+\item{colMeans}
+\item{rowMeans}
+\item{NZcolMeans}
+\item{NZrowMeans}
+}
   The latter two methods only take into account the non-zero entries in the transition matrix.
   
   The default is NZcolMeans.
 }
+
+\value{
+RasterLayer
+}
+
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com}}
 
 \examples{
