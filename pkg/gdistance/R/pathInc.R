@@ -94,9 +94,10 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
 
 		originCell <- cellFromXY(transition, origin)
+
 		transition <- .transitionSolidify(transition)
 
-		if (!(originCell %in% transitionCells(transition))) {stop("the origin was not found in the transition matrix")} 
+		if (!(originCell %in% transitionCells(transition))) {stop("the origin refers to a zero row/column in the transition matrix (unconnected)")} 
 
 		allFromCells <- cellFromXY(transition, fromCoords)
 		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
@@ -112,14 +113,14 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		A <- as(transitionMatrix(transition),"lMatrix")
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
-		index1 <- cbind(transition@transitionCells[as.integer(AIndex@i+1)],transition@transitionCells[as.integer(AIndex@j+1)]) 
-		index2 <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1)) #BUT @transitionCells -> create function extractNon0()
+		index1 <- cbind(transitionCells(transition)[as.integer(AIndex@i+1)],transitionCells(transition)[as.integer(AIndex@j+1)]) 
+		index2 <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
 		#if symmetric? index <- index[index[,1] < index[,2],]
-		Size <- length(index1[,1])
+		Size <- nrow(index1)
 		
 		if(class(weight) == "numeric")
 		{
-			R <- 1/transition[index1]
+			R <- 1/transition[index2]
 			R[R == Inf] <- 0
 		}
 		if(class(weight) == "TransitionLayer")
