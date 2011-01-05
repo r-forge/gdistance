@@ -16,7 +16,7 @@ shortestPath(transition, origin, goal, ...)
   \item{...}{Additional argument: output}
 }
 \details{
-  As an additional argument output, the desired output object can be specified: either "TransitionLayer" (default) or "SpatialLines".
+  As an additional argument output, the desired output object can be specified: either \dQuote{TransitionLayer} (default) or \dQuote{SpatialLines}.
 
   If there is more than one path either (1) transition values in the TransitionLayer get values of 1 / number of paths or (2) the SpatialLines object will contain more than one line.
 }

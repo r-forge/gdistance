@@ -505,7 +505,7 @@ text(pC[,1],pC[,2],unlist(popCoord["Population"]),cex=.7)
 
 Then we create three geographical distance matrices.
 The first corresponds to the great-circle distance between populations.
-The second is the least-cost path between locations. Travel is restricted to the land mass.
+The second is the least-cost distance between locations. Travel is restricted to the land mass.
 The third is the resistance distance (using the same conductance matrix), which is related to the random-walk travel time between points (McRae 2006).
 <<gdistance-22>>=
 geoDist <- matrix(nrow=23,ncol=23)
