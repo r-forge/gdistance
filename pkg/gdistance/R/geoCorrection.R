@@ -24,14 +24,14 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="chara
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
 			if(scl)
 			{
-				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),type="GreatCircle")
+				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),longlat=TRUE)
 			}
 			else
 			{
 				scaleValue <- 1
 			}
-			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue)}
-			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='GreatCircle')/scaleValue}
+			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],longlat=TRUE)/scaleValue)}
+			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],longlat=TRUE)/scaleValue}
 			if (type=="r")
 			{
 				rows <- rowFromCell(transition,adjacency[,1]) != rowFromCell(transition,adjacency[,2])
@@ -48,8 +48,8 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="chara
 			} else {
 				scaleValue <- 1
 			}
-			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],type='Euclidean')/scaleValue)}
-			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],type='Euclidean')/scaleValue}	
+			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],longlat=FALSE)/scaleValue)}
+			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],longlat=FALSE)/scaleValue}	
 		}
 		i <- as.integer(adjacency[,1] - 1)
 		j <- as.integer(adjacency[,2] - 1)

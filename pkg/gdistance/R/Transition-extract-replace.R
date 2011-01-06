@@ -32,7 +32,7 @@ setGeneric("transitionCells", function(transition = "TransitionLayer") standardG
 
 setMethod ("transitionCells", signature(transition = "TransitionLayer"),
 	function(transition){
-		if(!(transition@transitionCells == 0)){return(transition@transitionCells)}
+		if(transition@transitionCells[1] != 0){return(transition@transitionCells)}
 		else{return(1:ncell(transition))}
 	}
 )
