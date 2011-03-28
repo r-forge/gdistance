@@ -35,18 +35,31 @@ The distance between adjacent cells is the normalized reciprocal of the Mahalano
 
 3) \code{TransitionStack} from \code{RasterLayer}
 
+In contrast with the above methods, this method produces resistance matrices by default.
+
+Continuous variables
+
 \code{transition(object, transitionFunction="barriers", directions, symm, intervalBreaks)}
 
 This method creates a \code{TransitionStack} with each layer containing a discrete boundary between areas in \code{object}.
 Areas are defined by intervals in \code{object}.
 The argument \code{intervalBreaks} is a vector of interval breaks corresponding to the values in \code{object}.
-
 If between a pair of cells i and j, min(i,j) < break AND max(i,j) > break, then the value ij in the transition matrix becomes 1.
 All other values in the transition matrix remain 0.
-In contrast with the above methods, this method produces resistance matrices by default.
 The package classInt offers several methods to define intervals.
+If symm is changed from the default (TRUE) to "up" or "down", it will give either only the upslope (symm="up") or downslope (symm="down") barriers.
 
-If symm is changed from the default (TRUE), it will give either only the upslope (symm="up") or downslope (symm="down") barriers.
+Categorical variables
+
+\code{transition(object, transitionFunction="barriers", directions)}
+
+In this case, areas are defined as categories in the input raster.
+A raster with a categorical variable can be created with \code{asFactor()}.
+The layers of the resulting TransitionStack contain all possible combinations of categories.
+Which layer contains the combination of categories i and j out of n categories, can be determined with these formulae:
+
+if \code{symm} is \code{TRUE}: layer(i,j) = n*(j-1) - j*(j-1)/2 + i-j.
+if \code{symm} is \code{FALSE}: layer(i,j) = .
 
 }
 \value{
@@ -69,11 +82,15 @@ Transition object
   tr2 <- transition(r, f, 4, symm=FALSE)
   tr2 #the sparse matrix is of class dgCMatrix (=asymmetric)
   
-  #Barriers
+  #Barriers - interval breaks
   tr3 <- transition(r, "barriers", 8, intervalBreaks=c(0.25, 0.5, 0.75))
+  nlayers(tr3)
+
+  #Barriers - categories
   r <- round(r * 2)
   r <- asFactor(r)
   tr4 <- transition(r, "barriers", 8)
+  nlayers(tr4)
+  plot(raster(tr4[[2]]))
 }
 \keyword{ spatial }
-

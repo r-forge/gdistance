@@ -143,7 +143,7 @@ setMethod("==", signature(e1 = "TransitionStack", e2 = "TransitionStack"),
 setMethod("Summary", signature(x = "TransitionStack", na.rm = "ANY"),
 		function(x, ..., na.rm)
 		{
-			objectList <- list(...)
+			objectList <- list(x, ...)
 			if(!is.null(objectList))
 			{
 				if(length(objectList)>1)
@@ -175,7 +175,7 @@ setMethod("Summary", signature(x = "TransitionStack", na.rm = "ANY"),
 setMethod("Summary", signature(x = "TransitionLayer", na.rm = "ANY"),
 		function(x, ..., na.rm)
 		{
-			objectList <- list(...)
+			objectList <- list(x, ...)
 			if(!is.null(objectList))
 			{
 				if(length(objectList)>1)

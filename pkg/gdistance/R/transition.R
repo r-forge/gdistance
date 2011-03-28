@@ -52,16 +52,37 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 
 		vals <- unlist(x@data@attributes[[1]])
 		n <- length(vals)
-		maxn <- (n^2 - n)/2
-		for(i in 1:maxn)
+		
+		if(symm)
 		{
-			j <- .matrIndex(i,n)
-			XlayerNew <- Xlayer
-			cells1 <- which(getValues(x) == vals[j[1]])
-			cells2 <- which(getValues(x) == vals[j[2]])			
-			adj <- adjacency(x, cells1, cells2, directions)
-			XlayerNew[adj] <- 1
-			Xstack <- stack(Xstack, XlayerNew)
+			maxn <- (n^2 - n)/2
+			for(i in 1:maxn)
+			{
+				j <- .matrIndex(i,n)
+				XlayerNew <- Xlayer
+				cells1 <- which(getValues(x) == vals[j[1]])
+				cells2 <- which(getValues(x) == vals[j[2]])
+				adj1 <- adjacency(x, cells1, cells2, directions)
+				adj2 <- adjacency(x, cells2, cells1, directions)
+				adj <- rbind(adj1,adj2)
+				XlayerNew[adj] <- 1
+				Xstack <- stack(Xstack, XlayerNew)
+			}
+		} else {
+			maxn <- (n^2 - n)/2
+			for(i in 1:maxn)
+			{
+				j <- .matrIndex(i,n)
+				XlayerNew1 <- Xlayer
+				XlayerNew2 <- Xlayer
+				cells1 <- which(getValues(x) == vals[j[1]])
+				cells2 <- which(getValues(x) == vals[j[2]])
+				adj1 <- adjacency(x, cells1, cells2, directions)
+				adj2 <- adjacency(x, cells2, cells1, directions)
+				XlayerNew1[adj1] <- 1
+				XlayerNew2[adj2] <- 1				
+				Xstack <- stack(Xstack, XlayerNew1, XlayerNew2)
+			}
 		}
 	
 	} else {
