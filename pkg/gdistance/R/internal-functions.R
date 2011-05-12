@@ -4,14 +4,6 @@
 # Version 1.0
 # Licence GPL v3
 
-.adjacency.from.transition <- function(transition)
-{
-	transitionMatr <- as(transition,"sparseMatrix")
-	transition.dgT <- as(transitionMatr,"dgTMatrix")
-	adjacency <- cbind(transition.dgT@i+1,transition.dgT@j+1)
-	return(adjacency)
-}
-
 .coordsToMatrix <- function(Coords)
 {
 	if(class(Coords) == "numeric")

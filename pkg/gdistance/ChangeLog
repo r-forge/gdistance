@@ -1,0 +1,6 @@
+--- version 1.1.2, May 2011
+
+Bug fix in transition(transitionFunction="barriers")
+Methods added in transition()
+Summary functions redefined
+Some preparatory work for further additions in transition()

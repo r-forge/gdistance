@@ -1,12 +1,12 @@
 Package: gdistance
 Type: Package
 Title: distances and routes on geographical grids
-Version: 1.1-1
-Date: 4-January-2011
+Version: 1.1-2
+Date: 12-May-2011
 Author: Jacob van Etten
-Depends: R (>= 2.8.0), raster (>=  1.7-21), igraph, Matrix, methods, sp 
+Depends: R (>= 2.8.0), raster (>=  1.7-21), igraph (< 0.6), Matrix, methods, sp 
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: Calculate distances and routes on geographic grids.
 License: GPL-3
-Collate: Transition-class.R Coords-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R transition.R costDistance.R accCost.R probPassage.R geoCorrection.R normalize.R resistanceDistance.R rasterFromTransition.R pathInc.R sumT.R shortestPath.R stack.R summary.R
+Collate: adjacency.R Transition-class.R Coords-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R transition.R costDistance.R accCost.R probPassage.R geoCorrection.R normalize.R resistanceDistance.R rasterFromTransition.R pathInc.R sumT.R shortestPath.R stack.R summary.R Summary-methods.R
 LazyLoad: yes

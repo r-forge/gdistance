@@ -28,7 +28,7 @@ To obtain an asymmetric transition matrix, a non-commutative function should be 
 
 2) \code{TransitionLayer} from \code{RasterBrick}
 
-\code{transition(object, transisitonFunction="mahal", directions)}
+\code{transition(object, transitionFunction="mahal", directions)}
 
 This method serves to summarize several layers of data in a single distance measure.
 The distance between adjacent cells is the normalized reciprocal of the Mahalanobis distance (mean distance / (mean distance + distance ij).
@@ -37,7 +37,7 @@ The distance between adjacent cells is the normalized reciprocal of the Mahalano
 
 In contrast with the above methods, this method produces resistance matrices by default.
 
-Continuous variables
+a) Continuous variables - barriers
 
 \code{transition(object, transitionFunction="barriers", directions, symm, intervalBreaks)}
 
@@ -49,7 +49,7 @@ All other values in the transition matrix remain 0.
 The package classInt offers several methods to define intervals.
 If symm is changed from the default (TRUE) to "up" or "down", it will give either only the upslope (symm="up") or downslope (symm="down") barriers.
 
-Categorical variables
+b) Categorical variables - barriers 
 
 \code{transition(object, transitionFunction="barriers", directions)}
 
@@ -59,7 +59,19 @@ The layers of the resulting TransitionStack contain all possible combinations of
 Which layer contains the combination of categories i and j out of n categories, can be determined with these formulae:
 
 if \code{symm} is \code{TRUE}: layer(i,j) = n*(j-1) - j*(j-1)/2 + i-j.
-if \code{symm} is \code{FALSE}: layer(i,j) = .
+if \code{symm} is \code{FALSE} and i>j: layer(i,j) = ((n*(j-1) - j*(j-1)/2 + i-j) * 2) - 1.
+if \code{symm} is \code{FALSE} and i<j: layer(i,j) = (n*(j-1) - j*(j-1)/2 + i-j) * 2.
+
+c) Categorical variables - areas
+
+\code{transition(object, transitionFunction="areas", directions)}
+
+Here, areas are also a categorical variable (see under 3b).
+The layers in the resulting TransitionStack represent each one area.
+Connections between two cells which are each inside the area are set to 1.
+Connections between a cell inside and a cell outside the area are set to 0.5.
+Connections between two cells outside the area are set to 0.
+
 
 }
 \value{

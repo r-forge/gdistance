@@ -125,7 +125,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		}
 		if(class(weight) == "TransitionLayer")
 		{
-			R <- 1/weight[index1]
+			if(matrixValues(weight) == "conductance"){R <- 1/weight[index1]} else{R <- weight[index1]} 
 			R[R == Inf] <- 0
 		}
 		if(class(weight) == "TransitionStack")
@@ -133,7 +133,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 			R <- matrix(nrow=nlayers(weight), ncol=length(index1[,1]))
 			for(i in 1:nlayers(weight))
 			{
-				R[i,] <- 1/weight[[i]][index1] 
+				if(matrixValues(weight[[i]]) == "conductance"){R[i,] <- 1/weight[[i]][index1]} else{R[i,] <- weight[[i]][index1]}
 			}
 			R[R == Inf] <- 0
 		}
@@ -168,7 +168,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	n <- max(Lr@Dim)
 	Lr <- Cholesky(Lr)
 
-	if(!(canProcessInMemory(transition, length(fromCells)))) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
+	if(!(canProcessInMemory(transition, length(fromCells)*10))) #depending on memory availability, currents are calculated in a piecemeal fashion or all at once
 	{
 		filenm=rasterTmpFile()
 		Flow <- raster(nrows=length(fromCells), ncols=Size)
@@ -217,7 +217,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x)
 	W <- W * P 
 
-	if(!(canProcessInMemory(transition, length(fromCells)))) 
+	if(!(canProcessInMemory(transition, length(fromCells)*10))) 
 	#this does not take into account the exact memory needed for matrix solving...
 	{
 		filenm=rasterTmpFile()
@@ -489,33 +489,41 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 
 	if("divergent" %in% type)
 	{
+		divFlnew <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
+		rownames(divFlnew) <- rownames(fromCoords)
+		colnames(divFlnew) <- rownames(fromCoords)
+		
 		for(i in 1:nrow(R))
 		{
-			divFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
-			rownames(divFl) <- rownames(fromCoords)
-			colnames(divFl) <- rownames(fromCoords)
+			divFl <- divFlnew
 			divFlowi <- as.matrix(as.dist(divFlow[[i]], diag=TRUE))
 			divFl[index1,index1] <- divFlowi[index2,index2]
 			divFl <- as.dist(divFl)
-			attr(divFl, "method") <- "divergent path"
+			divFl <- as.vector(divFl)
 			divFlow[[i]] <- divFl
 		}
+		divFlow <- as.data.frame(divFlow)
+		colnames(divFlow) <- paste("div", 1:nrow(R), sep="")
 	}
 	if("joint" %in% type)
 	{
+		jointFlnew <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
+		rownames(jointFlnew) <- rownames(fromCoords)
+		colnames(jointFlnew) <- rownames(fromCoords)
+		
 		for(i in 1:nrow(R))
 		{
-			jointFl <- matrix(nrow=length(allFromCells),ncol=length(allFromCells))
-			rownames(jointFl) <- rownames(fromCoords)
-			colnames(jointFl) <- rownames(fromCoords)
+			jointFl <- jointFlnew
 			jointFlowi <- as.matrix(as.dist(jointFlow[[i]], diag=TRUE))
 			jointFl[index1,index1] <- jointFlowi[index2,index2]
 			jointFl <- as.dist(jointFl)
-			attr(jointFl, "method") <- "joint path"	
+			jointFl <- as.vector(jointFl)
 			jointFlow[[i]] <- jointFl
 		}
+		jointFlow <- as.data.frame(jointFlow)
+		colnames(jointFlow) <- paste("joint", 1:nrow(R), sep="")
 	}
-	if(length(type) > 1) {return(list(divergent=divFlow, joint=jointFlow))}
+	if(length(type) > 1) {return(cbind(divFlow, jointFlow))}
 	if(length(type) == 1 & type == "divergent") {return(divFlow)}
 	if(length(type) == 1 & type == "joint") {return(jointFlow)}
 }

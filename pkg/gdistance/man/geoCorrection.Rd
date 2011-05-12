@@ -31,10 +31,10 @@ In the case of randomised shortest paths, the need for correction is somewhat in
 
 For extreme values of theta, less problems are expected. With very low values for theta, choose the correction for random walks, and for high values the one for least-cost paths. 
 
-For repetitive correction of similar Transition objects, it is helpful to have a Transition matrix with just the correction factors. To achieve this, set \code{multpl} to TRUE (the default is FALSE). Correction is achieved by multiplying the original matrix with the matrix with correction factors. 
+For repetitive correction of similar Transition* objects, it is helpful to produce a TransitionLayer with just the correction factors. To achieve this, set \code{multpl} to TRUE (the default is FALSE). Correction is achieved by multiplying the original matrix with the matrix with correction factors. 
 }
 \value{
-  Transition object
+  Transition* object
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
 \examples{

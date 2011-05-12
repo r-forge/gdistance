@@ -46,7 +46,9 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 	Xlayer <- new("TransitionLayer",nrows=nrow(x),
 			ncols=ncol(x),xmin=xmin(x),xmax=xmax(x),ymin=ymin(x),ymax=ymax(x),
 			projection=projection(x, asText=FALSE))
+	matrixValues(Xlayer) <- "resistance"
 	Xstack <- as(Xlayer, "TransitionStack") * 0
+	#Xstack@transition <- vector(list,...)
 	
 	if(x@data@isfactor) {
 
