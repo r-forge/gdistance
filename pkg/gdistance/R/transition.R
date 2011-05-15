@@ -3,6 +3,7 @@
 # Date :  January 2009
 # Version 1.0
 # Licence GPL v3
+#just testing
 
 setGeneric("transition", function(object, transitionFunction, directions, ...) standardGeneric("transition"))
 
