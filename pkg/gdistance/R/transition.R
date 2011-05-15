@@ -3,7 +3,6 @@
 # Date :  January 2009
 # Version 1.0
 # Licence GPL v3
-#just testing
 
 setGeneric("transition", function(object, transitionFunction, directions, ...) standardGeneric("transition"))
 
@@ -11,13 +10,21 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 		{
 			if(class(transitionFunction)=="character") 
 			{
+				if(transitionFunction != "barriers" & transitionFunction != "areas")
+				{
+					stop("argument transitionFunction invalid")
+				}
 				if(transitionFunction=="barriers")
 				{
 					return(.barriers(object, directions, symm, intervalBreaks))
 				}
-				else{return(.TfromR(object, transitionFunction, directions, symm))}
+				if(transitionFunction=="areas")
+				{
+					return(.areas(object, directions, transitionFunction, symm, intervalBreaks))
+				}
+			} else {
+				return(.TfromR(object, transitionFunction, directions, symm))
 			}
-			else{return(.TfromR(object, transitionFunction, directions, symm))}
 		}
 )
 
@@ -90,29 +97,59 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 	
 	} else {
 	
-	Xmin <- transition(x, min, directions)
-	Xmax <- transition(x, max, directions)
-	index1 <- adjacency(x, 1:ncell(x), 1:ncell(x), directions)
-	XminVals <- Xmin[index1]
-	XmaxVals <- Xmax[index1]
+		Xmin <- transition(x, min, directions)
+		Xmax <- transition(x, max, directions)
+		index1 <- adjacency(x, 1:ncell(x), 1:ncell(x), directions)
+		XminVals <- Xmin[index1]
+		XmaxVals <- Xmax[index1]
 
-	matrixValues(Xlayer) <- "resistance"
-	if(symm == TRUE)
-	{
-		for(i in 1:length(intervalBreaks))
+		if(symm == TRUE)
 		{
-			index2 <- index1[XminVals < intervalBreaks[i] & XmaxVals > intervalBreaks[i],]
-			XlayerNew <- Xlayer
-			XlayerNew[index2] <- 1
-			Xstack <- stack(Xstack,XlayerNew)
+			for(i in 1:length(intervalBreaks))
+			{
+				index2 <- index1[XminVals < intervalBreaks[i] & XmaxVals > intervalBreaks[i],]
+				XlayerNew <- Xlayer
+				XlayerNew[index2] <- 1
+				Xstack <- stack(Xstack,XlayerNew)
+			}
 		}
-	}
-	if(symm=="up" | symm=="down"){stop("not implemented yet")}
+		if(symm=="up" | symm=="down"){stop("not implemented yet")}
 	}
 	
 	Xstack <- Xstack[[2:nlayers(Xstack)]]	
 	return(Xstack)
 }
+
+
+.areas <- function(x, directions, symm, intervalBreaks) {
+
+	Xlayer <- new("TransitionLayer",nrows=nrow(x),
+			ncols=ncol(x),xmin=xmin(x),xmax=xmax(x),ymin=ymin(x),ymax=ymax(x),
+			projection=projection(x, asText=FALSE))
+	matrixValues(Xlayer) <- "resistance"
+	Xstack <- as(Xlayer, "TransitionStack") * 0
+	#Xstack@transition <- vector(list,...)
+	
+	if(x@data@isfactor) {
+
+		vals <- unlist(x@data@attributes[[1]])
+		n <- length(vals)
+		
+			for(i in 1:n)
+			{
+				transitionFunction <- function(v) {sum(v == vals[i]) / 2}
+				XlayerNew <- .TfromR(x[i], transitionFunction, directions, symm=TRUE)
+				Xstack <- stack(Xstack,XlayerNew)
+			}
+			
+	} else {
+		warning("not yet implemented. Contact author.")
+	}
+	Xstack <- Xstack[[2:nlayers(Xstack)]]	
+	return(Xstack)
+}
+
+
 
 setMethod("transition", signature(object = "RasterBrick"), def = function(object, transitionFunction="mahal", directions)
 		{
