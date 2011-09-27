@@ -4,3 +4,4 @@ Bug fix in transition(transitionFunction="barriers")
 Methods added in transition()
 Summary functions redefined
 Adapting to changes in raster package (argument for Raster* objects is now always "x")
+adjacencyFromTransition added

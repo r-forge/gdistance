@@ -109,7 +109,7 @@ Transition object
   r <- round(r * 2)
   r <- asFactor(r)
   tr5 <- transition(r, "areas", 8)
-  nlayers(tr4)
+  nlayers(tr5)
   plot(raster(tr5[[2]]))
 }
 \keyword{ spatial }

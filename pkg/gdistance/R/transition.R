@@ -31,8 +31,8 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 .TfromR <- function(object, transitionFunction, directions, symm)
 {
 			transition <- new("TransitionLayer",nrows=nrow(object),
-			ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),
-			projection=projection(object, asText=FALSE))
+				ncols=ncol(object),xmin=xmin(object),xmax=xmax(object),ymin=ymin(object),ymax=ymax(object),
+				projection=projection(object, asText=FALSE))
 			transitionMatr <- transitionMatrix(transition)
 			adj <- adjacency(object,which(!is.na(getValues(object))),which(!is.na(getValues(object))),directions=directions)
 			if(symm){adj <- adj[adj[,1] < adj[,2],]}
@@ -137,13 +137,13 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 		
 			for(i in 1:n)
 			{
-				transitionFunction <- function(v) {sum(v == vals[i]) / 2}
+				transitionFunction <- function(v) {return(sum(v == i) / 2)}
 				XlayerNew <- .TfromR(x, transitionFunction, directions, symm=TRUE)
 				Xstack <- stack(Xstack,XlayerNew)
 			}
 			
 	} else {
-		warning("not yet implemented. Contact author.")
+		warning("not yet implemented for raster with non-factor variables. Contact author.")
 	}
 	Xstack <- Xstack[[2:nlayers(Xstack)]]	
 	return(Xstack)
