@@ -7,6 +7,6 @@ Author: Jacob van Etten
 Depends: R (>= 2.8.0), raster (>=  1.7-21), igraph (< 0.6), Matrix, methods, sp 
 Maintainer: Jacob van Etten <jacobvanetten@yahoo.com>
 Description: Calculate distances and routes on geographic grids.
-License: GPL-3
+License: GPL (>=3)
 Collate: adjacency.R Transition-class.R Coords-class.R Transition-extract-replace.R Transition-methods.R internal-functions.R transition.R costDistance.R accCost.R probPassage.R geoCorrection.R normalize.R resistanceDistance.R rasterFromTransition.R pathInc.R sumT.R shortestPath.R stack.R summary.R Summary-methods.R
 LazyLoad: yes

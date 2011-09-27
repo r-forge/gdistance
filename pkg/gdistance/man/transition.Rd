@@ -104,5 +104,12 @@ Transition object
   tr4 <- transition(r, "barriers", 8)
   nlayers(tr4)
   plot(raster(tr4[[2]]))
+  
+  #Areas
+  r <- round(r * 2)
+  r <- asFactor(r)
+  tr5 <- transition(r, "areas", 8)
+  nlayers(tr4)
+  plot(raster(tr5[[2]]))
 }
 \keyword{ spatial }

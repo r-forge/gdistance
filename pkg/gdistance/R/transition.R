@@ -20,7 +20,7 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 				}
 				if(transitionFunction=="areas")
 				{
-					return(.areas(object, directions, transitionFunction, symm, intervalBreaks))
+					return(.areas(object, directions))
 				}
 			} else {
 				return(.TfromR(object, transitionFunction, directions, symm))
@@ -121,7 +121,7 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 }
 
 
-.areas <- function(x, directions, symm, intervalBreaks) {
+.areas <- function(x, directions) {
 
 	Xlayer <- new("TransitionLayer",nrows=nrow(x),
 			ncols=ncol(x),xmin=xmin(x),xmax=xmax(x),ymin=ymin(x),ymax=ymax(x),
@@ -138,7 +138,7 @@ setMethod("transition", signature(object = "RasterLayer"), def = function(object
 			for(i in 1:n)
 			{
 				transitionFunction <- function(v) {sum(v == vals[i]) / 2}
-				XlayerNew <- .TfromR(x[i], transitionFunction, directions, symm=TRUE)
+				XlayerNew <- .TfromR(x, transitionFunction, directions, symm=TRUE)
 				Xstack <- stack(Xstack,XlayerNew)
 			}
 			

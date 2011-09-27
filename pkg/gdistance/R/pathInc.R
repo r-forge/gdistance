@@ -14,7 +14,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, 0)
+		preparedMatrix <- .preparationMatrix(transition, 0)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
@@ -28,7 +30,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, 0)
+		preparedMatrix <- .preparationMatrix(transition, 0)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
@@ -41,7 +45,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		preparedMatrix <- .preparationMatrix(transition, weight)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
@@ -55,7 +61,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		preparedMatrix <- .preparationMatrix(transition, weight)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate)
 		return(result)
@@ -68,7 +76,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	{
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		preparedMatrix <- .preparationMatrix(transition, weight)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlowStack(prepared, Intermediate)
 		return(result)
@@ -82,20 +92,20 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 		origin <- .coordsToMatrix(origin)
 		from <- .coordsToMatrix(fromCoords)
-		prepared <- .preparationFlow(transition, origin, fromCoords, type, weight)
+		preparedMatrix <- .preparationMatrix(transition, weight)
+		preparedIndex <- .preparationIndex1(transition, origin, from, type)		
+		prepared <- c(preparedMatrix,preparedIndex,list(type=type))
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlowStack(prepared, Intermediate)
 		return(result)
 	}
 )
 
-.preparationFlow <- function(transition, origin, fromCoords, type, weight)
+.preparationIndex1 <- function(transition, origin, fromCoords, type)
 {
 		if(!all(type %in% c("divergent","joint"))) {stop("type can only have values \'joint\' and/or \'divergent\'")}
 
 		originCell <- cellFromXY(transition, origin)
-
-		transition <- .transitionSolidify(transition)
 
 		if (!(originCell %in% transitionCells(transition))) {stop("the origin refers to a zero row/column in the transition matrix (unconnected)")} 
 
@@ -109,13 +119,30 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 
 		indexCoords <- match(fromCells,transitionCells(transition))
 		indexOrigin <- match(originCell,transitionCells(transition))
+		
 
+		
+		result <- list(transition=transition,
+				fromCoords=fromCoords,
+				allFromCells=allFromCells, 
+				fromCells=fromCells,
+				indexCoords=indexCoords, 
+				indexOrigin=indexOrigin)
+		return(result)
+}
+		
+.preparationMatrix <- function(transition, weight)
+{
+		
+		transition <- .transitionSolidify(transition)
+		
 		A <- as(transitionMatrix(transition),"lMatrix")
 		A <- as(A,"dMatrix")
 		AIndex <- as(A, "dgTMatrix")
 		index1 <- cbind(transitionCells(transition)[as.integer(AIndex@i+1)],transitionCells(transition)[as.integer(AIndex@j+1)]) 
 		index2 <- cbind(as.integer(AIndex@i+1),as.integer(AIndex@j+1))
 		#if symmetric? index <- index[index[,1] < index[,2],]
+		
 		Size <- nrow(index1)
 		
 		if(class(weight) == "numeric")
@@ -139,16 +166,10 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		}
 
 		result <- list(transition=transition,
-						type=type,
-						fromCoords=fromCoords,
-						allFromCells=allFromCells, 
-						fromCells=fromCells,
-						indexCoords=indexCoords, 
-						indexOrigin=indexOrigin,
 						index=index2,
-						Size=Size,
 						A=A,
-						R=R)
+						R=R,
+						Size=Size)
 		return(result)
 }
 
