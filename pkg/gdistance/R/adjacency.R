@@ -9,5 +9,6 @@ adjacencyFromTransition <- function(transition)
 	transition.dgT <- as(transitionMatr,"dgTMatrix")
 	adjacency <- cbind(transition.dgT@i+1,transition.dgT@j+1)
 	return(adjacency)
+	#cbind(transitionCells(transition)[as.integer(AIndex@i+1)],transitionCells(transition)[as.integer(AIndex@j+1)]) 
 }
 

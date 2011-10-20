@@ -16,20 +16,18 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="missi
 
 setMethod("geoCorrection", signature(transition = "TransitionLayer", type="character"), def = function(transition, type, multpl=FALSE, scl=FALSE)
 	{
+		scaleValue <- 1
+		if(scl)
+		{
+			midpoint <- c(mean(c(xmin(transition),xmax(transition))),mean(c(ymin(transition),ymax(transition))))
+			scaleValue <- pointDistance(midpoint,midpoint+c(xres(transition),0), longlat=isLonLat(transition)) 
+		}
 		if(isLonLat(transition))
 		{
 			if (type != "c" & type != "r"){stop("type can only be c or r")}
 			if (type == "r" & matrixValues(transition) != "conductance"){stop("matrix of Transition object must have conductance values")}
 			adjacency <- adjacencyFromTransition(transition)
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-			if(scl)
-			{
-				scaleValue <- pointDistance(c(0,0),c(xres(transition),0),longlat=TRUE)
-			}
-			else
-			{
-				scaleValue <- 1
-			}
 			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],longlat=TRUE)/scaleValue)}
 			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],longlat=TRUE)/scaleValue}
 			if (type=="r")
@@ -42,14 +40,8 @@ setMethod("geoCorrection", signature(transition = "TransitionLayer", type="chara
 		} else {
 			adjacency <- adjacencyFromTransition(transition)
 			correction <- cbind(xyFromCell(transition,adjacency[,1]),xyFromCell(transition,adjacency[,2]))
-			if(scl)
-			{
-				scaleValue <- xres(transition)
-			} else {
-				scaleValue <- 1
-			}
 			if(matrixValues(transition) == "conductance") {correctionValues <- 1/(pointDistance(correction[,1:2],correction[,3:4],longlat=FALSE)/scaleValue)}
-			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],longlat=FALSE)/scaleValue}	
+			if(matrixValues(transition) == "resistance") {correctionValues <- pointDistance(correction[,1:2],correction[,3:4],longlat=FALSE)/scaleValue}
 		}
 		i <- as.integer(adjacency[,1] - 1)
 		j <- as.integer(adjacency[,2] - 1)

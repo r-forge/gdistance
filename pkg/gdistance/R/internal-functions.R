@@ -112,8 +112,8 @@
 .transitionSolidify <- function(transition)
 {
 	transitionMatr <- as(transition,"sparseMatrix")
-	selection <- which(rowMeans(transitionMatr)>1e-40)
-	transition@transitionCells <- (1:ncell(transition))[selection]
+	selection <- which(rowMeans(transitionMatr)>1e-300)
+	transition@transitionCells <- transition@transitionCells[selection]
 	transitionMatr <- transitionMatr[selection,selection]
 	transitionMatrix(transition) <- transitionMatr
 	return(transition)

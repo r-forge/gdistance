@@ -21,10 +21,10 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 		
 		if(totalNet=="net" & output=="RasterLayer")
 		{
+			transition <- .transitionSolidify(transition)
 			tc <- transitionCells(transition)
 			cellnri <- cellFromXY(transition, origin)
 			cellnrj <- cellFromXY(transition, goal)
-			transition <- .transitionSolidify(transition)
 			ci <- match(cellnri,tc)
 			cj <- match(cellnrj,tc)
 			result <- .flowMap(transition, ci, cj, tc)
@@ -36,8 +36,6 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 
 setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterLayer", goal = "RasterLayer", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
-		
-
 		if(totalNet=="net" & output=="RasterLayer")
 		{
 			transition <- .transitionSolidify(transition)
@@ -60,7 +58,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 	n <- max(dim(Lr))
 	Current <- .currentR(L, Lr, A, n, indexOrigin, indexGoal)
 	result <- as(transition,"RasterLayer")
-	dataVector <- rep(NA,times=ncell(result))
+	dataVector <- rep(0,times=ncell(result))
 	dataVector[tc] <- Current
 	result <- setValues(result, dataVector)
 	return(result)

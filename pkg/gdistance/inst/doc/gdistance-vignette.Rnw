@@ -347,7 +347,7 @@ These measures can be used to predict patterns of diversity if these are due to 
 If the argument type contains two elements (divergent and joint), the result is a list of distances matrices.
 
 <<gdistance-15>>=
-pathInc(tr1CorrC, sP[1,], sP[2:3,], type=c("divergent","joint"))
+pathInc(tr1CorrC, sP[1,], sP[2:3,])
 @
 
 \section{Example 1: Hiking around Maunga Whau}
@@ -509,10 +509,10 @@ geoDist <- pointDistance(pC, longlat=TRUE)
 geoDist <- as.dist(geoDist)
 Europe <- aggregate(Europe,3)
 tr <- transition(Europe, mean, directions=8)
-tr <- geoCorrection(tr, "c")
-tR <- geoCorrection(tr, "r")
-cosDist <- costDistance(tr,pC)
-resDist <- resistanceDistance(tR,pC)
+trC <- geoCorrection(tr, "c", scl=TRUE)
+trR <- geoCorrection(tr, "r", scl=TRUE)
+cosDist <- costDistance(trC,pC)
+resDist <- resistanceDistance(trR,pC)
 cor(genDist,geoDist)
 cor(genDist,cosDist)
 cor(genDist,resDist)
@@ -522,8 +522,8 @@ The other distance measures incorporate more information about the geographic sp
 But how well does a wave of expansion from Anatolia explain the spatial pattern?
 <<gdistance-23>>=
 origin <- unlist(popCoord[22,c("x","y")])
-pI <- pathInc(tr, origin=origin, fromCoords=pC, type="joint", theta=2)
-cor(genDist,pI)
+pI <- pathInc(trC, origin=origin, from=pC, functions=list(overlap))
+cor(genDist,pI[[1]])
 @
 At least at first sight, the overlap of dispersal routes explain the spatial pattern better than any of the previous measures.
 The negative sign of the last correlation coefficient was expected, as more overlap in routes is associated with lower genetic distance.

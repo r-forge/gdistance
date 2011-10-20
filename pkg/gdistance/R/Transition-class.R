@@ -50,7 +50,7 @@ setMethod ("initialize", "TransitionLayer",
 			if(class(projection) != "CRS"){projection <- CRS(projection)}
 			.Object@crs <- projection
 			.Object@transitionMatrix <- Matrix(0,ncells,ncells)
-			.Object@transitionCells <- 0
+			.Object@transitionCells <- 1:ncells
 			.Object@matrixValues <- "conductance"
 			return(.Object)
 		}
