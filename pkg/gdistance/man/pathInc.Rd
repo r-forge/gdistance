@@ -2,16 +2,19 @@
 \alias{pathInc}
 \alias{pathInc,TransitionLayer,Coords,Coords,missing,missing,missing-method}
 \alias{pathInc,TransitionLayer,Coords,Coords,missing,numeric,missing-method}
-\alias{pathInc,TransitionLayer,Coords,Coords,missing,missing,TransitionLayer-method}
-\alias{pathInc,TransitionLayer,Coords,Coords,missing,numeric,TransitionLayer-method}
-\alias{pathInc,TransitionLayer,Coords,Coords,missing,missing,TransitionStack-method}
-\alias{pathInc,TransitionLayer,Coords,Coords,missing,numeric,TransitionStack-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,missing,Transition-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,missing,numeric,Transition-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,Coords,missing,missing-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,Coords,numeric,missing-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,Coords,missing,Transition-method}
+\alias{pathInc,TransitionLayer,Coords,Coords,Coords,numeric,Transition-method}
 
 \title{Incidence of paths from a common origin: overlap and non-overlap}
 \description{
 Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
 \usage{
 pathInc(transition, origin, from, to, theta, weight, ...)
+
 }
 \arguments{
   \item{transition}{transition matrix (class Transition)}

@@ -35,6 +35,8 @@ setClass ("TransitionStack",
 	validity = function(object) {return(TRUE)}
 )
 
+setClassUnion("Transition", c("TransitionLayer", "TransitionStack"))
+
 setMethod ("initialize", "TransitionData", function(.Object,...){
 			return(.Object)
 		}
