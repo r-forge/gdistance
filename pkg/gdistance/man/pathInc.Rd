@@ -26,18 +26,13 @@ pathInc(transition, origin, from, to, theta, weight, ...)
   \item{...}{an extra argument functions to be defined manually (see below)}
 }
 \details{
-This function calculates the overlap and non-overlap in the random walk trajectories or randomised shortest paths originating in a single point to sets of other locations.
-First, probabilities of passage are calculated for each cell-to-cell connection. 
-
-The shared path (function overlap) is calculated as:
-
-Pjoint = Pi * Pj 
-
-Divergence (function nonoverlap) is calculated as: 
-
-Pdivergent = max(0, max(Pi, Pj) * (1 - min(Pi, Pj)) - min(Pi, Pj))
-
-Both are summed over all connections ij in the transition matrix.
+This is a complex wrapper function that calculates to what extent dispersal routes overlap or do not overlap.
+First, the function calculates the trajectories for all "from"/"to" points, starting from a single "origin" point.
+These trajectories can either be based on random walks or randomised shortes paths (giving a value to theta).
+Then, for all unique pairs of trajectories, it calculates the extent to which these trajectories overlap or diverge.
+These values are given back to the user as a list of (distance) matrices.
+If only "from" coordinates are given, the function calculates symmetric distance matrices for all combinations of points in "from".
+If both "from" and "to" coordinates are given (and these coordinates are not the same), the function calculates a matrix of values with rows for all locations in "from" and columns for all locations in "to".
 
 }
 \value{

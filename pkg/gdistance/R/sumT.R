@@ -1,4 +1,4 @@
-sumT <- function(transition1, transition2)
+sumReciprocal <- function(transition1, transition2)
 {
 	if(matrixValues(transition1) == "conductance") 
 	{

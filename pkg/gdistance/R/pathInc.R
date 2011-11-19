@@ -1,5 +1,5 @@
 # Author: Jacob van Etten jacobvanetten@yahoo.com
-# International Rice Research Institute
+# IRRI/IE University/Bioversity International
 # Date :  October 2011
 # Version 1.2
 # Licence GPL v3
@@ -18,8 +18,8 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	def = function(transition, origin, from, functions=list(overlap,nonoverlap))
 	{
 
-		preparedMatrix <- .preparationMatrix(transition, 0)
-		preparedIndex <- .preparationIndex1(transition, origin, from)
+		preparedMatrix <- .prepareMatrix(transition, 0)
+		preparedIndex <- .prepareIndex(preparedMatrix$transition, origin, from)
 		prepared <- c(preparedMatrix,preparedIndex)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate, functions)
@@ -32,8 +32,8 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	def = function(transition, origin, from, theta, functions=list(overlap,nonoverlap))
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
-		preparedMatrix <- .preparationMatrix(transition, 0)
-		preparedIndex <- .preparationIndex1(transition, origin, from)
+		preparedMatrix <- .prepareMatrix(transition, 0)
+		preparedIndex <- .prepareIndex(preparedMatrix$transition, origin, from)
 		prepared <- c(preparedMatrix,preparedIndex)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate, functions)
@@ -45,8 +45,8 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	to = "missing", theta="missing", weight="Transition"), 
 	def = function(transition, origin, from, weight, functions=list(overlap,nonoverlap))
 	{
-		preparedMatrix <- .preparationMatrix(transition, weight)
-		preparedIndex <- .preparationIndex1(transition, origin, from)
+		preparedMatrix <- .prepareMatrix(transition, weight)
+		preparedIndex <- .prepareIndex(preparedMatrix$transition, origin, from)
 		prepared <- c(preparedMatrix,preparedIndex)
 		Intermediate <- .randomWalk(prepared)
 		result <- .finishFlow(prepared, Intermediate, functions)
@@ -59,8 +59,8 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	def = function(transition, origin, from, theta, weight, functions=list(overlap,nonoverlap))
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
-		preparedMatrix <- .preparationMatrix(transition, weight)
-		preparedIndex <- .preparationIndex1(transition, origin, from)
+		preparedMatrix <- .prepareMatrix(transition, weight)
+		preparedIndex <- .prepareIndex(preparedMatrix$transition, origin, from)
 		prepared <- c(preparedMatrix,preparedIndex)
 		Intermediate <- .randomSP(prepared, theta)
 		result <- .finishFlow(prepared, Intermediate, functions)
@@ -74,9 +74,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	to = "Coords", theta="missing", weight="missing"), 
 	def = function(transition, origin, from, to, functions=list(overlap,nonoverlap))
 	{
-		preparedMatrix <- .preparationMatrix(transition, 0)
-		preparedIndexFrom <- .preparationIndex1(transition, origin, from)
-		preparedIndexTo <- .preparationIndex1(transition, origin, to)
+		preparedMatrix <- .prepareMatrix(transition, 0)
+		preparedIndexFrom <- .prepareIndex(preparedMatrix$transition, origin, from)
+		preparedIndexTo <- .prepareIndex(transition, origin, to)
 		IntermediateFrom <- .randomWalk(c(preparedMatrix,preparedIndexFrom))
 		IntermediateTo <- .randomWalk(c(preparedMatrix,preparedIndexTo))
 		result <- .finishFlowFromTo(preparedIndexFrom, preparedIndexTo, IntermediateFrom, IntermediateTo, functions) 
@@ -89,9 +89,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	def = function(transition, origin, from, to, theta, functions=list(overlap,nonoverlap))
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
-		preparedMatrix <- .preparationMatrix(transition, 0)
-		preparedIndexFrom <- .preparationIndex1(transition, origin, from)
-		preparedIndexTo <- .preparationIndex1(transition, origin, to)
+		preparedMatrix <- .prepareMatrix(transition, 0)
+		preparedIndexFrom <- .prepareIndex(preparedMatrix$transition, origin, from)
+		preparedIndexTo <- .prepareIndex(preparedMatrix$transition, origin, to)
 		preparedFrom <- c(preparedMatrix, preparedIndexFrom)
 		preparedTo <- c(preparedMatrix, preparedIndexTo)
 		IntermediateFrom <- .randomSP(preparedFrom, theta)
@@ -105,9 +105,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	to = "Coords", theta="missing", weight="Transition"), 
 	def = function(transition, origin, from, to, weight, functions=list(overlap,nonoverlap))
 	{
-		preparedMatrix <- .preparationMatrix(transition, weight)
-		preparedIndexFrom <- .preparationIndex1(transition, origin, from)
-		preparedIndexTo <- .preparationIndex1(transition, origin, to)
+		preparedMatrix <- .prepareMatrix(transition, weight)
+		preparedIndexFrom <- .prepareIndex(preparedMatrix$transition, origin, from)
+		preparedIndexTo <- .prepareIndex(preparedMatrix$transition, origin, to)
 		preparedFrom <- c(preparedMatrix, preparedIndexFrom)
 		preparedTo <- c(preparedMatrix, preparedIndexTo)
 		IntermediateFrom <- .randomWalk(preparedFrom)
@@ -122,9 +122,9 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	def = function(transition, origin, from, to, theta, weight, functions=list(overlap,nonoverlap))
 	{
 		if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
-		preparedMatrix <- .preparationMatrix(transition, weight)
-		preparedIndexFrom <- .preparationIndex1(transition, origin, from)
-		preparedIndexTo <- .preparationIndex1(transition, origin, to)
+		preparedMatrix <- .prepareMatrix(transition, weight)
+		preparedIndexFrom <- .prepareIndex(preparedMatrix$transition, origin, from)
+		preparedIndexTo <- .prepareIndex(preparedMatrix$transition, origin, to)
 		preparedFrom <- c(preparedMatrix, preparedIndexFrom)
 		preparedTo <- c(preparedMatrix, preparedIndexTo)
 		IntermediateFrom <- .randomSP(preparedFrom, theta)
@@ -138,7 +138,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 #this function prepares the transition matrix
 #it removes non-zero rows/columns
 #it also prepares the weight matrix converts its matrix values to resistance if needed		
-.preparationMatrix <- function(transition, weight)
+.prepareMatrix <- function(transition, weight)
 {
 	transition <- .transitionSolidify(transition)
 		
@@ -184,7 +184,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 
 #this function maps the coordinates to the rows/columns of the transition matrix
 #the mapping is slightly complicated by the fact that not all cells in the original raster have rows/colums in the transition matrix
-.preparationIndex1 <- function(transition, origin, fromCoords)
+.prepareIndex <- function(transition, origin, fromCoords)
 {
 	origin <- .coordsToMatrix(origin)
 	fromCoords <- .coordsToMatrix(fromCoords)
