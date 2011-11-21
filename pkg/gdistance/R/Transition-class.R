@@ -11,11 +11,10 @@ setClass(Class="TransitionData",
 			matrixValues = "character"
 		),
 		validity = function(object){
-			#cond1 <- (nrow(transitionMatrix(object)) == ncol(transitionMatrix(object))) 
-			#cond2 <- (object@matrixValues == "resistance" | object@matrixValues == "conductance")
-			#cond3 <- length(transitionCells(object)) == object@transitionMatrix@Dim[1]
-			#cond <- cond1 & cond2 & cond3 
-			cond <- TRUE
+			cond1 <- (nrow(transitionMatrix(object)) == ncol(transitionMatrix(object))) 
+			cond2 <- (object@matrixValues == "resistance" | object@matrixValues == "conductance")
+			cond3 <- length(transitionCells(object)) == object@transitionMatrix@Dim[1]
+			cond <- cond1 & cond2 & cond3 
 			return(cond)
 	}
 )
@@ -23,7 +22,11 @@ setClass(Class="TransitionData",
 setClass(Class="TransitionLayer",
 		contains = c("Raster", "TransitionData"),
 		validity = function(object){
-			return(TRUE)
+			cond1 <- (nrow(transitionMatrix(object)) == ncol(transitionMatrix(object))) 
+			cond2 <- (object@matrixValues == "resistance" | object@matrixValues == "conductance")
+			cond3 <- length(transitionCells(object)) == object@transitionMatrix@Dim[1]
+			cond <- cond1 & cond2 & cond3 
+			return(cond)
 	}
 )
 
@@ -86,12 +89,18 @@ setMethod ("show" , "TransitionStack",
        function(object) {
                callNextMethod(object)
  			   cat("layers      :", length(object@transition), "\n")              
+			   #show something about the layers if layers <=5
 			   #cat("values      :", matrixValues(object), "\n")
                #cat("matrix class:", class(transitionMatrix(object)), "\n")
        }
 )
 
-setAs("TransitionLayer", "sparseMatrix", function(from){from@transitionMatrix})
+setAs("TransitionLayer", "sparseMatrix", function(from){
+	tr <- Matrix(0, ncell(from),ncell(from))
+	cells <- transitionCells(from)
+	tr[cells,cells] <- from@transitionMatrix
+	return(tr)
+})
 
 setAs("TransitionData", "sparseMatrix", function(from){from@transitionMatrix})
 

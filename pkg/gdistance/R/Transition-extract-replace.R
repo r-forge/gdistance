@@ -4,26 +4,61 @@
 # Version 1.0
 # Licence GPL v3
 
-setGeneric("transitionMatrix", function(transition) standardGeneric("transitionMatrix"))
+setGeneric("transitionMatrix", function(transition, inflate) standardGeneric("transitionMatrix"))
 
-setMethod ("transitionMatrix", signature(transition = "TransitionLayer"),
-	function(transition){
-		transition@transitionMatrix
+setMethod ("transitionMatrix", signature(transition = "TransitionLayer", inflate="missing"),
+	function(transition)
+	{
+		transitionMatrix(transition=transition, inflate=TRUE)
 	}
 )
 
-setMethod ("transitionMatrix", signature(transition = "TransitionData"),
-	function(transition){
-		transition@transitionMatrix
+setMethod ("transitionMatrix", signature(transition = "TransitionLayer", inflate="logical"),
+	function(transition, inflate)
+	{
+		.tr(transition, inflate)
 	}
 )
+
+setMethod ("transitionMatrix", signature(transition = "TransitionData", inflate="missing"),
+	function(transition)
+	{
+		transitionMatrix(transition=transition, inflate=TRUE)
+	}
+)
+
+setMethod ("transitionMatrix", signature(transition = "TransitionData", inflate="logical"),
+	function(transition, inflate)
+	{
+		.tr(transition, inflate)
+	}
+)
+
+.tr <- function(transition,inflate)
+{
+	if(inflate & length(transitionCells(transition)) != ncell(transition))
+	{
+		tr <- Matrix(0, ncell(transition),ncell(transition))
+		cells <- transitionCells(transition)
+		tr[cells,cells] <- transition@transitionMatrix
+	}
+	if(!inflate | length(transitionCells(transition)) == ncell(transition))
+	{
+		tr <- transition@transitionMatrix
+	}
+	return(tr)
+}
+
 
 setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("transitionMatrix<-"))
 
 setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", value = "sparseMatrix"),
-	function(transition, value){
+	function(transition, value)
+	{
 		if(dim(value)[1] != dim(value)[2]){stop("sparse matrix has to be square")}
+		if(dim(value)[1] != ncell(transition)[2]){stop("sparse matrix has to have ncell(transition) rows and columns")}
 		transition@transitionMatrix <- value
+		transition@transitionCells <- 1:ncell(transition)
 		return(transition)
 	}
 )
@@ -31,7 +66,8 @@ setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", 
 setGeneric("transitionCells", function(transition) standardGeneric("transitionCells"))
 
 setMethod ("transitionCells", signature(transition = "TransitionLayer"),
-	function(transition){
+	function(transition)
+	{
 		return(transition@transitionCells)
 	}
 )
@@ -39,15 +75,11 @@ setMethod ("transitionCells", signature(transition = "TransitionLayer"),
 setGeneric("matrixValues", function(transition) standardGeneric("matrixValues"))
 
 setMethod ("matrixValues", signature(transition = "TransitionLayer"),
-	function(transition){
-		transition@matrixValues
-	}
+	function(transition){transition@matrixValues}
 )
 
 setMethod ("matrixValues", signature(transition = "TransitionStack"),
-	function(transition){
-		transition@matrixValues
-	}
+	function(transition){stop("not implemented yet")}
 )
 
 setGeneric("matrixValues<-", function(transition, value) standardGeneric("matrixValues<-"))
@@ -103,7 +135,18 @@ setGeneric("transitionMatrix<-", function(transition, value) standardGeneric("tr
 setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", value = "sparseMatrix"),
 	function(transition, value){
 		if(dim(value)[1] != dim(value)[2]){stop("sparse matrix has to be square")}
-		transition@transitionMatrix <- value
+		if(dim(value)[1] == ncell(transition)){transition@transitionMatrix <- value}
+		else
+		{
+			if(dim(value)[1] == length(transitionCells(transition)))
+			{
+				trC <- transitionCells(transition)
+				tr <- Matrix(0,ncell(transition),ncell(transition))
+				tr[trC,trC] <- value
+				transition@transitionMatrix <- tr
+			}
+			else{stop("value is of wrong dimensions; either ncell(transition) or length(transitionCells(transition))")}
+		}
 		return(transition)
 	}
 )

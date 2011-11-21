@@ -58,7 +58,7 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 		}
 		Lplus <- Lplus / C
 		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
-			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) * sum(transitionMatrix(transition))
+			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) * sum(transitionMatrix(transition, inflate=FALSE))
 		index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
 		rd[index1,index1] <- rdSS[index2,index2]

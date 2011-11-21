@@ -11,7 +11,7 @@
 
 \title{Incidence of paths from a common origin: overlap and non-overlap}
 \description{
-Calculate the overlap and non-overlap of two paths departing from a common origin. Two algorithms to are available: random walk and randomised shortest paths.}
+Calculate the overlap and non-overlap of paths departing from a common origin. Two algorithms are available: random walk and randomised shortest paths.}
 \usage{
 pathInc(transition, origin, from, to, theta, weight, ...)
 
@@ -27,12 +27,12 @@ pathInc(transition, origin, from, to, theta, weight, ...)
 }
 \details{
 This is a complex wrapper function that calculates to what extent dispersal routes overlap or do not overlap.
-First, the function calculates the trajectories for all "from"/"to" points, starting from a single "origin" point.
-These trajectories can either be based on random walks or randomised shortes paths (giving a value to theta).
-Then, for all unique pairs of trajectories, it calculates the extent to which these trajectories overlap or diverge.
-These values are given back to the user as a list of (distance) matrices.
-If only "from" coordinates are given, the function calculates symmetric distance matrices for all combinations of points in "from".
-If both "from" and "to" coordinates are given (and these coordinates are not the same), the function calculates a matrix of values with rows for all locations in "from" and columns for all locations in "to".
+
+First, the function calculates the trajectories for all "from" and "to" locations, starting from a single "origin" location. These trajectories can either be based on random walks or randomised shortest paths (giving a value to theta).
+
+Then, for all unique pairs of trajectories, it calculates the extent to which these trajectories overlap or diverge. These values are given back to the user as a list of (distance) matrices.
+
+If only "from" coordinates are given, the function calculates symmetric distance matrices for all combinations of points in "from". If both "from" and "to" coordinates are given, the function calculates a matrix of values with rows for all locations in "from" and columns for all locations in "to".
 
 }
 \value{

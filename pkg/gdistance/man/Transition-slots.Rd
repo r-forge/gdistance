@@ -5,7 +5,8 @@
 \alias{matrixValues<-}
 \alias{transitionCells}
 \alias{transitionData}
-\alias{transitionMatrix,TransitionLayer-method}
+\alias{transitionMatrix,TransitionLayer,logical-method}
+\alias{transitionMatrix,TransitionLayer,missing-method}
 \alias{transitionMatrix<-,TransitionLayer,sparseMatrix-method}
 \alias{transitionCells,TransitionLayer-method}
 \alias{matrixValues,TransitionLayer-method}
@@ -21,7 +22,7 @@
 These functions are to be used to access slots of Transition* objects.
 }
 \usage{
-transitionMatrix(transition)
+transitionMatrix(transition, inflate)
 transitionCells(transition)
 matrixValues(transition)
 }

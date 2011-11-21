@@ -26,7 +26,7 @@
 
 .connected.components <- function(transition)
 {
-	adj.graph <- graph.adjacency(transition@transitionMatrix)
+	adj.graph <- graph.adjacency(transitionMatrix(transition))
 	clustermembership <- cbind(1:ncell(transition),as.integer(clusters(adj.graph)$membership)+1)
 	return(clustermembership)
 }
@@ -104,18 +104,18 @@
 
 .Laplacian <- function(transition) 
 {
-	Laplacian <- Diagonal(x = colSums(transitionMatrix(transition))) - transitionMatrix(transition)
+	Laplacian <- Diagonal(x = colSums(transitionMatrix(transition, inflate=FALSE))) - transitionMatrix(transition, inflate=FALSE)
 	Laplacian <- as(Laplacian, "symmetricMatrix")
 	return(Laplacian)
 }
 
 .transitionSolidify <- function(transition)
 {
-	transitionMatr <- as(transition,"sparseMatrix")
+	transitionMatr <- transitionMatrix(transition,inflate=FALSE)
 	selection <- which(rowMeans(transitionMatr)>1e-300)
 	transition@transitionCells <- transition@transitionCells[selection]
 	transitionMatr <- transitionMatr[selection,selection]
-	transitionMatrix(transition) <- transitionMatr
+	transition@transitionMatrix <- transitionMatr
 	return(transition)
 }
 

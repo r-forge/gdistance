@@ -142,7 +142,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 {
 	transition <- .transitionSolidify(transition)
 		
-	A <- as(transitionMatrix(transition),"lMatrix")
+	A <- as(transitionMatrix(transition,inflate=FALSE),"lMatrix")
 	A <- as(A,"dMatrix")
 	AIndex <- as(A, "dgTMatrix")
 	index1 <- cbind(transitionCells(transition)[as.integer(AIndex@i+1)],transitionCells(transition)[as.integer(AIndex@j+1)]) 
@@ -268,7 +268,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	Size <- prepared$Size
 	fromCells <- prepared$fromCells
 		
-	tr <- transitionMatrix(transition)
+	tr <- transitionMatrix(transition, inflate=FALSE)
 	tc <- transitionCells(transition)
 	
 	trR <- tr
@@ -292,7 +292,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		Flow <- writeStart(Flow, filenm, overwrite=TRUE)
 		for(i in 1:(length(cj)))
 		{
-			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"))[index]
+			matrixRow <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"), inflate=FALSE)[index]
 			Flow <- writeValues(Flow, matrixRow, 1)
 		}
 		Flow <- writeStop(Flow)
@@ -302,7 +302,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 		Flow <- matrix(nrow=length(cj),ncol=Size)
 		for(i in 1:(length(cj)))
 		{
-			Flow[i,] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"))[index]
+			Flow[i,] <- transitionMatrix(.probPass(transition, Id, W, nr, ci, cj[i], tc, totalNet="net", output="TransitionLayer"), inflate=FALSE)[index]
 		}
 		
 		Flow <- raster(Flow)

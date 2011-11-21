@@ -4,18 +4,14 @@
 # Version 1.0
 # Licence GPL v3
 
-#add random walk output = Transition, etc.
-
 #check if Transition and RasterLayers coincide, etc.
-
-#with a separate function, it should be possible to calculate and compare these objects efficiently
-#this could be done with preset functions OR customer designed functions
-#raster should be improved in functionality
 
 setGeneric("passage", function(transition, origin, goal, theta, ...) standardGeneric("passage"))
 
 setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords", goal = "Coords", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
+		.checkInputsPassage(totalNet, output)
+		
 		origin <- .coordsToMatrix(origin)
 		goal <- .coordsToMatrix(goal)
 		
@@ -36,6 +32,8 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 
 setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterLayer", goal = "RasterLayer", theta="missing"), def = function(transition, origin, goal, totalNet="net", output="RasterLayer")
 	{
+		.checkInputsPassage(totalNet, output)
+		
 		if(totalNet=="net" & output=="RasterLayer")
 		{
 			transition <- .transitionSolidify(transition)
@@ -48,6 +46,12 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 		return(result)
 	}
 )
+
+.checkInputsPassage <- function(totalNet, output)
+{
+	if(!(totalNet %in% c("total","net"))){stop("totalNet should be either total or net")}
+	if(!(output %in% c("RasterLayer","TransitionLayer"))){stop("output should be either RasterLayer or TransitionLayer")}
+} 
 
 .flowMap <- function(transition, indexOrigin, indexGoal, tc)
 {
@@ -101,7 +105,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 {
 	if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 	
-	tr <- transitionMatrix(transition)
+	tr <- transitionMatrix(transition,inflate=FALSE)
 	
 	trR <- tr
 	trR@x <- 1 / trR@x 
@@ -112,7 +116,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 	P <- tr * rs
 
 	W <- trR
-	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) ; the logarithm is a small variation, which gives a natural random walk
+	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) 
 	W <- W * P 
 
 	return(.probPass(transition, Id, W, nr, ci, cj, tc, totalNet, output))
@@ -120,6 +124,8 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 	
 .probPass <- function(transition, Id, W, nr, ci, cj, tc, totalNet, output)
 {
+	nc <- ncell(transition)
+	
 	Ij <- Diagonal(nr)
 	Ij[cbind(cj,cj)] <- 1 - 1 / length(cj)
 	Wj <- Ij %*% W
@@ -142,12 +148,13 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 		if(output == "RasterLayer")	
 		{
 			result <- as(transition,"RasterLayer")
-			dataVector <- rep(0,times=ncell(result))
+			result[] <- rep(0,times=nc)
 		}	
 		if(output == "TransitionLayer")
 		{
 			result <- transition
-			transitionMatrix(result) <- transitionMatrix(result) * 0
+			transitionMatrix(result) <- Matrix(0, nc, nc)
+			result@transitionCells <- 1:nc
 		}
 	}
 	
@@ -185,7 +192,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 				n[c(ci,cj)] <- 2 * n[c(ci,cj)]
 			}
 			result <- as(transition,"RasterLayer")
-			dataVector <- rep(NA,times=ncell(result))
+			dataVector <- rep(NA,times=nc)
 			dataVector[tc] <- n
 			result <- setValues(result, dataVector)
 		}
@@ -195,14 +202,20 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 			result <- transition
 			if(totalNet == "total")
 			{
-				transitionMatrix(transition) <- N
+				tr <- Matrix(0, nc, nc)
+				tr[tc,tc] <- N
 			}
 			if(totalNet == "net")
 			{
 				nNet <- skewpart(N) * 2
 				nNet@x[nNet@x<0] <- 0
-				transitionMatrix(result) <- nNet
+				tr <- Matrix(0, nc, nc)
+				tr[tc,tc] <- nNet
 			}
+			
+			transitionMatrix(result) <- tr
+			result@transitionCells <- 1:nc
+			
 		}
 	}
 	return(result)
