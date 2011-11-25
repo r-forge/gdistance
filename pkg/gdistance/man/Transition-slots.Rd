@@ -28,4 +28,5 @@ matrixValues(transition)
 }
 \arguments{
   \item{transition}{object of class Transition*}
+  \item{inflate}{logical (default is TRUE)} 
 }

@@ -16,33 +16,26 @@ setMethod ("transitionMatrix", signature(transition = "TransitionLayer", inflate
 setMethod ("transitionMatrix", signature(transition = "TransitionLayer", inflate="logical"),
 	function(transition, inflate)
 	{
-		.tr(transition, inflate)
+		.tr(transition, inflate, ncell(transition))
 	}
 )
 
 setMethod ("transitionMatrix", signature(transition = "TransitionData", inflate="missing"),
 	function(transition)
 	{
-		transitionMatrix(transition=transition, inflate=TRUE)
+		.tr(transition=transition, inflate=FALSE, nc=0)
 	}
 )
 
-setMethod ("transitionMatrix", signature(transition = "TransitionData", inflate="logical"),
-	function(transition, inflate)
-	{
-		.tr(transition, inflate)
-	}
-)
-
-.tr <- function(transition,inflate)
+.tr <- function(transition,inflate, nc)
 {
 	if(inflate & length(transitionCells(transition)) != ncell(transition))
 	{
-		tr <- Matrix(0, ncell(transition),ncell(transition))
+		tr <- Matrix(0, nc,nc)
 		cells <- transitionCells(transition)
 		tr[cells,cells] <- transition@transitionMatrix
 	}
-	if(!inflate | length(transitionCells(transition)) == ncell(transition))
+	if(!inflate | length(transitionCells(transition)) == nc)
 	{
 		tr <- transition@transitionMatrix
 	}
@@ -66,6 +59,13 @@ setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", 
 setGeneric("transitionCells", function(transition) standardGeneric("transitionCells"))
 
 setMethod ("transitionCells", signature(transition = "TransitionLayer"),
+	function(transition)
+	{
+		return(transition@transitionCells)
+	}
+)
+
+setMethod ("transitionCells", signature(transition = "TransitionData"),
 	function(transition)
 	{
 		return(transition@transitionCells)

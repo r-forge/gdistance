@@ -16,7 +16,7 @@ passage(transition, origin, goal, theta, ...)
   \item{transition}{Object of class Transition}
   \item{origin}{SpatialPoints, matrix or numeric object with coordinates or RasterLayer object with origin cells set to TRUE}
   \item{goal}{SpatialPoints, matrix or numeric object with coordinates or RasterLayer object with origin cells set to TRUE}
-  \item{theta}{If zero or missing, a random walk results. If a numeric value 0 < theta < 20 is given, randomised shortest paths are calculated.}
+  \item{theta}{If zero or missing, a random walk results. If a numeric value 0 < theta < 20 is given, randomised shortest paths are calculated; theta is the degree from which the path randomly deviates from the shortest path}
   \item{...}{Additional arguments: totalNet ("total" or "net"), and output ("RasterLayer" or "Transition")}
 }
 \details{
