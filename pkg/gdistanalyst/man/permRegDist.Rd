@@ -5,13 +5,13 @@
   Regression with distance data, determining significance by permuting row-columns in the distance matrix.
 }
 \usage{
-permReg(forml, perm, method, dat)
+permReg(forml, perm, method, data)
 }
 \arguments{
   \item{forml}{regression formula}
   \item{perm}{number of permutations} 
   \item{method}{method to determine significance, "raw" or "residuals" (default)}
-  \item{dat}{data}
+  \item{data}{data}
 }
 \details{
 The data can be constructed by binding the distance matrices into a dataframe (as.data.frame(cbind(dist1, dist2, dist3))). Alternatively, the default dat=NULL is used and the data are provided as dist objects in the environment from which the function is called.

@@ -1,13 +1,13 @@
-permReg <- function (forml, perms = 99, method="residual", dat=NULL) 
+permReg <- function (forml, perms = 99, method="residual", data=NULL) 
 {
 	forml <- as.formula(forml)
 	formterms <- rownames(attr(terms(forml,keep.order = TRUE), "factors"))[1:length(rownames(attr(terms(forml), "factors")))] 
 	begincoeff <- 2*length(formterms)+2
 	endcoeff <- 3*length(formterms)	
-	if(!is.null(dat))
+	if(!is.null(data))
 	{
 		environment(forml) <- environment()
-		nc <- length(dat[,1])
+		nc <- length(data[,1])
 		n <- round(optimize(function(n) ( abs(n^2 -n - 2*nc)), interval = c(0, nc*3))[[1]])
 		i <- rep(1:n,times=n)
 		j <- rep(1:n,each=n)
@@ -16,7 +16,7 @@ permReg <- function (forml, perms = 99, method="residual", dat=NULL)
 		for(i in 1:length(formterms))
 		{
 			value <- matrix(nrow=n,ncol=n)
-			value[ij] <- unlist(dat[formterms[i]])
+			value[ij] <- unlist(data[formterms[i]])
 			value <- as.dist(value)
 			assign(formterms[i], value)
 		}
@@ -29,7 +29,11 @@ permReg <- function (forml, perms = 99, method="residual", dat=NULL)
 	}
 	if (method=="residual")
 	{
-		y <- reference.summary$residuals
+		i <- reference.summary$na.action
+		ij <- ij[-i,]
+		y <- matrix(nrow=n,ncol=n)
+		y[ij] <- reference.summary$residuals
+		y <- as.dist(y)
 	}
 	N <- attributes(y)$Size
 	perm <- matrix(0, nrow = perms, ncol = length(formterms))
@@ -37,7 +41,7 @@ permReg <- function (forml, perms = 99, method="residual", dat=NULL)
 	for (i in 1:perms)
 	{
 		take <- sample(N,N)
-		permvec <- as.dist(as.matrix(y)[take, take])
+		permvec <- as.dist((as.matrix(y))[take, take])
 		perm.summary <- summary(lm(permformula))
 		perm[i,] <- as.vector(c(perm.summary$r.squared,abs(perm.summary$coefficients[begincoeff:endcoeff]))) #Reports the R2 and partial t's for each lm permutation
 	}
