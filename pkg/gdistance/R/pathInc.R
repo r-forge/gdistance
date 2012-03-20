@@ -319,7 +319,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	fromCoords <- prepared$fromCoords
 	
 	R <- prepared$R
-	nR <- nrow(R)
+	if(is.matrix(R)){nR <- nrow(R)} else{nR <- 1}
 	nF <- length(functions)
 	n <- nR * nF
 	
@@ -384,7 +384,7 @@ setMethod("pathInc", signature(transition = "TransitionLayer", origin = "Coords"
 	toCoords <- preparedTo$fromCoords	
 
 	R <- preparedFrom$R
-	nR <- nrow(R)
+	if(is.matrix(R)){nR <- nrow(R)} else{nR <- 1}
 	nF <- length(functions)
 	n <- nR * nF
 	
