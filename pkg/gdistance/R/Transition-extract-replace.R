@@ -1,8 +1,5 @@
 # Author: Jacob van Etten jacobvanetten@yahoo.com
-# International Rice Research Institute
-# Date :  January 2009
-# Version 1.0
-# Licence GPL v3
+# Bioversity International
 
 setGeneric("transitionMatrix", function(transition, inflate) standardGeneric("transitionMatrix"))
 
@@ -151,10 +148,10 @@ setReplaceMethod ("transitionMatrix", signature(transition = "TransitionLayer", 
 	}
 )
 
-setMethod('nlayers', signature(object='TransitionStack'), 
-	function(object)
+setMethod('nlayers', signature(x='TransitionStack'), 
+	function(x)
 	{
-		return(length(object@transition)) 
+		return(length(x@transition)) 
     }
 )
 

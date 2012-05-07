@@ -50,7 +50,7 @@ rSPDistance <- function(transition, from, to, theta)
 			zcij <- sum(ei*zcj)
 
 			# Computation of the cost dij between node i and node j
-			D[i,j] <- (t(zci) %*% (trR * Wj) %*% zcj) / zcij
+			D[i,j] <- as.vector((t(zci) %*% (trR * Wj) %*% zcj) / zcij)
 		}
 	}
 	
