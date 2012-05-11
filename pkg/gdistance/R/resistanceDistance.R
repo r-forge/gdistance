@@ -51,9 +51,8 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 			ei <- matrix((-C/(n+1)), ncol=1, nrow=n)
 			ei[index[i],] <- C-(C/(n+1))
 			xi <- solve(Lr,ei)
-			#xi <- as.vector(xi)
-			#Lplusallrows <- c(xi-sum(xi/(n+1)),(sum(xi)/(n+1))) This is not necessary and with big floating points it may break
-			#Lplus[,i] <- Lplusallrows[index]
+			xi <- as.vector(xi)
+		  Lplusallrows <- c(xi-sum(xi/(n+1)),(sum(xi)/(n+1))) #This is not necessary and with big floating points it may break
 			Lplus[,i] <- c(as.vector(xi),0)[index]
 		}
 		Lplus <- Lplus / C
