@@ -102,21 +102,19 @@
 	return(Current)
 }
 
-.Laplacian <- function(transition) 
+.Laplacian <- function(x) 
 {
-	Laplacian <- Diagonal(x = colSums(transitionMatrix(transition, inflate=FALSE))) - transitionMatrix(transition, inflate=FALSE)
+	Laplacian <- Diagonal(x = colSums(transitionMatrix(x, inflate=FALSE))) - transitionMatrix(x, inflate=FALSE)
 	Laplacian <- as(Laplacian, "symmetricMatrix")
 	return(Laplacian)
 }
 
-.transitionSolidify <- function(transition)
+.transitionSolidify <- function(x)
 {
-	transitionMatr <- transitionMatrix(transition,inflate=FALSE)
-	selection <- which(rowMeans(transitionMatr)>1e-300)
-	transition@transitionCells <- transition@transitionCells[selection]
-	transitionMatr <- transitionMatr[selection,selection]
-	transition@transitionMatrix <- transitionMatr
-	return(transition)
+	selection <- which(rowMeans(transitionMatrix(x,inflate=FALSE))>1e-300)
+	x@transitionCells <- x@transitionCells[selection]
+	x@transitionMatrix <- transitionMatrix(x,inflate=FALSE)[selection,selection]
+	return(x)
 }
 
 #determine place in dist vector given place in dist matrix -- from gdistanalyst

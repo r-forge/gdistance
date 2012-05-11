@@ -21,9 +21,7 @@ rSPDistance <- function(transition, from, to, theta)
 	trR@x <- 1 / trR@x 
 	nr <- dim(tr)[1] 
 	Id <- Diagonal(nr) 
-	rs <- rowSums(tr)
-	rs[rs>0] <- 1/rs[rs>0]
-	P <- tr * rs
+  P <- .normalize(tr, "row")
 
 	W <- trR
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) 
@@ -39,14 +37,13 @@ rSPDistance <- function(transition, from, to, theta)
 		IdMinusWj <- as((Id - Wj), "dgCMatrix")		
 		ej <- rep(0,times=nr)
 		ej[cj[j]] <- 1
-
+		zcj <- solve(IdMinusWj, ej)
+    
 		for(i in 1:length(ci))
 		{
 			ei <- rep(0,times=nr)
 			ei[ci[i]] <- 1
-	
 			zci <- solve(t(IdMinusWj),ei)
-			zcj <- solve(IdMinusWj, ej)
 			zcij <- sum(ei*zcj)
 
 			# Computation of the cost dij between node i and node j

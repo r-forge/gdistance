@@ -117,8 +117,8 @@ The transition value between each pair of cells is the mean of the two cell valu
 
 <<gdistance-1>>=
 library(gdistance)
-r <- raster(nrows=18, ncols=36) 
-r <- setValues(r,runif(ncell(r), min=0.4, max=0.6))
+m <- matrix(runif(100, min=0.4, max=0.6), nrow=10, ncol=10)
+r <- raster(m) 
 r
 tr1 <- transition(r, transitionFunction=mean, directions=8)
 @
@@ -226,8 +226,8 @@ Both types of distortion can be corrected by dividing each conductance matrix va
 This is what function \verb@geoCorrection@ does for us.
 
 <<gdistance-7>>=
-tr1CorrC <- geoCorrection(tr1, type="c", multpl=FALSE)
-tr2CorrC <- geoCorrection(tr2, type="c", multpl=FALSE)
+tr1Corr <- geoCorrection(tr1, type="c", multpl=FALSE)
+tr2Corr <- geoCorrection(tr2, type="c", multpl=FALSE)
 @
 
 For random walks on longlat grids, there is an additional consideration to be made. 
@@ -241,7 +241,11 @@ N-S transition values with the cosine of the average latitude of the cell centre
 This is done with function \verb@geoCorrection@, by setting the argument \verb@type@ to “r", 
 
 <<gdistance-8>>=
-tr1CorrR <- geoCorrection(tr1, type="r", multpl=FALSE)
+r3 <- raster(ncol=36, nrow=18)
+r3 <- setValues(r3, runif(36*18))
+tr3 <- transition(r3, mean, 4)
+tr3 <- geoCorrection(tr3, type="r", multpl=FALSE)
+tr3CorrR <- geoCorrection(tr3, type="r", multpl=FALSE)
 @
 
 When similar \verb@Transition*@ objects with equal resolution and extent need to be corrected repetitively, computational effort may be reduced by
@@ -249,8 +253,8 @@ preparing an object that only needs to be multiplied with the \verb@Transition*@
 The following is equivalent to the previous procedure.
 
 <<gdistance-9>>=
-tr1CorrMatrix <- geoCorrection(tr1, type="r", multpl=TRUE)
-tr1CorrR <- tr1 * tr1CorrMatrix
+tr3CorrMatrix <- geoCorrection(tr3, type="r", multpl=TRUE)
+tr3CorrR <- tr3 * tr3CorrMatrix
 @
 
 \noindent Object \verb@trCorr1Matrix@ is only calculated once.
@@ -268,16 +272,22 @@ This is done by creating a two-row matrix of coordinates.
 Functions will also accept a \verb@SpatialPoints@ object or, if there is only one point, a vector of length two.
 
 <<gdistance-10>>=
-sP <- cbind(c(65, 5, -65), c(55, 35,-35))
+sP <- cbind(c(0.25, 0.75, 0.25), c(0.25, 0.75, 0.75))
 @
 
 \noindent Calculating a distance matrix is straightforward now.
 
 <<gdistance-11>>=
-costDistance(tr1CorrC, sP)
-costDistance(tr2CorrC, sP)
-resistanceDistance(tr1CorrR, sP)
+costDistance(tr1Corr, sP)
+costDistance(tr2Corr, sP)
+resistanceDistance(tr1Corr, sP)
+#rSPDistance(tr1Corr, sP, sP, theta=2)
+#rSPDistance(tr1Corr, sP, sP, theta=0.1)
 @
+
+The \verb@costDistance@ function gives a symmetric or asymmetric distance matrix, depending on the \verb@TransitionLayer@ that is used as input.
+As expected, the resistance distance, the distance travelled to reach the goal in a random walk and to go back, is far longer than the least-cost distance.
+The randomized shortest path distances are not directly comparable with the other distances, as they are scaled differently. 
 
 \section{Dispersal paths}
 
@@ -288,14 +298,11 @@ Either the total or net number of passages can be calculated.
 The net number of passages is the number of passages that are not reciprocated by a passage in the opposite direction.
 
 Figure 3 shows the probability of passage through each cell, assuming randomised shortest paths with the parameter theta set to 2.
-Here we see again how the package takes into account that we are dealing with a raster that covers the whole world.
-The route crosses the 180 degrees meridian without any problem.
 \clearpage
 
 <<gdistance-12>>=
-origin <- SpatialPoints(cbind(105,-55))
-goal <- SpatialPoints(cbind(-105,55))
-rSPraster <- passage(tr1, origin, goal, theta=2)
+origin <- SpatialPoints(cbind(0.75, 0.25))
+rSPraster <- passage(tr1, origin, sP[3,], theta=2)
 @
 \begin{figure}[!ht]
 \begin{center}
@@ -347,7 +354,7 @@ These measures can be used to predict patterns of diversity if these are due to 
 If the argument type contains two elements (divergent and joint), the result is a list of distances matrices.
 
 <<gdistance-15>>=
-pathInc(tr1CorrC, sP[1,], sP[2:3,])
+pathInc(tr1Corr, sP[1,], sP[2:3,])
 @
 
 \section{Example 1: Hiking around Maunga Whau}
@@ -379,7 +386,8 @@ First, we read in the altitude data for the volcano.
 This is a geo-referenced version of the ``volcano" data available in Base \R datasets (see \verb@?volcano@ for more information).
 
 <<gdistance-16>>=
-r <- raster(system.file("external/maungawhau.grd", package="gdistance"))
+r <- raster(system.file("external/maungawhau.grd", 
+  package="gdistance"))
 @
 
 The Hiking Function requires the slope as input.
@@ -403,7 +411,8 @@ Therefore, we need to restrict the calculation to adjacent cells.
 We do this by creating an index for adjacent cells (\verb@adj@) with the function \verb@adjacency()@.
 Using this index, we extract and replace adjacent cells, without touching the other values.
 <<gdistance-18>>=
-adj <- adjacency(x = r, fromCells = 1:ncell(r), toCells = 1:ncell(r), directions=8)
+adj <- adjacency(x = r, fromCells = 1:ncell(r), 
+  toCells = 1:ncell(r), directions=8)
 speed <- slope
 speed[adj] <- exp(-3.5 * abs(slope[adj] + 0.05))
 @
@@ -483,7 +492,8 @@ Within Europe, genetic diversity is often thought to be a result of the migratio
 
 First we read in the data, including the coordinates of the populations (Figure 8) and mutual genetic distances.
 <<gdistance-21>>=
-Europe <- raster(system.file("external/Europe.grd", package="gdistance"))
+Europe <- raster(system.file("external/Europe.grd", 
+  package="gdistance"))
 Europe[is.na(Europe)] <- 0
 data(genDist)
 data(popCoord)
@@ -522,7 +532,8 @@ The other distance measures incorporate more information about the geographic sp
 But how well does a wave of expansion from Anatolia explain the spatial pattern?
 <<gdistance-23>>=
 origin <- unlist(popCoord[22,c("x","y")])
-pI <- pathInc(trC, origin=origin, from=pC, functions=list(overlap))
+pI <- pathInc(trC, origin=origin, from=pC, 
+  functions=list(overlap))
 cor(genDist,pI[[1]])
 @
 At least at first sight, the overlap of dispersal routes explain the spatial pattern better than any of the previous measures.

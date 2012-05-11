@@ -32,11 +32,11 @@ Saerens M., L. Yen, F. Fouss, and Y. Achbany. 2009. Randomized shortest-path pro
 \seealso{ \code{\link{geoCorrection}} }
 \examples{
 #Create a new raster and set all its values to unity.
-raster <- raster(nrows=18, ncols=36) 
-raster <- setValues(raster,rep(1,ncell(raster)))
+r <- raster(nrows=18, ncols=36) 
+r <- setValues(r,rep(1,ncell(raster)))
 
 #Create a Transition object from the raster
-tr <- transition(raster,mean,4)
+tr <- transition(r,mean,4)
 
 #Create two sets of coordinates
 sP1 <- SpatialPoints(cbind(c(65,5,-65),c(55,35,-35)))
