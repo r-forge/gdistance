@@ -1,4 +1,4 @@
-rSPDistance <- function(transition, from, to, theta)
+rSPDistance <- function(transition, from, to, theta, totalNet="net")
 {
 	if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
 	
@@ -12,10 +12,10 @@ rSPDistance <- function(transition, from, to, theta)
 		
 	tr <- transitionMatrix(transition, inflate=FALSE)
 	
-	.rSPDist(tr, ci, cj, theta, tc)
+	.rSPDist(tr, ci, cj, theta, totalNet)
 }
 
-.rSPDist <- function(tr, ci, cj, theta, tc)
+.rSPDist <- function(tr, ci, cj, theta, totalNet)
 {
 	trR <- tr
 	trR@x <- 1 / trR@x 
@@ -26,12 +26,13 @@ rSPDistance <- function(transition, from, to, theta)
 	W <- trR
 	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) 
 	W <- W * P 
+  if (any(rowSums(W) < 1)) warning("one or more row sums of W are < 1")
 
 	D <- matrix(0, nrow=length(ci), ncol=length(cj))
 	
 	for(j in 1:length(cj))
 	{
-		Ij <- Diagonal(nr)
+	  Ij <- Diagonal(nr)
 		Ij[cj[j],cj[j]] <- 0
 		Wj <- Ij %*% W
 		IdMinusWj <- as((Id - Wj), "dgCMatrix")		
@@ -46,10 +47,27 @@ rSPDistance <- function(transition, from, to, theta)
 			zci <- solve(t(IdMinusWj),ei)
 			zcij <- sum(ei*zcj)
 
-			# Computation of the cost dij between node i and node j
-			D[i,j] <- as.vector((t(zci) %*% (trR * Wj) %*% zcj) / zcij)
-		}
+			N <- (Diagonal(nr, as.vector(zci)) %*% Wj %*% Diagonal(nr, as.vector(zcj))) / zcij
+      
+      if(totalNet == "net")
+      {
+        N <- skewpart(N) * 2 #N is here the NET number of passages, like McRae-random walk
+        N@x[N@x<0] <- 0
+      }
+
+      # Computation of the cost dij between node i and node j
+			D[i,j] <-  sum(trR * N)
+			
+    }
 	}
 	
-	D
+	return(D)
+
 }
+
+
+
+
+
+  
+  

@@ -59,7 +59,7 @@ setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords
 		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
 			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) 
     Cond <- transition@transitionMatrix@x
-    Volume <- sum(1/(Cond[Cond>0]))
+    Volume <- sum(Cond)
 		rdSS <- rdSS * Volume
     index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)

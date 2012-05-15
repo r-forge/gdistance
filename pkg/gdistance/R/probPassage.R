@@ -25,7 +25,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "Coords"
 			cj <- match(cellnrj,tc)
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{stop("no method available")}
+		else{stop("no method available -- try a low value of theta instead")}
 		return(result)
 	}
 )
@@ -42,7 +42,7 @@ setMethod("passage", signature(transition = "TransitionLayer", origin = "RasterL
 			cj <- which(getValues(goal))
 			result <- .flowMap(transition, ci, cj, tc)
 		}
-		else{stop("no method available")}
+		else{stop("no method available -- try a low value of theta instead")}
 		return(result)
 	}
 )

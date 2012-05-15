@@ -281,13 +281,17 @@ sP <- cbind(c(0.25, 0.75, 0.25), c(0.25, 0.75, 0.75))
 costDistance(tr1Corr, sP)
 costDistance(tr2Corr, sP)
 resistanceDistance(tr1Corr, sP)
-#rSPDistance(tr1Corr, sP, sP, theta=2)
-#rSPDistance(tr1Corr, sP, sP, theta=0.1)
+rSPDistance(tr1Corr, sP, sP, theta=2)
+rSPDistance(tr1Corr, sP, sP, theta=0.01)
+rSPDistance(tr1Corr, sP, sP, theta=1e-6)
+rSPDistance(tr1Corr, sP, sP, theta=1e-12)
+rSPDistance(tr1Corr, sP, sP, theta=1e-12, totalNet="total")
 @
 
 The \verb@costDistance@ function gives a symmetric or asymmetric distance matrix, depending on the \verb@TransitionLayer@ that is used as input.
 As expected, the resistance distance, the distance travelled to reach the goal in a random walk and to go back, is far longer than the least-cost distance.
-The randomized shortest path distances are not directly comparable with the other distances, as they are scaled differently. 
+Resistance distances are not directly comparable to randomized shortest path distances, which is due to the RSP algorithm (this will change in future versions).
+Randomized shortest paths are either based on the net movements (forward movements - backward movements along the same connection between cells) or as the total movements (forward movements + backward movements).  
 
 \section{Dispersal paths}
 
