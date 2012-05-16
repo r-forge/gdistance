@@ -1,6 +1,6 @@
 # Author: Jacob van Etten jacobvanetten@yahoo.com
-# International Rice Research Institute
-# Date :  January 2009
+# International Rice Research Institute, Bioversity International
+# Date :  January 2009, normalization added May 2012
 # Version beta
 # Licence GPL v3
 
@@ -8,59 +8,68 @@
 #TODO check if bounding box of coordinates falls inside bb of transition
 #TODO coordinates in same cell: distance = 0
 
-setGeneric("resistanceDistance", function(transition, coords) standardGeneric("resistanceDistance"))
+setGeneric("resistanceDistance", function(x, coords) standardGeneric("resistanceDistance"))
 
-setMethod("resistanceDistance", signature(transition = "TransitionLayer", coords = "Coords"), def = function(transition, coords) 
+setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
 	{
-		return(.rD(transition, coords))
+		return(.rD(x, coords))
 	}
 )
 
-.rD <- function(transition, coords){
-		if(class(transitionMatrix(transition)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in TransitionLayer object")}
+setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
+{
+  return(.rD(x, coords))
+}
+)
+
+.rD <- function(x, coords){
+		if(class(transitionMatrix(x)) != "dsCMatrix"){stop("symmetric transition matrix required (dsCMatrix) in TransitionLayer object x")}
 		coords <- .coordsToMatrix(coords)
 
 		rd <- matrix(NA,nrow=length(coords[,1]),ncol=length(coords[,1]))
 		rownames(rd) <- rownames(coords)
 		colnames(rd) <- rownames(coords)
-		allFromCells <- cellFromXY(transition, coords)
+		allFromCells <- cellFromXY(x, coords)
 		
 		if(!all(!is.na(allFromCells))){
 			warning("some coordinates not found and omitted")
 			allFromCells <- allFromCells[!is.na(allFromCells)]
 		}
 
-		transition <- .transitionSolidify(transition)		
-		fromCells <- allFromCells[allFromCells %in% transitionCells(transition)]
+		x <- .transitionSolidify(x)		
+		fromCells <- allFromCells[allFromCells %in% transitionCells(x)]
 		if (length(fromCells) < length(allFromCells)) 
 		{
 			warning(length(fromCells)," out of ",length(allFromCells)," locations were found in the fully connected transition matrix. NAs introduced.")
 		}
 		else{}
 		fromCells <- unique(allFromCells)
-		Lr <- .Laplacian(transition)
+
+    tr <- transitionMatrix(x)
+    Volume <- sum(tr)
+
+		Lr <- .Laplacian(x)
 		n <- max(Lr@Dim)
 		Lr <- Lr[-n,-n]
-		n <- max(Lr@Dim)
-		C <- 1e-300 * (n + 1) #This should avoid too big floating points as "Voltage differences", but give a number that can still be divided by n+1
+		C <- 1e-300 * n #This should avoid too big floating points as "Voltage differences", but give a number that can still be divided by n
 		Lplus <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-		index <- match(fromCells,transitionCells(transition))
-		Lr <- Cholesky(Lr)
+		index <- match(fromCells,transitionCells(x))
+		#Lr <- Cholesky(Lr)
 		for (i in 1:length(fromCells))
 		{
-			ei <- matrix((-C/(n+1)), ncol=1, nrow=n)
-			ei[index[i],] <- C-(C/(n+1))
+			ei <- matrix(-C/n, ncol=1, nrow=n-1)
+			ei[index[i],] <- C-(C/n)
 			xi <- solve(Lr,ei)
 			xi <- as.vector(xi)
-		  Lplusallrows <- c(xi-sum(xi/(n+1)),(sum(xi)/(n+1))) #This is not necessary and with big floating points it may break
-			Lplus[,i] <- c(as.vector(xi),0)[index]
+		  Lplusallrows <- c(xi-sum(xi/n),(sum(xi)/n)) 
+			Lplus[,i] <- as.vector(Lplusallrows)[index]
 		}
 		Lplus <- Lplus / C
 		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
 			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) 
-    Cond <- transition@transitionMatrix@x
-    Volume <- sum(Cond)
-		rdSS <- rdSS * Volume
+
+    rdSS <- rdSS * Volume
+
     index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
 		rd[index1,index1] <- rdSS[index2,index2]

@@ -6,7 +6,7 @@
 \description{
 Calculates the randomized shortest path distance between points. }
 \usage{
-rSPDistance (transition, from, to, theta)
+rSPDistance (transition, from, to, theta, totalNet = "total", method=1)
 }
 
 \arguments{
@@ -14,10 +14,14 @@ rSPDistance (transition, from, to, theta)
   \item{from}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}  
   \item{to}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}
   \item{theta}{ theta is the degree from which the path randomly deviates from the shortest path, 0 < theta < 20}  
+  \item{totalNet}{ total or net movements between cells}
+  \item{method}{ method 1 (as defined in Saerens et al.) or method 2 (a modified version, see below in Details)}
 }
 \details{
 
-  The function implements the algorithm given by Saerens et al. (2009)
+  The function implements the algorithm given by Saerens et al. (2009). 
+  
+  Method 1 implements the method as it is. Method 2 uses W = exp(-theta * ln(P)).
 
 }
 \value{

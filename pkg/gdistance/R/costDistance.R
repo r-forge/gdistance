@@ -48,7 +48,7 @@ setMethod("costDistance", signature(transition = "TransitionLayer", fromCoords =
 
 	for (i in 1:length(uniqueFromCells))
 	{
-		shortestPaths[i,] <- shortest.paths(adjacencyGraph, uniqueFromCells[i]-1, mode="out")[,uniqueToCells]
+		shortestPaths[i,] <- shortest.paths(adjacencyGraph, uniqueFromCells[i]-1, mode="out", algorith="dijkstra")[,uniqueToCells]
 	}
 
 	index1 <- match(fromCells,uniqueFromCells)

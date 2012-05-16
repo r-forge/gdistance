@@ -1,6 +1,7 @@
-rSPDistance <- function(transition, from, to, theta, totalNet="net")
+rSPDistance <- function(transition, from, to, theta, totalNet="net", method=1)
 {
 	if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
+  if(method != 1 & method != 2) {stop("method should be either 1 or 2")}
 	
 	cellnri <- cellFromXY(transition, from)
 	cellnrj <- cellFromXY(transition, to)
@@ -12,22 +13,36 @@ rSPDistance <- function(transition, from, to, theta, totalNet="net")
 		
 	tr <- transitionMatrix(transition, inflate=FALSE)
 	
-	.rSPDist(tr, ci, cj, theta, totalNet)
+	.rSPDist(tr, ci, cj, theta, totalNet, method)
 }
 
-.rSPDist <- function(tr, ci, cj, theta, totalNet)
+.rSPDist <- function(tr, ci, cj, theta, totalNet, method)
 {
 	trR <- tr
 	trR@x <- 1 / trR@x 
 	nr <- dim(tr)[1] 
 	Id <- Diagonal(nr) 
-  P <- .normalize(tr, "row")
+	P <- .normalize(tr, "row")
+  
 
-	W <- trR
-	W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) 
-	W <- W * P 
+  
+  if(method == 1)
+  {
+
+    W <- trR
+	  W@x <- exp(-theta * trR@x) #zero values are not relevant because of next step exp(-theta * trR@x) 
+    W <- W * P
+    
+  }	else	{
+    
+    adj <- adjacencyFromTransition(tr)
+	  W <- trR
+	  W[adj] <- exp(-theta * -log(P[adj])) #if the value is 1 then you get a natural random walk
+
+  }
+   
   if (any(rowSums(W) < 1)) warning("one or more row sums of W are < 1")
-
+  
 	D <- matrix(0, nrow=length(ci), ncol=length(cj))
 	
 	for(j in 1:length(cj))

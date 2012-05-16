@@ -6,12 +6,12 @@
 \description{
 Calculates the resistance distance between points. }
 \usage{
-resistanceDistance (transition, coords)
+resistanceDistance (x, coords, normalize=TRUE)
 }
 
 \arguments{
-  \item{transition}{ \code{TransitionLayer} object) }
-  \item{coords}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}  
+  \item{x}{ \code{TransitionLayer} object) }
+  \item{coords}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}
 
 }
 \details{

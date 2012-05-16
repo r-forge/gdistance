@@ -30,7 +30,11 @@ setMethod("normalize", signature(x = "TransitionLayer"), def = function(x, metho
     
       tr <- t(tr)
 
-      if(isSymmetric(x)) tr <- forceSymmetric(tr)
+      if(isSymmetric(x)) 
+      {
+        tr <- forceSymmetric(tr)
+        tr <- as(tr, "CsparseMatrix")
+      }
 		}
 
     if(method=="row")
@@ -44,7 +48,7 @@ setMethod("normalize", signature(x = "TransitionLayer"), def = function(x, metho
 		{
 			rs <- 1 / colSums(x)
 			rs[rs == Inf] <- 0
-			tr <- x * rs
+			tr <- t(t(x) * rs)
 		}
 
 		return(tr)
