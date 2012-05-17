@@ -45,8 +45,8 @@ setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coord
 		else{}
 		fromCells <- unique(allFromCells)
 
-    tr <- transitionMatrix(x)
-    Volume <- sum(tr)
+    #tr <- transitionMatrix(x)
+    #Volume <- sum(tr)
 
 		Lr <- .Laplacian(x)
 		n <- max(Lr@Dim)
@@ -68,7 +68,7 @@ setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coord
 		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
 			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) 
 
-    rdSS <- rdSS * Volume
+    #rdSS <- rdSS * Volume
 
     index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)

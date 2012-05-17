@@ -6,7 +6,7 @@
 \description{
 Calculates the resistance distance between points. }
 \usage{
-resistanceDistance (x, coords, normalize=TRUE)
+resistanceDistance (x, coords)
 }
 
 \arguments{
@@ -15,7 +15,7 @@ resistanceDistance (x, coords, normalize=TRUE)
 
 }
 \details{
-  Resistance distance is equivalent to the expected random-walk commute time between nodes in a graph (Chandra et al. 1997).
+  Resistance distance is proportional to the expected random-walk commute time between nodes in a graph (Chandra et al. 1997). Effective resistances need to be multiplied by a constant to obtain the commute times.
 
   The function implements the algorithm given by Fouss et al. (2007).
 

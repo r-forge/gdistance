@@ -6,7 +6,7 @@
 \description{
 Calculates the randomized shortest path distance between points. }
 \usage{
-rSPDistance (transition, from, to, theta, totalNet = "total", method=1)
+rSPDistance (transition, from, to, theta, totalNet = "net", method=1)
 }
 
 \arguments{
