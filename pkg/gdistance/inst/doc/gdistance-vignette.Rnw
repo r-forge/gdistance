@@ -1,5 +1,5 @@
 % \VignetteIndexEntry{R package gdistance: distances and routes on geographical grids}
-% \VignetteDepends{Matrix, methods, igraph, raster, gdistance}
+% \VignetteDepends{Matrix, methods, igraph0, raster, gdistance}
 % \VignetteKeyword{spatial}
 
 %\documentclass[twoside]{article}
@@ -56,7 +56,7 @@ It provides the following distance and route calculations.
 \item{The least-cost distance mimics route finding `as the fox runs', taking into account obstacles and the local `friction' 
 of the landscape.}
 \item{A second type of route-finding is the random walk, which has no predetermined destination 
-(`drunkard's walk'). Resistance distance reflects the travel time from origin to goal of the average (Brownian) random walk (McRae 2006).}
+(a `drunkard's walk'). Resistance distance reflects the travel time from origin to goal of the average (Brownian) random walk (McRae 2006).}
 \item{`Randomised shortest paths' are an intermediate form between shortest paths and Brownian random walks, 
 recently introduced by Saerens et al. (2009).}
 \end{itemize} 
@@ -294,8 +294,8 @@ rSPDistance(tr1Corr, sP, sP, theta=1, totalNet="total", method=2)
 @
 
 The \verb@costDistance@ function gives a symmetric or asymmetric distance matrix, depending on the \verb@TransitionLayer@ that is used as input.
-Randomized shortest paths are either based on the net movements (forward movements - backward movements along the same connection between cells) or as the total movements (forward movements + backward movements).
-Resistance distances are proportional to commute distances as found by the randomized shortest paths algorithm with theta approaching 0. 
+Randomized shortest paths are either based on the net or total movements between cells. For the net movements, the  backward movements are substracted from the forward movements along the same connection between cells. The total movements are the sume of forward movements and backward movements between cells.
+Resistance distances equals commute times as found by the randomized shortest paths algorithm with theta approaching 0. Resistance distance is also proportional to the commute cost up to a constant (Chandra et al. 1996).
 
 \section{Dispersal paths}
 
@@ -557,6 +557,8 @@ Bug reports and requests for additional functionality can be mailed to jacobvane
 \begin{hangparas}{3em}{1}
 
 \noindent Balaresque P., et al. 2010. A predominantly Neolithic origin for European paternal lineages. \emph{PLoS Biology} 8(1): e1000285.
+
+\noindent Chandra, et al. 1996. The electrical resistance of a graph captures its commute and cover times \emph{Computational Complexity} 6(4), 312-340.
 
 \noindent de Smith, M.J., M.F. Goodchild, and P.A. Longley. 2009. \emph{Geospatial Analysis}. Matador. 3rd edition.
 

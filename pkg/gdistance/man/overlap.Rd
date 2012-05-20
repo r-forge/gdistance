@@ -24,8 +24,5 @@ matrix
 The functions are provided here to assist the user in defining alternative measures of overlap / nonoverlap.
 }
 \author{ Jacob van Etten \email{jacobvanetten@yahoo.com} }
-\examples{
-
-}
 \keyword{ spatial }
 

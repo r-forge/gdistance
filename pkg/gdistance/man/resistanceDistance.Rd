@@ -15,7 +15,7 @@ resistanceDistance (x, coords)
 
 }
 \details{
-  Resistance distance is proportional to the expected random-walk commute time between nodes in a graph (Chandra et al. 1997). Effective resistances need to be multiplied by a constant to obtain the commute times.
+  Resistance distance equals the expected random-walk commute time between nodes in a graph (Chandra et al. 1997). It is here defined as the effective distance between the selected nodes multiplied by the volume of the graph (summing all the conductances). The result represents the average number of steps that is needed to commute between the nodes.
 
   The function implements the algorithm given by Fouss et al. (2007).
 

@@ -35,7 +35,10 @@ A two column matrix with each row containing a pair of adjacent cells.
 
 
 \examples{
-
+r <- raster(nrows=6, ncols=7, xmn=0, xmx=7, ymn=0, ymx=6, crs="+proj=utm +units=m")
+r[] <- runif(6*7)
+T <- transition(r, function(x) 1/mean(x), 8) 
+adjacency(T)
 }
 
 \keyword{spatial}
