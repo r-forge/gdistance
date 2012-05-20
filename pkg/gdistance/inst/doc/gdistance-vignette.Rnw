@@ -294,8 +294,9 @@ rSPDistance(tr1Corr, sP, sP, theta=1, totalNet="total", method=2)
 @
 
 The \verb@costDistance@ function gives a symmetric or asymmetric distance matrix, depending on the \verb@TransitionLayer@ that is used as input.
-Randomized shortest paths are either based on the net or total movements between cells. For the net movements, the  backward movements are substracted from the forward movements along the same connection between cells. The total movements are the sume of forward movements and backward movements between cells.
-Resistance distances equals commute times as found by the randomized shortest paths algorithm with theta approaching 0. Resistance distance is also proportional to the commute cost up to a constant (Chandra et al. 1996).
+Randomized shortest paths are either based on the net or total movements between cells. For the net movements, the  backward movements are substracted from the forward movements along the same connection between cells. The total movements are total number of both forward movements and backward movements between cells.
+Resistance distances equal commute times (e.g. the number of nodes traversed on the trip). Resistance distance is also proportional to the commute cost up to a constant (Chandra et al. 1996). 
+\verb@rSPdistance@ gives the commute cost, not the commute time.
 
 \section{Dispersal paths}
 
