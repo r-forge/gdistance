@@ -6,11 +6,11 @@
 \description{
 Calculates the accumulated cost surface from one or more origins. }
 \usage{
-accCost(transition, fromCoords)
+accCost(x, fromCoords)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition}{ object of class TransitionLayer }
+  \item{x}{ object of class TransitionLayer }
   \item{fromCoords}{ origin point locations (SpatialPoints, matrix or numeric class)}
 }
 \details{

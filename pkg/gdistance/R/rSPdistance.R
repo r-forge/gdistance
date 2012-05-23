@@ -1,17 +1,17 @@
-rSPDistance <- function(transition, from, to, theta, totalNet="net", method=1)
+rSPDistance <- function(x, from, to, theta, totalNet="net", method=1)
 {
 	if(theta < 0 | theta > 20 ) {stop("theta value out of range (between 0 and 20)")}
   if(method != 1 & method != 2) {stop("method should be either 1 or 2")}
 	
-	cellnri <- cellFromXY(transition, from)
-	cellnrj <- cellFromXY(transition, to)
-	transition <- .transitionSolidify(transition)
-	tc <- transitionCells(transition)
+	cellnri <- cellFromXY(x, from)
+	cellnrj <- cellFromXY(x, to)
+	transition <- .transitionSolidify(x)
+	tc <- transitionCells(x)
 
 	ci <- match(cellnri,tc)
 	cj <- match(cellnrj,tc)
 		
-	tr <- transitionMatrix(transition, inflate=FALSE)
+	tr <- transitionMatrix(x, inflate=FALSE)
 	
 	.rSPDist(tr, ci, cj, theta, totalNet, method)
 }
@@ -41,7 +41,7 @@ rSPDistance <- function(transition, from, to, theta, totalNet="net", method=1)
 
   }
    
-  if (any(rowSums(W) < 1)) warning("one or more row sums of W are < 1")
+  #if (any(rowSums(W) < 1)) warning("one or more row sums of W are < 1")
   
 	D <- matrix(0, nrow=length(ci), ncol=length(cj))
 	

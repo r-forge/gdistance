@@ -5,12 +5,12 @@
 \description{
 Reciprocal of the sum of the reciprocals of conductance Transition* objects }
 \usage{
-sumReciprocal(transition1, transition2)
+sumReciprocal(x1, x2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{transition1}{ \code{TransitionLayer} object}
-  \item{transition2}{ \code{TransitionLayer} object}  
+  \item{x1}{ \code{TransitionLayer} object}
+  \item{x2}{ \code{TransitionLayer} object}  
 }
 \details{
 To calculate the total resistance of two resistors that are serially connected, we should add their resistance values. However, if we work with conductance values, we need to take the reciprocal of the summed reciprocals of the conductance values. This function does that when adding two TransitionLayers with conductance values (\code{matrixValues(tr) == "conductance"}). 

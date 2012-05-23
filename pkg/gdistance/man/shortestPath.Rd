@@ -7,10 +7,10 @@
   Calculates the shortest path from an origin to a goal. 
 }
 \usage{
-shortestPath(transition, origin, goal, ...)
+shortestPath(x, origin, goal, ...)
 }
 \arguments{
-  \item{transition}{\code{TransitionLayer} object}
+  \item{x}{\code{TransitionLayer} object}
   \item{origin}{SpatialPoints, vector or matrix with coordinates, at the moment only the first cell is taken into account}
   \item{goal}{SpatialPoints, vector or matrix with coordinates}
   \item{...}{Additional argument: output}

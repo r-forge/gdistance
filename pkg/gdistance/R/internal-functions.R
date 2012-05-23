@@ -24,10 +24,10 @@
 	return(Coords)
 }
 
-.connected.components <- function(transition)
+.connected.components <- function(x)
 {
-	adj.graph <- graph.adjacency(transitionMatrix(transition))
-	clustermembership <- cbind(1:ncell(transition),as.integer(clusters(adj.graph)$membership)+1)
+	adj.graph <- graph.adjacency(transitionMatrix(x))
+	clustermembership <- cbind(1:ncell(x),as.integer(clusters(adj.graph)$membership)+1)
 	return(clustermembership)
 }
 

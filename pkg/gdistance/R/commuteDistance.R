@@ -8,15 +8,15 @@
 #TODO check if bounding box of coordinates falls inside bb of transition
 #TODO coordinates in same cell: distance = 0
 
-setGeneric("resistanceDistance", function(x, coords) standardGeneric("resistanceDistance"))
+setGeneric("commuteDistance", function(x, coords) standardGeneric("commuteDistance"))
 
-setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
+setMethod("commuteDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
 	{
 		return(.rD(x, coords))
 	}
 )
 
-setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
+setMethod("commuteDistance", signature(x = "TransitionLayer", coords = "Coords"), def = function(x, coords) 
 {
   return(.rD(x, coords))
 }
@@ -45,35 +45,34 @@ setMethod("resistanceDistance", signature(x = "TransitionLayer", coords = "Coord
 		else{}
 		fromCells <- unique(allFromCells)
 
-    #tr <- transitionMatrix(x)
-    #Volume <- sum(tr)
-
-		Lr <- .Laplacian(x)
-		n <- max(Lr@Dim)
-		Lr <- Lr[-n,-n]
-		C <- 1e-300 * n #This should avoid too big floating points as "Voltage differences", but give a number that can still be divided by n
-		Lplus <- matrix(ncol=length(fromCells),nrow=length(fromCells))
-		index <- match(fromCells,transitionCells(x))
-		#Lr <- Cholesky(Lr)
-		for (i in 1:length(fromCells))
-		{
-			ei <- matrix(-C/n, ncol=1, nrow=n-1)
-			ei[index[i],] <- C-(C/n)
-			xi <- solve(Lr,ei)
-			xi <- as.vector(xi)
-		  Lplusallrows <- c(xi-sum(xi/n),(sum(xi)/n)) 
-			Lplus[,i] <- as.vector(Lplusallrows)[index]
-		}
-		Lplus <- Lplus / C
-		rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
+  
+	Lr <- .Laplacian(x)
+	n <- max(Lr@Dim)
+	Lr <- Lr[-n,-n]
+	C <- 1e-300 * n #This should avoid too big floating points as "Voltage differences", but give a number that can still be divided by n
+	Lplus <- matrix(ncol=length(fromCells),nrow=length(fromCells))
+	index <- match(fromCells,transitionCells(x))
+	#Lr <- Cholesky(Lr)
+	for (i in 1:length(fromCells))
+	{
+		ei <- matrix(-C/n, ncol=1, nrow=n-1)
+		ei[index[i],] <- C-(C/n)
+		xi <- solve(Lr,ei)
+		xi <- as.vector(xi)
+		Lplusallrows <- c(xi-sum(xi/n),(sum(xi)/n)) 
+		Lplus[,i] <- as.vector(Lplusallrows)[index]
+	}
+	Lplus <- Lplus / C
+	rdSS <- (-2*Lplus + matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)) 
 			+ t(matrix(diag(Lplus),nrow=length(fromCells),ncol=length(fromCells)))) 
 
-    #rdSS <- rdSS * Volume
+    Volume <- sum(transitionMatrix(x))
+    rdSS <- rdSS * Volume
 
     index1 <- which(allFromCells %in% fromCells)
 		index2 <- match(allFromCells[allFromCells %in% fromCells],fromCells)
 		rd[index1,index1] <- rdSS[index2,index2]
 		rd <- as.dist(rd)
-		attr(rd, "method") <- "resistance"
+		attr(rd, "method") <- "commute"
 		return(rd)
 }

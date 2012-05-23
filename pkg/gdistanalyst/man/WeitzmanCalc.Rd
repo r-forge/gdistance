@@ -36,7 +36,20 @@ Weitzman, M.L. 1992. On diversity. Quarterly Journal of Economics 107(2), 363-40
 distObj <- dist(matrix(nrow=4,ncol=4))
 distObj[] <- c(357,532,498,477,488,126)
 
-WeitzmanCalc(c(1,0,1),distObj)
+WeitzmanCalc(c(1,0,1), distObj)
+WeitzmanCalc2(c(4,2,3,1), distObj)
+
+# modified from example in ?optim
+genseq <- function(sq, ...) {  # Generate new candidate sequence
+    idx <- seq(1, length(sq))
+    changepoints <- sample(idx, size=2, replace=FALSE)
+    tmp <- sq[changepoints[1]]
+    sq[changepoints[1]] <- sq[changepoints[2]]
+    sq[changepoints[2]] <- tmp
+    sq
+}
+
+optim(c(2,1,3,4), fn=WeitzmanCalc2, gr=genseq, distObject=distObj, method="SANN", control=list(fnscale=-1, maxit=100))
 
   }
 

@@ -121,8 +121,7 @@ library(gdistance)
 m <- matrix(1, nrow=10, ncol=10)
 r <- raster(m) 
 r
-tr1 <- transition(r, transitionFunction=mean, directions=4)
-#tr1 <- transition(r, transitionFunction=mean, directions=8)
+tr1 <- transition(r, transitionFunction=mean, directions=8)
 @
 
 We set the \verb@directions@ argument to value 8.
@@ -270,7 +269,7 @@ It is important to note that all distance functions require a \verb@Transition*@
 even though distances will be expressed in 1/conductance (friction or resistance) units.
 
 To calculate distances, we need to have the coordinates of point locations.
-This is done by creating a two-row matrix of coordinates.
+This is done by creating a two column matrix of coordinates.
 Functions will also accept a \verb@SpatialPoints@ object or, if there is only one point, a vector of length two.
 
 <<gdistance-10>>=
@@ -281,22 +280,16 @@ sP <- cbind(c(0.25, 0.75, 0.25), c(0.25, 0.75, 0.75))
 
 <<gdistance-11>>=
 costDistance(tr1Corr, sP)
-costDistance(tr2Corr, sP)
-resistanceDistance(tr1Corr, sP)
-resistanceDistance(tr1, sP)
-rSPDistance(tr1Corr, sP, sP, theta=2)
-rSPDistance(tr1Corr, sP, sP, theta=0.01)
-rSPDistance(tr1Corr, sP, sP, theta=1e-6)
-rSPDistance(tr1Corr, sP, sP, theta=1e-12)
-rSPDistance(tr1Corr, sP, sP, theta=1e-12, totalNet="total")
+costDistance(tr1Corr, sP)
+commuteDistance(tr1, sP)
+rSPDistance(tr1Corr, sP, sP, theta=5)
 rSPDistance(tr1, sP, sP, theta=1e-12, totalNet="total")
-rSPDistance(tr1Corr, sP, sP, theta=1, totalNet="total", method=2)
 @
 
 The \verb@costDistance@ function gives a symmetric or asymmetric distance matrix, depending on the \verb@TransitionLayer@ that is used as input.
-Randomized shortest paths are either based on the net or total movements between cells. For the net movements, the  backward movements are substracted from the forward movements along the same connection between cells. The total movements are total number of both forward movements and backward movements between cells.
-Resistance distances equal commute times (e.g. the number of nodes traversed on the trip). Resistance distance is also proportional to the commute cost up to a constant (Chandra et al. 1996). 
-\verb@rSPdistance@ gives the commute cost, not the commute time.
+Commute distance represents the random walk commute time, e.g. the number of cells traversed on the trip (Chandra et al. 1996).
+Randomized shortest paths are either based on the net or total movements between cells. For the net movements, the  backward movements are substracted from the forward movements along the same connection between cells. The total movements are the sum of both forward movements and backward movements between cells.
+\verb@rSPDistance@ gives the cost incurred during the walk. The last outcome is equivalent to the commute time of a random walk as the cell connections have unit weight and theta approaches 0. By summing the corresponding distances (Dij + Dji) in the last outcome from \verb@rSPDistance@ we get the same result as the one obtained with \verb@commuteDistance@ above. 
 
 \section{Dispersal paths}
 
@@ -531,7 +524,7 @@ tr <- transition(Europe, mean, directions=8)
 trC <- geoCorrection(tr, "c", scl=TRUE)
 trR <- geoCorrection(tr, "r", scl=TRUE)
 cosDist <- costDistance(trC,pC)
-resDist <- resistanceDistance(trR, pC)
+resDist <- commuteDistance(trR, pC)
 cor(genDist,geoDist)
 cor(genDist,cosDist)
 cor(genDist,resDist)

@@ -25,11 +25,11 @@
 These functions are to be used to access slots of Transition* objects.
 }
 \usage{
-transitionMatrix(transition, inflate)
-transitionCells(transition)
-matrixValues(transition)
+transitionMatrix(x, inflate)
+transitionCells(x)
+matrixValues(x)
 }
 \arguments{
-  \item{transition}{object of class Transition*}
+  \item{x}{object of class Transition*}
   \item{inflate}{logical (default is TRUE)} 
 }

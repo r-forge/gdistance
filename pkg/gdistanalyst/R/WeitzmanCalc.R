@@ -17,4 +17,3 @@ WeitzmanCalc <- function(binarySeq,distObject)
 	}
 	return(distValue)
 }
-

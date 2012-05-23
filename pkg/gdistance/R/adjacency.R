@@ -3,9 +3,9 @@
 # Version 1.2
 # Licence GPL v3
 
-adjacencyFromTransition <- function(transition)
+adjacencyFromTransition <- function(x)
 {
-	transitionMatr <- as(transition,"sparseMatrix")
+	transitionMatr <- as(x,"sparseMatrix")
 	transition.dgT <- as(transitionMatr,"dgTMatrix")
 	adjacency <- cbind(transition.dgT@i+1,transition.dgT@j+1)
 	return(adjacency)

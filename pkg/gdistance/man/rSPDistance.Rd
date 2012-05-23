@@ -6,11 +6,11 @@
 \description{
 Calculates the randomized shortest path distance between points. }
 \usage{
-rSPDistance (transition, from, to, theta, totalNet = "net", method=1)
+rSPDistance (x, from, to, theta, totalNet = "net", method=1)
 }
 
 \arguments{
-  \item{transition}{ \code{TransitionLayer} object) }
+  \item{x}{ \code{TransitionLayer} object) }
   \item{from}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}  
   \item{to}{ point locations coordinates (of SpatialPoints, matrix or numeric class)}
   \item{theta}{ theta is the degree from which the path randomly deviates from the shortest path, 0 < theta < 20}  

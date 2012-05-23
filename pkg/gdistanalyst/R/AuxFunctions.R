@@ -1,4 +1,8 @@
-distIndex <- function(i,j,n){n*(j-1) - j*(j-1)/2 + i-j}
+distIndex <- function(i,j,n){
+    
+  n*(j-1) - j*(j-1)/2 + i-j
+  
+}
 
 matrIndex <- function(i,n){
 	cc <- cumsum(seq((n-1),1))

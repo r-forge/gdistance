@@ -13,11 +13,11 @@
 \description{
 Calculate the overlap and non-overlap of paths departing from a common origin. Two algorithms are available: random walk and randomised shortest paths.}
 \usage{
-pathInc(transition, origin, from, to, theta, weight, ...)
+pathInc(x, origin, from, to, theta, weight, ...)
 
 }
 \arguments{
-  \item{transition}{transition matrix (class Transition)}
+  \item{x}{transition matrix (class Transition)}
   \item{origin}{coordinates of the origin (one point location, SpatialPoints, matrix or numeric class)}  
   \item{from}{coordinates of the destinations (SpatialPoints, matrix or numeric class)}
   \item{to}{second set of coordinates of the destinations (can be missing)}
