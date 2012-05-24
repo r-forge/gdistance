@@ -92,7 +92,7 @@ The package \verb@gdistance@ also uses these classes (S4) to construct objects.
 
 One important thing to know about \verb@raster@ is how grid data are stored internally in \verb@Raster*@ objects.
 Cell numbers in rasters go from left to right and from top to bottom.
-The 3 x 3 raster we just created would have the cell numbers in the order shown if Figure 1.
+The 3 x 3 raster we just created would have the cell numbers in the order shown in Figure 1.
 
 \begin{figure}[!ht]
 \begin{center}
@@ -130,7 +130,6 @@ Using conductance values may be a bit confusing at first, as other software gene
 Also, the resulting distances represent accumulated friction or cost, making the use of conductance somewhat counterintuitive.
 
 In fact, the relation between conductance and friction is straightforward: conductance is the \emph{reciprocal} of friction (1/friction).
-Conductance could be thought of as the speed of movement, while the friction is the travel time employed to bridge the distance between the two cell centres.
 It is not strange to use the word conductance in this context or to use resistance as a synonym for friction. 
 There is an analogy between random walks on geographical grids and electrical current in a mesh of resistors (Chandra et al. 1996, McRae et al. 2008).
 Some algorithms in \verb@gdistance@ are based on this analogy.
@@ -144,7 +143,7 @@ which gives access to fast procedures implemented in the C language.
 
 The construction of a \verb@Transition*@ object from a \verb@Raster*@ object is straightforward. 
 We can define an arbitrary function to calculate the conductance values from the values of each pair of cells to be connected.
-Here, we create a raster with 10 degree cells and set it cells to random values between 0.4 and 0.6.
+Here, we use the raster created earlier and set all values to unit.
 We then create a \verb@TransitionLayer@ object. 
 The transition value between each pair of cells is the mean of the two cell values.
 
@@ -175,7 +174,7 @@ the conductance from j back to i.
 This is relevant, among other things, for modelling travel in hilly terrain, as shown in Example 1 below. 
 On the same slope, a downslope traveler experiences less resistance than an upslope traveler.
 In this case, the function to calculate conductance values is non-commutative: $f(i,j) \neq f(j,i)$.
-The \verb@symm@ argument in \verb@transition@ needs to be set to \verb@FALSE@.
+To make an asymmetric transition matrix, the \verb@symm@ argument in \verb@transition@ needs to be set to \verb@FALSE@.
 <<gdistance-5>>=
 r[] <- runif(9)
 ncf <- function(x) max(x) - x[1] + x[2]
