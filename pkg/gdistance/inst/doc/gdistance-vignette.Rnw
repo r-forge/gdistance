@@ -1,5 +1,5 @@
 % \VignetteIndexEntry{R package gdistance: distances and routes on geographical grids}
-% \VignetteDepends{Matrix, methods, igraph0, raster, gdistance}
+% \VignetteDepends{Matrix, methods, igraph, raster, gdistance}
 % \VignetteKeyword{spatial}
 
 %\documentclass[twoside]{article}
@@ -312,7 +312,7 @@ sP <- cbind(c(-100, 100, -100), c(-50, 50, 50))
 \noindent Calculating a distance matrix is straightforward now.
 
 <<gdistance-13>>=
-costDistance(tr3C, sP)
+#costDistance(tr3C, sP)
 commuteDistance(tr3R, sP)
 rSPDistance(tr3R, sP, sP, theta=1e-12, totalNet="total")
 @
@@ -491,7 +491,7 @@ We test if the quickest path from A to B is the same as the quickest path from B
 A <- c(2667670,6479000)
 B <- c(2667800,6479400)
 AtoB <- shortestPath(x, A, B, output="SpatialLines")
-BtoA <- shortestPath(x, B, A,  output="SpatialLines")
+BtoA <- shortestPath(x, B, A, output="SpatialLines")
 @
 <<label=fig8plot,include=FALSE>>=
 plot(r)
