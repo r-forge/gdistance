@@ -5,10 +5,10 @@
 
 adjacencyFromTransition <- function(x)
 {
-  tc <- transitionCells(x)
-  x <- transitionMatrix(x)
+	tc <- transitionCells(x)
+	x <- transitionMatrix(x)
 	transition.dgT <- as(x,"dgTMatrix")
-	adjacency <- cbind(transition.dgT@i+1,transition.dgT@j+1)
-  adjacency <- cbind(tc[adjacency[,1]], tc[adjacency[,2]])
-	return(adjacency)
+	adj <- cbind(transition.dgT@i+1,transition.dgT@j+1)
+	adj <- cbind(tc[adj[,1]], tc[adj[,2]])
+	return(adj)
 }

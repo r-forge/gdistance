@@ -443,11 +443,10 @@ slope <- geoCorrection(hd, scl=FALSE)
 Subsequently, we calculate the speed.
 We need to exercise special care, because the matrix values between non-adjacent cells is 0, but the slope between these cells is not 0!
 Therefore, we need to restrict the calculation to adjacent cells.
-We do this by creating an index for adjacent cells (\verb@adj@) with the function \verb@adjacency()@.
+We do this by creating an index for adjacent cells (\verb@adj@) with the function \verb@adjacent()@.
 Using this index, we extract and replace adjacent cells, without touching the other values.
 <<gdistance-20>>=
-adj <- adjacency(x = r, fromCells = 1:ncell(r), 
-  toCells = 1:ncell(r), directions=8)
+adj <- adjacent(r, cells=1:ncell(r), pairs=TRUE, directions=8)
 speed <- slope
 speed[adj] <- exp(-3.5 * abs(slope[adj] + 0.05))
 @
