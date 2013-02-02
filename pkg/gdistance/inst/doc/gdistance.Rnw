@@ -1,7 +1,10 @@
 \documentclass[nojss,shortnames]{jss}
 %\documentclass[article,shortnames]{jss}
 \usepackage[utf8]{inputenc}
+\usepackage{float}
+\restylefloat{figure}
 %\VignetteIndexEntry{gdistance}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -50,7 +53,7 @@ The novel distances implemented in the package are used in geographical genetics
   E-mail: \email{jacobvanetten@yahoo.com}\\
   URL: \url{http://bioversityinternational.org}
 }
-
+ 
 %% for those who use Sweave please include the following line (with % symbols):
 %% need no \usepackage{Sweave.sty}
 
@@ -79,7 +82,7 @@ a very efficient traveller who knows where to go and has no obstacles to deal wi
 In common language, this is referred to as a distance `as the crow flies'.
 
 When travel is less goal-directed and affected by the environment, grid-based distances and routes become relevant.
-The least-cost distance is implemented in most GIS software and mimics route finding `as the wolf runs'\footnote{There are some variations on this expression, involving mostly other animals.}, 
+The least-cost distance is implemented in most GIS software and mimics route finding `as the wolf runs'\footnote{There are some variations on this expression, involving mostly other animals, or telecom cables.}, 
 taking into account obstacles and the local `friction' of the landscape. 
 The random walk, which is also called the drunkard's walk, has no predetermined destination, so a destination point is hit by accident.
 The distance travelled to hit the destination point is a measure used to characterize dispersal processes in geography.
@@ -117,7 +120,7 @@ This is the most common and often only way to connect grids in GIS software.}
 The section on distance transforms in \cite{deSmith2009} also discusses 16-cell neighbourhoods. Connecting in 16 directions may increase the accuracy of the calculations.}
 \end{itemize}
 
-\begin{figure}[here]
+\begin{figure}[h]
 \begin{center}
 <<label=figure0,fig=TRUE, width=8, height=3, echo=FALSE >>=
 library(gdistance)
@@ -276,10 +279,10 @@ One important thing to know about \pkg{raster} is how grid data are stored inter
 Cell numbers in rasters go from left to right and from top to bottom.
 The 3 x 3 raster we just created with its cell numbers is shown in Figure ~\ref{fig:one}.
 
-\begin{figure}[here]
+\begin{figure}[h]
 \begin{center}
 <<label=figure1,fig=TRUE,height = 3.9, echo=FALSE >>=
-plot(r)
+plot(r, main="")
 text(r)
 @
 \end{center}
@@ -287,7 +290,7 @@ text(r)
 \label{fig:one}
 \end{figure}
 
-This is the code used to make Figure ~\ref{fig:one}.
+Figure~\ref{fig:one} can be made with this code.
 
 <<gdistance-2>>=
 plot(r)
@@ -375,7 +378,7 @@ This shows the rows and columns of the transition matrix and indicates which has
 <<gdistance-8, eval=FALSE>>=
 image(transitionMatrix(tr1))
 @
-\begin{figure}[!ht]
+\begin{figure}[h]
 \begin{center}
 <<label=figure2,fig=TRUE,height = 4, echo=FALSE >>=
 print(image(transitionMatrix(tr1)))
@@ -391,7 +394,7 @@ This is explained by the extent of the grid.
 Since it covers the whole world, the outer meridians (180 and -180 degrees) touch each other.
 The software takes this into account and as a result the cells in the extreme left column are connected to the extreme right column.
 
-Figure ~\ref{fig:two} shows which cells contain non-zero values, but gives no further information about levels of conductance.
+Figure~\ref{fig:two} shows which cells contain non-zero values, but gives no further information about levels of conductance.
 This can be visualized by transforming the transition matrix back into a raster.
 To summarize the information in transition matrix, we can take means or sums across rows or columns, for instance.
 You can do this with function \code{raster}. 
@@ -399,17 +402,17 @@ Applied to a \code{TransitionLayer}, this function converts it to a \code{Raster
 For the different options see \code{method?raster("TransitionLayer")}. 
 The default, shown in Figure ~\ref{fig:three}, takes the column-wise means of the non-zero values.
 
-\begin{figure}[!ht]
+\begin{figure}[h]
 \begin{center}
 <<label=figure3,fig=TRUE,height = 3.8 >>=
-plot(raster(tr3))
+plot(raster(tr3), main="")
 @
 \end{center}
 \caption{Visualizing a TransitionLayer using the function \code{raster}}
 \label{fig:three}
 \end{figure}
 
-\section{Correcting cell-to-cell conductance values}
+\section{Correcting conductance values}
 The function \code{transition} calculates transition values based on the values of adjacent cells in the input raster.
 However, diagonal neighbours are more remote from each other than orthogonal neighbours.
 Secondly, on equirectangular (longitude-latitude) grids, West-East connections are longer at the equator and become shorter towards the poles, as the meridians approach each other.
@@ -478,7 +481,6 @@ commuteDistance(tr3R, sP)
 rSPDistance(tr3R, sP, sP, theta=1e-12, totalNet="total")
 @
 
-
 The \code{costDistance} function relies on the package \pkg{igraph} \citep{csardi2006} for the underlying calculation.
 It gives a symmetric or asymmetric distance matrix, depending on the \code{TransitionLayer} that is used as input.
 
@@ -498,59 +500,57 @@ The function calculates the number of passages through cells before arriving in 
 Either the total or net number of passages can be calculated.
 The net number of passages is the number of passages that are not reciprocated by a passage in the opposite direction.
 
-Figure 4\label{fig:four} shows the probability of passage through each cell, assuming randomised shortest paths with the parameter theta set to 3.
+Figure~\ref{fig:four} shows the probability of passage through each cell, assuming randomised shortest paths with the parameter theta set to 3.
 
 <<gdistance-14>>=
 origin <- SpatialPoints(cbind(0, 0))
 rSPraster <- passage(tr3C, origin, sP[3,], theta=3)
 @
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 <<label=figure4,fig=TRUE,height = 3.8 >>=
-plot(rSPraster)
+plot(rSPraster, main="")
 @
 \end{center}
 \caption{Probability of passage}
 \label{fig:four}
 \end{figure}
 
-
 \section{Path overlap and non-overlap}
 One of the specific uses, for which package gdistance was created,
 is to look at trajectories coming from the same source \citep{etten2010}. 
-
-The degree of coincidence of two trajectories can be visualized by multiplying the probabilities of passage (Figure \label{fig:five}).
-With a more complex formula, we can approximate the non-overlapping part of the trajectory (Figure \label{fig:six}).
-
+The degree of coincidence of two trajectories can be visualized by multiplying the probabilities of passage (Figure~\ref{fig:five}).
+With a more complex formula, we can approximate the non-overlapping part of the trajectory (Figure~\ref{fig:six}).
 <<gdistance-15>>=
 r1 <- passage(tr3C, origin, sP[1,], theta=1)
 r2 <- passage(tr3C, origin, sP[3,], theta=1)
 rJoint <- r1 * r2
 @
-
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
-<<label=figure5,fig=TRUE,height = 3.8 >>=
-plot(rJoint)
+<<label=figure5,fig=TRUE,height = 3.75 >>=
+plot(rJoint, main="")
 @
 \end{center}
+\vspace{-20pt}
 \caption{Overlapping part of the two routes}
 \label{fig:five}
 \end{figure}
-
+\begin{samepage}
 <<gdistance-16>>=
 rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0)
 @
-
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
-<<label=figure6,fig=TRUE,height = 3.8 >>=
-plot(rDiv)
+<<label=figure6,fig=TRUE,height = 3.75 >>=
+plot(rDiv, main="")
 @
 \end{center}
+\vspace{-20pt}
 \caption{Non-overlapping part of the two routes}
 \label{fig:six}
 \end{figure}
+\end{samepage}
 
 With the function \code{pathInc} we can calculate measures of path overlap and non-overlap
 for a large number of points.
@@ -575,7 +575,7 @@ speed = exp(-3.5 * abs(slope + 0.05))
 
 \noindent Note that the function is not symmetric around 0 (see Figure \label{fig:seven}).
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 <<label=figure7,echo=FALSE,fig=TRUE,height = 3.8 >>=
 plot(function(x)exp(-3.5 * abs(x + 0.05)), -1, 1, xlab="slope", ylab="speed (m/s)")
@@ -663,14 +663,14 @@ AtoB <- shortestPath(x, A, B, output="SpatialLines")
 BtoA <- shortestPath(x, B, A, output="SpatialLines")
 @
 <<label=fig8plot,include=FALSE>>=
-plot(r)
+plot(r, main="")
 lines(AtoB, col="red", lwd=2)
 lines(BtoA, col="blue")
 text(A[1]-10,A[2]-10,"A")
 text(B[1]+10,B[2]+10,"B")
 @
 
-\begin{figure}[!here]
+\begin{figure}[H]
 \begin{center}
 <<label=fig8,fig=TRUE,echo=FALSE, height = 6>>=
 <<fig8plot>>
@@ -707,10 +707,10 @@ data(popCoord)
 pC <- as.matrix(popCoord[c("x","y")])
 @
 
-\begin{figure}[!here]
+\begin{figure}[h]
 \begin{center}
 <<fig=TRUE,echo=FALSE, height=6>>=
-plot(Europe)
+plot(Europe, main="")
 text(pC[,1],pC[,2],unlist(popCoord["Population"]),cex=.7)
 @
 \end{center}
