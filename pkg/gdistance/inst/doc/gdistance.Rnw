@@ -1,5 +1,5 @@
-\documentclass[nojss,shortnames]{jss}
-%\documentclass[article,shortnames]{jss}
+%\documentclass[nojss,shortnames]{jss}
+\documentclass[article,shortnames]{jss}
 \usepackage[utf8]{inputenc}
 \usepackage{float}
 \restylefloat{figure}
@@ -100,23 +100,25 @@ Example 2 below introduces with an example how \pkg{gdistance} can be used in ge
 Calculations are done in various steps in \pkg{gdistance}.
 At first, this tends to be somewhat confusing for those who are used to distance and route calculations in GIS software, 
 which tend to be done in a single step.
-However, an important goal of \pkg{gdistance} is to make the calculations of distances and routes more flexible.
+However, an important goal of \pkg{gdistance} is to make the calculations of distances and routes more flexible, 
+which also make the package somewhat more complicated to use.
 Users, therefore, need to have a basic understanding of the theory behind distance and route calculations.
 
 Calculations of distances and routes start with raster data.
 In geospatial analysis, rasters are rectangular, regular grids that represent continuous data over geographical space.
 Cells arranged in rows and columns and each holds a value.
-A raster is associated with metadata that indicates the resolution, extent and other properties of the grid.
+A raster is accompanied by metadata that indicate the resolution, extent and other properties.
 
 Distance and route calculations on rasters rely on graph theory.
 So as a first step, rasters are converted into graphs by connecting cell centres to each other, which become the nodes in the graph.
-This can be done in various ways (Figure ~\ref{fig:zero}).
+This can be done in various ways (Figure~\ref{fig:zero}).
 \begin{itemize}
+\item{Cells can be connected orthogonally to their four immediate neighbours, which is called the von Neumann neighbourhood.}
 \item{Cells can be connected with their eight orthogonal and diagonal nearest neighbours, the Moore neighbourhood. 
 The resulting graph is called the `king's graph', because it reflects all the legal movements of the king in chess.
 This is the most common and often only way to connect grids in GIS software.}
-\item{Cells can be connected orthogonally to their four immediate neighbours, which is called the von Neumann neighbourhood.}
-\item{Connecting in 16 directions combines king's and knight's moves. The function r.cost in the software GRASS \citep{grass} has this as an option, which inspired its implementation in \pkg{gdistance}. 
+\item{Connecting in 16 directions combines king's and knight's moves. 
+The function r.cost in the software GRASS \citep{grass} has this as an option, which inspired its implementation in \pkg{gdistance}. 
 The section on distance transforms in \cite{deSmith2009} also discusses 16-cell neighbourhoods. Connecting in 16 directions may increase the accuracy of the calculations.}
 \end{itemize}
 
@@ -277,12 +279,12 @@ The use of classes, if well done, tends to produce cleaner, better readable, and
 
 One important thing to know about \pkg{raster} is how grid data are stored internally in \code{Raster*} objects.
 Cell numbers in rasters go from left to right and from top to bottom.
-The 3 x 3 raster we just created with its cell numbers is shown in Figure ~\ref{fig:one}.
+The 3 x 3 raster we just created with its cell numbers is shown in Figure~\ref{fig:one}.
 
 \begin{figure}[h]
 \begin{center}
 <<label=figure1,fig=TRUE,height = 3.9, echo=FALSE >>=
-plot(r, main="")
+plot(r, main="r")
 text(r)
 @
 \end{center}
@@ -293,7 +295,7 @@ text(r)
 Figure~\ref{fig:one} can be made with this code.
 
 <<gdistance-2>>=
-plot(r)
+plot(r, main="r")
 text(r)
 @
 
@@ -307,7 +309,7 @@ The class \code{Transition*} takes the necessary geographic references (projecti
 It also contains a matrix which represents a transition from one cell to another in the grid.
 Each row and column in the matrix represents a cell in the original \code{Raster*} object.
 Row 1 and column 1 in the transition matrix corresponds to cell 1 in the original raster, row 2 and column 2 to cell 2, and so on.
-For instance, the raster we just created would produce a 9 x 9 transition matrix with rows and columns numbered from 1 to 9 (see Figure ~\ref{fig:two} below).
+For instance, the raster we just created would produce a 9 x 9 transition matrix with rows and columns numbered from 1 to 9 (see Figure~\ref{fig:two} below).
 
 The matrix is stored in a sparse format, as discussed in Section 2.
 The package \pkg{gdistance} makes use of sparse matrix classes and methods from the package \code{Matrix}, 
@@ -373,7 +375,7 @@ It can be checked visually if there are any clumps.
 There are several ways to visualize a \code{Transition*} object.
 For the first method, you can extract the transition matrix with function \code{transitionMatrix}.
 This gives a sparse matrix which can be vizualized with function \code{image}.
-This shows the rows and columns of the transition matrix and indicates which has a non-zero value, which represents a connection between cells (Figure ~\ref{fig:two}).
+This shows the rows and columns of the transition matrix and indicates which has a non-zero value, which represents a connection between cells (Figure~\ref{fig:two}).
 
 <<gdistance-8, eval=FALSE>>=
 image(transitionMatrix(tr1))
@@ -388,8 +390,8 @@ print(image(transitionMatrix(tr1)))
 \label{fig:two}
 \end{figure}
 
-Figure ~\ref{fig:two} shows which cells are connected to each other.
-A close observer of Figure ~\ref{fig:two} may wonder why even cell 1 is connected to 5 different cells, as this cell is located in the upper left corner of the original grid.
+Figure~\ref{fig:two} shows which cells are connected to each other.
+A close observer of Figure~\ref{fig:two} may wonder why even cell 1 is connected to 5 different cells, as this cell is located in the upper left corner of the original grid.
 This is explained by the extent of the grid.
 Since it covers the whole world, the outer meridians (180 and -180 degrees) touch each other.
 The software takes this into account and as a result the cells in the extreme left column are connected to the extreme right column.
@@ -400,19 +402,19 @@ To summarize the information in transition matrix, we can take means or sums acr
 You can do this with function \code{raster}. 
 Applied to a \code{TransitionLayer}, this function converts it to a \code{RasterLayer}. 
 For the different options see \code{method?raster("TransitionLayer")}. 
-The default, shown in Figure ~\ref{fig:three}, takes the column-wise means of the non-zero values.
+The default, shown in Figure~\ref{fig:three}, takes the column-wise means of the non-zero values.
 
 \begin{figure}[h]
 \begin{center}
 <<label=figure3,fig=TRUE,height = 3.8 >>=
-plot(raster(tr3), main="")
+plot(raster(tr3), main="raster(tr3)")
 @
 \end{center}
 \caption{Visualizing a TransitionLayer using the function \code{raster}}
 \label{fig:three}
 \end{figure}
 
-\section{Correcting conductance values}
+\section{Correcting transition matrix values}
 The function \code{transition} calculates transition values based on the values of adjacent cells in the input raster.
 However, diagonal neighbours are more remote from each other than orthogonal neighbours.
 Secondly, on equirectangular (longitude-latitude) grids, West-East connections are longer at the equator and become shorter towards the poles, as the meridians approach each other.
@@ -508,8 +510,8 @@ rSPraster <- passage(tr3C, origin, sP[3,], theta=3)
 @
 \begin{figure}[H]
 \begin{center}
-<<label=figure4,fig=TRUE,height = 3.8 >>=
-plot(rSPraster, main="")
+<<label=figure4,fig=TRUE,height = 3.8, echo=FALSE >>=
+plot(rSPraster, main="rSPraster")
 @
 \end{center}
 \caption{Probability of passage}
@@ -521,36 +523,35 @@ One of the specific uses, for which package gdistance was created,
 is to look at trajectories coming from the same source \citep{etten2010}. 
 The degree of coincidence of two trajectories can be visualized by multiplying the probabilities of passage (Figure~\ref{fig:five}).
 With a more complex formula, we can approximate the non-overlapping part of the trajectory (Figure~\ref{fig:six}).
+\vspace{-1.0em}
 <<gdistance-15>>=
 r1 <- passage(tr3C, origin, sP[1,], theta=1)
 r2 <- passage(tr3C, origin, sP[3,], theta=1)
-rJoint <- r1 * r2
+rJoint <- r1 * r2 #Figure 6
+rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0) #Figure 7
 @
+\vspace{-1.0em}
 \begin{figure}[H]
 \begin{center}
-<<label=figure5,fig=TRUE,height = 3.75 >>=
-plot(rJoint, main="")
+<<label=figure5,fig=TRUE,height = 3.75, echo=FALSE >>=
+plot(rJoint, main="rJoint")
 @
 \end{center}
 \vspace{-20pt}
 \caption{Overlapping part of the two routes}
 \label{fig:five}
 \end{figure}
-\begin{samepage}
-<<gdistance-16>>=
-rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0)
-@
+\vspace{-1.0em}
 \begin{figure}[H]
 \begin{center}
-<<label=figure6,fig=TRUE,height = 3.75 >>=
-plot(rDiv, main="")
+<<label=figure6,fig=TRUE,height = 3.75, echo=FALSE >>=
+plot(rDiv, main="rDiv")
 @
 \end{center}
 \vspace{-20pt}
 \caption{Non-overlapping part of the two routes}
 \label{fig:six}
 \end{figure}
-\end{samepage}
 
 With the function \code{pathInc} we can calculate measures of path overlap and non-overlap
 for a large number of points.
@@ -573,9 +574,9 @@ The maximum speed of off-path hiking (in m/s) is:
 speed = exp(-3.5 * abs(slope + 0.05))
 \vspace{5 mm}
 
-\noindent Note that the function is not symmetric around 0 (see Figure \label{fig:seven}).
+\noindent Note that the function is not symmetric around 0 (see Figure~\ref{fig:seven}).
 
-\begin{figure}[H]
+\begin{figure}[h]
 \begin{center}
 <<label=figure7,echo=FALSE,fig=TRUE,height = 3.8 >>=
 plot(function(x)exp(-3.5 * abs(x + 0.05)), -1, 1, xlab="slope", ylab="speed (m/s)")
@@ -655,13 +656,17 @@ travel time = distance / speed
 
 Now we define two coordinates, A and B, and determine the paths between them.
 We test if the quickest path from A to B is the same as the quickest path from B back to A.
- 
+The following code creates the shortest paths.
+
 <<gdistance-22>>=
 A <- c(2667670,6479000)
 B <- c(2667800,6479400)
 AtoB <- shortestPath(x, A, B, output="SpatialLines")
 BtoA <- shortestPath(x, B, A, output="SpatialLines")
 @
+
+And this code was used to make Figure~\ref{fig:eight}.
+
 <<label=fig8plot,include=FALSE>>=
 plot(r, main="")
 lines(AtoB, col="red", lwd=2)
@@ -670,19 +675,20 @@ text(A[1]-10,A[2]-10,"A")
 text(B[1]+10,B[2]+10,"B")
 @
 
-\begin{figure}[H]
+A small part of the A-B (red) and B-A (blue) lines in Figure~\ref{fig:eight} do not overlap.
+This is a consequence of the asymmetry of the Hiking Function.
+
+\begin{figure}[h]
 \begin{center}
 <<label=fig8,fig=TRUE,echo=FALSE, height = 6>>=
 <<fig8plot>>
 @
 \end{center}
-\caption{Quickest hiking routes around Maunga Whau}
+\caption{Quickest hiking routes on Maunga Whau 
+(A to B is red, B to A is blue)}
 \label{fig:eight}
 \end{figure}
-
-A small part of the A-B (red) and B-A (blue) lines in Figure ~\ref{fig:eight} do not overlap.
-This is a consequence of the asymmetry of the Hiking Function.
-
+\clearpage
 \section{Example 2: Geographical genetics}
 
 The direct relation between genetic and geographic distances is known as \emph{isolation by distance} \citep{wright1943}.
@@ -696,7 +702,7 @@ Within a single continent, however, human genetic diversity may have to do with 
 Let's look at diversity in Europe, using the data presented by \cite{bal2010}.
 Within Europe, genetic diversity is often thought to be a result of the migration of early Neolithic farmers from Anatolia (Turkey) to the west.
 
-First we read in the data, including the coordinates of the populations (see Figure ~\ref{fig:nine}) and mutual genetic distances.
+First we read in the data, including the coordinates of the populations (see Figure~\ref{fig:nine}) and mutual genetic distances.
 
 <<gdistance-24>>=
 Europe <- raster(system.file("external/Europe.grd", 
@@ -755,17 +761,23 @@ The negative sign of the last correlation coefficient was expected, as more over
 Additional work would be needed to improve predictions and compare the different models more rigorously.
 
 \section{Future work}
+Improvements of \pkg{gdistance} and methodological refinements are expected in various areas. 
+\begin{itemize}
+\item{
 All measures based on random walks depend critically on solving sparse linear systems.
 This is the most time-consuming part of the calculations.
-Faster libraries could improve the \pkg{gdistance} package and may become in \proglang{R} available in the future.
-
+Faster libraries could improve the \pkg{gdistance} package and may become available in \proglang{R} in the future.
+}
+\item{
 Research on distances in graph theory is a very dynamic field in the computational sciences.
 New measures and algorithms could be added to \pkg{gdistance} when they become available.
-
+}
+\item{
 More research on the consequences of connecting grids in different ways is necessary, as indicated in Section 2. 
 This should bring more precision to random walk calculations in geospatial analysis.
 Comparing the results of grid-based calculations to continuous space simulations or analytical solutions would be the way forward \citep[cf.]{birch2006}.
-
+}
+\end{itemize}
 \section{Final remarks}
 Questions about the use of \pkg{gdistance} can be posted on the r-sig-geo email list.
 Bug reports and requests for additional functionality can be mailed to jacobvanetten@yahoo.com.
