@@ -1,7 +1,7 @@
 Package: gdistance
 Type: Package
 Title: distances and routes on geographical grids
-Version: 1.1-5
+Version: 1.1-6
 Date: 18-February-2014
 Author: Jacob van Etten
 Depends: R (>= 2.8.0), raster (>= 1.9-19), igraph (>= 0.7.0), Matrix, methods, sp 
