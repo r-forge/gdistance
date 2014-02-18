@@ -528,7 +528,7 @@ With a more complex formula, we can approximate the non-overlapping part of the 
 <<gdistance-15>>=
 r1 <- passage(tr3C, origin, sP[1,], theta=1)
 r2 <- passage(tr3C, origin, sP[3,], theta=1)
-rJoint <- r1 * r2 #Figure 6
+rJoint <- min(r1, r2) #Figure 6
 rDiv <- max(max(r1, r2) * (1 - min(r1, r2)) - min(r1, r2), 0) #Figure 7
 @
 \vspace{-1.0em}
@@ -750,7 +750,7 @@ cor(genDist,cosDist)
 cor(genDist,resDist)
 @
 
-Interestingly, the great-circle distance between points turns out to be the best predictor of genetic distance.
+Amont the measure evaluated until now, the great-circle distance between points turns out to be the best predictor of genetic distance.
 The other distance measures incorporate more information about the geographic space in which geneflow takes place, 
 but do not improve the prediction.
 But how well does an expansion from Anatolia explain the spatial pattern?
@@ -781,7 +781,7 @@ New measures and algorithms could be added to \pkg{gdistance} when they become a
 \item{
 More research on the consequences of connecting grids in different ways is necessary, as indicated in Section 2. 
 This should bring more precision to random walk calculations in geospatial analysis.
-Comparing the results of grid-based calculations to continuous space simulations or analytical solutions would be the way forward \citep[cf.,]{birch2006}.
+Comparing the results of grid-based calculations to continuous space simulations or analytical solutions would be the way forward \citep{birch2006}.
 }
 \end{itemize}
 \section{Final Remarks}
