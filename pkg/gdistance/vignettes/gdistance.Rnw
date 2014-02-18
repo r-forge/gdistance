@@ -572,7 +572,7 @@ Tobler's Hiking Function provides a rough estimate for the the maximum hiking sp
 The maximum speed of off-path hiking (in m/s) is:
 
 \begin{math}
-speed = exp(-3.5 * abs(slope + 0.05))
+speed = 6 * exp(-3.5 * abs(slope + 0.05))
 \label{formula1}
 \end{math}
 
@@ -622,7 +622,7 @@ Using this index, we extract and replace adjacent cells, without touching the ot
 <<gdistance-20>>=
 adj <- adjacent(r, cells=1:ncell(r), pairs=TRUE, directions=8)
 speed <- slope
-speed[adj] <- exp(-3.5 * abs(slope[adj] + 0.05))
+speed[adj] <- 6 * exp(-3.5 * abs(slope[adj] + 0.05))
 @
 Now we have calculated the speed of movement between adjacent cells.
 We are close to having the final conductance values.

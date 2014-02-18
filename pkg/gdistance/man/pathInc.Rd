@@ -34,7 +34,7 @@ Then, for all unique pairs of trajectories, it calculates the extent to which th
 
 If only "from" coordinates are given, the function calculates symmetric distance matrices for all combinations of points in "from". If both "from" and "to" coordinates are given, the function calculates a matrix of values with rows for all locations in "from" and columns for all locations in "to".
 
-Overlap is currently calculated as the minimum values of each pair of trajectories compared. Non-overlap uses the following formula: Nonoverlap = max(0,max(a,b)*(1-min(a,b))-min(a,b)) (see van Etten and Hijmans 2010). 
+Overlap is currently calculated as the minimum values of each pair of trajectories compared. Non-overlap uses the following formula: Nonoverlap = max(0,max(a,b)*(1-min(a,b))-min(a,b)) (see van Etten and Hijmans 2010). See the last example to learn how to use an alternative function.
 
 }
 \value{
@@ -75,6 +75,19 @@ pathInc(trR, origin=sP0, from=sP1)
 
 #TransitionStack as weights
 pathInc(trR, origin=sP0, from=sP1, weight=ts)
+
+#Demonstrate use of an alternative function
+#The current default is to take the minimum of each pair of layers
+
+altoverlap <- function(a, b)
+{
+	aV <- as.vector(a[,rep(1:ncol(a), each=ncol(b))])
+	bV <- as.vector(b[,rep(1:ncol(b), times=ncol(a))])
+	result <- matrix(aV * bV, nrow = nrow(a), ncol=ncol(a)*ncol(b))
+	return(result)
+}
+
+pathInc(trR, origin=sP0, from=sP1, weight=ts, functions=list(altoverlap))
 
 }
 \keyword{ spatial }
