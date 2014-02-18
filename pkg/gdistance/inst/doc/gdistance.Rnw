@@ -1,5 +1,5 @@
-%\documentclass[nojss,shortnames]{jss}
-\documentclass[article,shortnames]{jss}
+\documentclass[nojss,shortnames]{jss}
+%\documentclass[article,shortnames]{jss}
 \usepackage[utf8]{inputenc}
 \usepackage{float}
 \restylefloat{figure}
@@ -49,7 +49,7 @@ The novel distances implemented in the package are used in geographical genetics
   Climate Change Adaptation Theme Group\\
   Agrobiodiversity and Ecosystem Services Programme\\
   Bioversity International\\
-  Recta Cali-Palmira km 17, Palmira, Colombia\\
+  c/o CATIE, Turrialba, Costa Rica\\
   E-mail: \email{jacobvanetten@yahoo.com}\\
   URL: \url{http://bioversityinternational.org}
 }
@@ -68,9 +68,10 @@ The novel distances implemented in the package are used in geographical genetics
 %% \section[About Java]{About \proglang{Java}}
 %% Note: If there is markup in \(sub)section, then it has to be escape as above.
 
-\section[Introduction: the crow, the wolf, and the drunkard]{Introduction: the crow, the wolf, and the drunkard}
+\section[Introduction: The Crow, the Wolf, and the Drunkard]{Introduction: The Crow, the Wolf, and the Drunkard}
 
-This article describes \pkg{gdistance}, an \proglang{R} package which provides functionality to calculate various distance measures and routes
+This article describes \pkg{gdistance}, a package written for use in the \proglang{R} environment \citep{R}.
+It provides functionality to calculate various distance measures and routes
 in heterogeneous geographic spaces represented as grids.
 Distances are fundamental to geospatial analysis \citep{tobler1970}.
 Distances and routes are closely related concepts in geography.
@@ -101,7 +102,7 @@ Calculations are done in various steps in \pkg{gdistance}.
 At first, this tends to be somewhat confusing for those who are used to distance and route calculations in GIS software, 
 which tend to be done in a single step.
 However, an important goal of \pkg{gdistance} is to make the calculations of distances and routes more flexible, 
-which also make the package somewhat more complicated to use.
+which also makes the package somewhat more complicated to use.
 Users, therefore, need to have a basic understanding of the theory behind distance and route calculations.
 
 Calculations of distances and routes start with raster data.
@@ -124,8 +125,8 @@ The section on distance transforms in \cite{deSmith2009} also discusses 16-cell 
 
 \begin{figure}[h]
 \begin{center}
-<<label=figure0,fig=TRUE, width=8, height=3, echo=FALSE >>=
-library(gdistance)
+<<label=figure0,fig=TRUE, width=10, height=3, echo=FALSE >>=
+library("gdistance")
 rex <- raster(matrix(1,4,4))
 
 a <- rep(c(1.3333),times=5)
@@ -146,24 +147,24 @@ g4 <- graph.adjacency(transitionMatrix(x4), mode="undirected")
 gridLayout <- xyFromCell(x4, 1:ncell(x4))
 plot(g4,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="4 cells")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
-plot(g4,layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
+plot(g4, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x8 <- transition(rex, mean, 8)
 g8 <- graph.adjacency(transitionMatrix(x8), mode="undirected")
 plot(g8,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="8 cells")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
-plot(g8,layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
+plot(g8, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x16 <- transition(rex, mean, 16)
 g16 <- graph.adjacency(transitionMatrix(x16), mode="undirected")
-plot(g16,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 cells")
+plot(g16, layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 cells")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g16,layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 @
 \end{center}
 \vspace{-20pt}
-\caption{Rasters can be converted into graphs in different ways}
+\caption{Rasters can be converted into graphs in different ways.}
 \label{fig:zero}
 \end{figure}
 
@@ -174,8 +175,8 @@ In graph theory, weights can also correspond to conductance (1/resistance), whic
 The weights can also represent probabilities of transition.
 
 Graphs are mathematically represented as matrices to do calculations.
-These can include transition probability matrices, adjacency matrices, resistance/conductance matrices, Laplacian matrices, among others.
-In \pkg{gdistance}, we refer collectively to these matrices to represent graphs as `transition matrices'.
+Matrices can include transition probability matrices, adjacency matrices, resistance/conductance matrices, Laplacian matrices, among others.
+In \pkg{gdistance}, we refer collectively to matrices that represent graphs as `transition matrices'.
 These transition matrices are the central object in the package; all distance calculations need one or more transition matrices as an input.
 
 In \pkg{gdistance}, usually conductance rather than resistance values are expected in the transition matrix.
@@ -219,7 +220,7 @@ or similar algorithms. }
 \item{A second type of route-finding is the random walk, which has no predetermined destination 
 (a `drunkard's walk'). 
 Commute distance represents the random walk commute time, 
-e.g. the average number of edges traversed during a random walk from an starting point on the graph to a destination point and back again to the starting point \citep{chandra1996}. 
+which is the average number of edges traversed during a random walk from an starting point on the graph to a destination point and back again to the starting point \citep{chandra1996}. 
 Resistance distance reflects the average travel \emph{cost} during this walk \citep{mcrae2006}. 
 When taken on the same graph these two measures differ only in their scaling \citep{kivimaki2012}.
 Commute and resistance distances 
@@ -229,10 +230,10 @@ The algorithm that \pkg{gdistance} uses to calculate commute distances was devel
 \cite{etten2010} applied randomised shortest paths in geospatial analysis (and see Example 2 below).}
 \end{itemize}
 
-\section{Raster basics}
+\section{Raster Basics}
 
 Analyses in \pkg{gdistance} start with one or more rasters.
-For this, it relies on another \proglang{R} package, \pkg{raster}.
+For this, it relies on another \proglang{R} package, \pkg{raster} \cite{hijmans2012}.
 The \pkg{raster} package provides comprehensive geographical grid functionality.
 Here, we briefly discuss this package,  
 referring the reader to the documentation of \pkg{raster} itself for more information.
@@ -288,7 +289,7 @@ plot(r, main="r")
 text(r)
 @
 \end{center}
-\caption{Cell numbers of a 3 x 3 raster}
+\caption{Cell numbers of a 3 x 3 raster.}
 \label{fig:one}
 \end{figure}
 
@@ -299,7 +300,7 @@ plot(r, main="r")
 text(r)
 @
 
-\section[Transition* classes]{\code{Transition*} classes}
+\section[Transition* Classes]{\code{Transition*} Classes}
 As explained in Section 2 on the theory behind \pkg{gdistance}, transition matrices are the backbone of the package.
 The central classes in \pkg{gdistance} are \code{TransitionLayer} and \code{TransitionStack}. 
 Most operations have an object of one of these classes either as input and sometime also as their output.
@@ -324,7 +325,7 @@ The next line makes a \code{TransitionLayer}, setting the transition value betwe
 The \code{directions} argument is set to 8, which connects all cells to their 8 neighbours (Moore neighbourhood). 
 
 <<gdistance-3>>=
-library(gdistance)
+library("gdistance")
 r[] <- 1
 tr1 <- transition(r, transitionFunction=mean, directions=8)
 @
@@ -386,7 +387,7 @@ image(transitionMatrix(tr1))
 print(image(transitionMatrix(tr1)))
 @
 \end{center}
-\caption{Visualizing a TransitionLayer with function \code{image}}
+\caption{Visualizing a TransitionLayer with function \code{image}.}
 \label{fig:two}
 \end{figure}
 
@@ -410,11 +411,11 @@ The default, shown in Figure~\ref{fig:three}, takes the column-wise means of the
 plot(raster(tr3), main="raster(tr3)")
 @
 \end{center}
-\caption{Visualizing a TransitionLayer using the function \code{raster}}
+\caption{Visualizing a TransitionLayer using the function \code{raster}.}
 \label{fig:three}
 \end{figure}
 
-\section{Correcting transition matrix values}
+\section{Correcting Transition Matrix Values}
 The function \code{transition} calculates transition values based on the values of adjacent cells in the input raster.
 However, diagonal neighbours are more remote from each other than orthogonal neighbours.
 Secondly, on equirectangular (longitude-latitude) grids, West-East connections are longer at the equator and become shorter towards the poles, as the meridians approach each other.
@@ -462,7 +463,7 @@ and directions of cell connections.
 We need to take special care that the geo-correction multiplication matrix (\code{CorrMatrix}) contains all non-zero values that are
 present in the \code{Transition*} object with which it will be multiplied (\code{tr3} in this case).
 
-\section{Calculating distances}
+\section{Calculating Distances}
 Only now that we have the corrected \code{Transition*} object we can calculate distances between points.
 It is important to note that all distance functions require a \code{Transition*} object with \emph{conductance} values,
 even though distances will be expressed in 1/conductance (friction or resistance) units (see Section 3).
@@ -486,7 +487,7 @@ rSPDistance(tr3R, sP, sP, theta=1e-12, totalNet="total")
 The \code{costDistance} function relies on the package \pkg{igraph} \citep{csardi2006} for the underlying calculation.
 It gives a symmetric or asymmetric distance matrix, depending on the \code{TransitionLayer} that is used as input.
 
-Commute distance represents the random walk commute time, e.g. the number of cells traversed on the trip \citep{chandra1996}.
+Commute distance represents the random walk commute time, which represents the number of cells traversed on the trip \citep{chandra1996}.
 
 \code{rSPDistance} gives the cost incurred during the same walk (theta approaches zero, so the walk is nearly random). 
 By summing the corresponding off-diagonal elements (Dij + Dji), we obtain the commute costs. 
@@ -494,7 +495,7 @@ In this case, the commute costs are only slightly higher than (and proportional 
 This is because the TransitionLayer object has been scaled, so transition costs are close to unit for each step.
 So the total number of steps and the total distance are in the same order.
 
-\section{Dispersal paths}
+\section{Dispersal Paths}
 
 To determine dispersal paths of a (constrained) random walk, we use the function \code{passage}. 
 This function can be used for both random walks and randomised shortest paths.
@@ -514,11 +515,11 @@ rSPraster <- passage(tr3C, origin, sP[3,], theta=3)
 plot(rSPraster, main="rSPraster")
 @
 \end{center}
-\caption{Probability of passage}
+\caption{Probability of passage.}
 \label{fig:four}
 \end{figure}
 
-\section{Path overlap and non-overlap}
+\section{Path Overlap and Non-Overlap}
 One of the specific uses, for which package gdistance was created,
 is to look at trajectories coming from the same source \citep{etten2010}. 
 The degree of coincidence of two trajectories can be visualized by multiplying the probabilities of passage (Figure~\ref{fig:five}).
@@ -538,7 +539,7 @@ plot(rJoint, main="rJoint")
 @
 \end{center}
 \vspace{-20pt}
-\caption{Overlapping part of the two routes}
+\caption{Overlapping part of the two routes.}
 \label{fig:five}
 \end{figure}
 \vspace{-1.0em}
@@ -549,7 +550,7 @@ plot(rDiv, main="rDiv")
 @
 \end{center}
 \vspace{-20pt}
-\caption{Non-overlapping part of the two routes}
+\caption{Non-overlapping part of the two routes.}
 \label{fig:six}
 \end{figure}
 
@@ -570,9 +571,10 @@ Determining the fastest route between two points in complex terrain is useful fo
 Tobler's Hiking Function provides a rough estimate for the the maximum hiking speed given the slope of the terrain \citep{tobler1993}.
 The maximum speed of off-path hiking (in m/s) is:
 
-\vspace{5 mm}
+\begin{math}
 speed = exp(-3.5 * abs(slope + 0.05))
-\vspace{5 mm}
+\label{formula1}
+\end{math}
 
 \noindent Note that the function is not symmetric around 0 (see Figure~\ref{fig:seven}).
 
@@ -583,7 +585,7 @@ plot(function(x)exp(-3.5 * abs(x + 0.05)), -1, 1, xlab="slope", ylab="speed (m/s
 lines(cbind(c(0,0),c(0,3.5)), lty="longdash")
 @
 \end{center}
-\caption{Tobler's Hiking Function}
+\caption{Tobler's Hiking Function.}
 \label{fig:seven}
 \end{figure}
 
@@ -598,9 +600,10 @@ r <- raster(system.file("external/maungawhau.grd",
 
 The Hiking Function requires the slope as input.
 
-\vspace{5 mm}
+\begin{math}
 slope = difference in height / distance travelled
-\vspace{5 mm}
+\label{formula2}
+\end{math}
 
 The units of height and distance should be identical.
 Here, we use meters for both.
@@ -630,29 +633,32 @@ Therefore, we use the function \code{geoCorrection} again!
 <<gdistance-21>>=
 x <- geoCorrection(speed, scl=FALSE) 
 @
-\noindent This gives our final `conductance' values.
+This gives our final `conductance' values.
 
 What do these values mean?
 The function \code{geoCorrection} divides the values in the matrix between the distance between cell centres.
 So, with our last command we calculated this:
 
-\vspace{5 mm}
+\begin{math}
 conductance = speed / distance
-\vspace{5 mm}
+\label{formula3}
+\end{math}
 
-\noindent This looks a lot like a measure that we are more familiar with: 
+This looks a lot like a measure that we are more familiar with: 
 
-\vspace{5 mm}
+\begin{math}
 travel time = distance / speed
-\vspace{5 mm}
+\label{formula4}
+\end{math}
 
-\noindent In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time.
+In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time.
 
-\vspace{5 mm}
+\begin{math}
 1 / travel time = speed / distance = conductance
-\vspace{5 mm}
+\label{formula5}
+\end{math}
 
-\noindent Maximizing the reciprocal of travel time is exactly equivalent to minimizing travel time!
+Maximizing the reciprocal of travel time is exactly equivalent to minimizing travel time!
 
 Now we define two coordinates, A and B, and determine the paths between them.
 We test if the quickest path from A to B is the same as the quickest path from B back to A.
@@ -685,11 +691,11 @@ This is a consequence of the asymmetry of the Hiking Function.
 @
 \end{center}
 \caption{Quickest hiking routes on Maunga Whau 
-(A to B is red, B to A is blue)}
+(A to B is red, B to A is blue).}
 \label{fig:eight}
 \end{figure}
 \clearpage
-\section{Example 2: Geographical genetics}
+\section{Example 2: Geographical Genetics}
 
 The direct relation between genetic and geographic distances is known as \emph{isolation by distance} \citep{wright1943}.
 Recent work has expanded this relationship to random movement in heterogeneous landscapes \citep{mcrae2006}.
@@ -720,7 +726,7 @@ plot(Europe, main="")
 text(pC[,1],pC[,2],unlist(popCoord["Population"]),cex=.7)
 @
 \end{center}
-\caption{Map of genotyped populations}
+\caption{Map of genotyped populations.}
 \label{fig:nine}
 \end{figure}
 
@@ -760,7 +766,7 @@ At least at first sight, the overlap of dispersal routes explain the spatial pat
 The negative sign of the last correlation coefficient was expected, as more overlap in routes is associated with lower genetic distance.
 Additional work would be needed to improve predictions and compare the different models more rigorously.
 
-\section{Future work}
+\section{Future Work}
 Improvements of \pkg{gdistance} and methodological refinements are expected in various areas. 
 \begin{itemize}
 \item{
@@ -775,10 +781,10 @@ New measures and algorithms could be added to \pkg{gdistance} when they become a
 \item{
 More research on the consequences of connecting grids in different ways is necessary, as indicated in Section 2. 
 This should bring more precision to random walk calculations in geospatial analysis.
-Comparing the results of grid-based calculations to continuous space simulations or analytical solutions would be the way forward \citep[cf.]{birch2006}.
+Comparing the results of grid-based calculations to continuous space simulations or analytical solutions would be the way forward \citep[cf.,]{birch2006}.
 }
 \end{itemize}
-\section{Final remarks}
+\section{Final Remarks}
 Questions about the use of \pkg{gdistance} can be posted on the r-sig-geo email list.
 Bug reports and requests for additional functionality can be mailed to jacobvanetten@yahoo.com.
 
