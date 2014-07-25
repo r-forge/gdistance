@@ -59,6 +59,7 @@ The novel distances implemented in the package are used in geographical genetics
 
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 %% include your article here, just as usual
 %% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
@@ -114,9 +115,9 @@ Distance and route calculations on rasters rely on graph theory.
 So as a first step, rasters are converted into graphs by connecting cell centres to each other, which become the nodes in the graph.
 This can be done in various ways (Figure~\ref{fig:zero}).
 \begin{itemize}
-\item{Cells can be connected orthogonally to their four immediate neighbours, which is called the von Neumann neighbourhood.}
-\item{Cells can be connected with their eight orthogonal and diagonal nearest neighbours, the Moore neighbourhood. 
-The resulting graph is called the `king's graph', because it reflects all the legal movements of the king in chess.
+\item{Cells can be connected orthogonally to their four immediate neighbours, which is called the \emph{von Neumann neighbourhood}.}
+\item{Cells can be connected with their eight orthogonal and diagonal nearest neighbours, the \emph{Moore neighbourhood}. 
+The resulting graph is called the \emph{king's graph}, because it reflects all the legal movements of the king in chess.
 This is the most common and often only way to connect grids in GIS software.}
 \item{Connecting in 16 directions combines king's and knight's moves. 
 The function r.cost in the software GRASS \citep{grass} has this as an option, which inspired its implementation in \pkg{gdistance}. 
@@ -125,7 +126,7 @@ The section on distance transforms in \cite{deSmith2009} also discusses 16-cell 
 
 \begin{figure}[h]
 \begin{center}
-<<label=figure0,fig=TRUE, width=10, height=3, echo=FALSE >>=
+<<label=figure0, width=18, fig=TRUE, echo=FALSE >>=
 library("gdistance")
 rex <- raster(matrix(1,4,4))
 
@@ -139,25 +140,24 @@ y2 <- c(b, a)
 x <- cbind(x1,x2)
 y <- cbind(y1,y2)
 
-par(mfrow=c(1,3), mar = c(5,5,4,2) + 0.1,
-    oma = c(0,0,0,0) + 0.1)
+par(mfrow=c(1,3), cex=2)
 
 x4 <- transition(rex, mean, 4)
 g4 <- graph.adjacency(transitionMatrix(x4), mode="undirected")
 gridLayout <- xyFromCell(x4, 1:ncell(x4))
-plot(g4,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="4 cells")
+plot(g4,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="4 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g4, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x8 <- transition(rex, mean, 8)
 g8 <- graph.adjacency(transitionMatrix(x8), mode="undirected")
-plot(g8,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="8 cells")
+plot(g8,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="8 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g8, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x16 <- transition(rex, mean, 16)
 g16 <- graph.adjacency(transitionMatrix(x16), mode="undirected")
-plot(g16, layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 cells")
+plot(g16, layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g16,layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
