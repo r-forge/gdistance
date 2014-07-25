@@ -182,6 +182,7 @@ These transition matrices are the central object in the package; all distance ca
 In \pkg{gdistance}, conductance rather than resistance values are expected in the transition matrix.
 An important advantage of using conductance is that it makes it possible to use computer memory very efficiently, using so-called \emph{sparse} matrices. 
 Conductance matrices are usually very sparse, because cells are connected only with adjacent cells, and the conductance for direct connections between remote cells is zero.
+This would not be the case if resistance matrices were used, as resistance is infinite ($\infty$) between unconnected cells and these values would fill up the matrix.
 
 The calculation of the edge weights or conductance values is usually based on the values of the pair of grid cells to be connected. 
 These cell values represent a property of the landscape.
@@ -558,7 +559,7 @@ plot(rDiv, main="rDiv")
 
 With the function \code{pathInc} we can calculate measures of path overlap and non-overlap
 for a large number of points.
-These measures can be used to predict patterns of diversity if these are due to dispersal from a single common source \citep{etten2010}.
+These measures can be used to predict patterns of diversity if these are due to dispersal from a single common source.
 If the argument type contains two elements (divergent and joint), the result is a list of distances matrices.
 
 <<gdistance-17>>=
@@ -570,21 +571,21 @@ The previous examples were somewhat theoretical, based on randomly generated val
 More realistic examples serve to illustrate the various uses that can be given to this package.
 
 Determining the fastest route between two points in complex terrain is useful for hikers.
-Tobler's Hiking Function provides a rough estimate of the maximum hiking speed given the slope of the terrain \citep{tobler1993}.
+Tobler's Hiking Function provides a rough estimate of the maximum hiking speed (\emph{s}) given the slope of the terrain (m) \citep{tobler1993}.
 The maximum speed of off-path hiking (in m/s) is:
 
 \begin{math}
-speed = 6 * exp(-3.5 * abs(slope + 0.05))
+s = 6 e^{-3.5 |m + 0.05|}
 \label{formula1}
 \end{math}
 
-\noindent Note that the function is not symmetric around 0 (see Figure~\ref{fig:seven}).
+Note that the function is not symmetric around 0 (see Figure~\ref{fig:seven}).
 
 \begin{figure}[h]
 \begin{center}
 <<label=figure7,echo=FALSE,fig=TRUE,height = 3.8 >>=
 plot(function(x)6 * exp(-3.5 * abs(x + 0.05)), -1, 1, xlab="slope", ylab="speed (m/s)")
-lines(cbind(c(0,0),c(0,3.5)), lty="longdash")
+lines(cbind(c(0,0),c(0,6)), lty="longdash")
 @
 \end{center}
 \caption{Tobler's Hiking Function.}
@@ -600,20 +601,20 @@ r <- raster(system.file("external/maungawhau.grd",
   package="gdistance"))
 @
 
-The Hiking Function requires the slope as input.
+The Hiking Function requires the slope as input, which can be calculated from the altitude (\emph{z}) and distance between cell centres (\emph{d}).
 
 \begin{math}
-slope = difference in height / distance travelled
+m_{ij} = (z_j - z_i) / d_{ij}
 \label{formula2}
 \end{math}
 
-The units of height and distance should be identical.
+The units of altitude and distance should be identical.
 Here, we use meters for both.
-First, we calculate the height differences between cells.
+First, we calculate the altitudinal differences between cells.
 Then we use the function \code{geoCorrection} to divide by the distance between cells.
 <<gdistance-19, keep.source=TRUE>>=
-heightDiff <- function(x){x[2] - x[1]}
-hd <- transition(r,heightDiff,8,symm=FALSE)
+altDiff <- function(x){x[2] - x[1]}
+hd <- transition(r,altDiff,8,symm=FALSE)
 slope <- geoCorrection(hd, scl=FALSE)
 @
 Subsequently, we calculate the speed.
@@ -638,24 +639,24 @@ x <- geoCorrection(speed, scl=FALSE)
 \noindent This gives our final `conductance' values.
 What do these values mean?
 The function \code{geoCorrection} divides the values in the matrix between the distance between cell centres.
-So, with our last command we calculated this:
+So, with our last command we calculated conductance (\emph{C}) as follows:
 
 \begin{math}
-conductance = speed / distance
+C = s / d
 \label{formula3}
 \end{math}
 
-This looks a lot like a measure that we are more familiar with: 
+This looks a lot like a measure that we are more familiar with, travel time (t): 
 
 \begin{math}
-travel time = distance / speed
+t = d / s
 \label{formula4}
 \end{math}
 
-In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time.
+In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time (\emph{1/t}).
 
 \begin{math}
-1 / travel time = speed / distance = conductance
+1 / t = s / d = C
 \label{formula5}
 \end{math}
 
