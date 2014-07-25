@@ -339,7 +339,7 @@ tr1
 
 To illustrate how to create a asymmetric matrix, we first create a non-commutative function, \code{ncdf}.
 We then use this function as an argument in the function \code{transition}.
-To make sure that the resulting transition matrix is indeed asymmetric, se set the \code{symm} argument in \code{transition} to \code{FALSE}.
+To make sure that the resulting transition matrix is indeed asymmetric, we set the \code{symm} argument in \code{transition} to \code{FALSE}.
 <<gdistance-5>>=
 r[] <- runif(9)
 ncf <- function(x) max(x) - x[1] + x[2]
