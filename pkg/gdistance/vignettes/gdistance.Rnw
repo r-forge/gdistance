@@ -571,7 +571,7 @@ The previous examples were somewhat theoretical, based on randomly generated val
 More realistic examples serve to illustrate the various uses that can be given to this package.
 
 Determining the fastest route between two points in complex terrain is useful for hikers.
-Tobler's Hiking Function provides a rough estimate of the maximum hiking speed (\emph{s}) given the slope of the terrain (m) \citep{tobler1993}.
+Tobler's Hiking Function provides a rough estimate of the maximum hiking speed (\emph{s}) given the slope of the terrain (\emph{m}) \citep{tobler1993}.
 The maximum speed of off-path hiking (in m/s) is:
 
 \begin{math}
@@ -625,7 +625,7 @@ Using this index, we extract and replace adjacent cells, without touching the ot
 <<gdistance-20>>=
 adj <- adjacent(r, cells=1:ncell(r), pairs=TRUE, directions=8)
 speed <- slope
-speed[adj] <- exp(-3.5 * abs(slope[adj] + 0.05))
+speed[adj] <- 6 * exp(-3.5 * abs(slope[adj] + 0.05))
 @
 Now we have calculated the speed of movement between adjacent cells.
 We are close to having the final conductance values.
@@ -646,7 +646,7 @@ C = s / d
 \label{formula3}
 \end{math}
 
-This looks a lot like a measure that we are more familiar with, travel time (t): 
+This looks a lot like a measure that we are more familiar with, travel time (\emph{t}): 
 
 \begin{math}
 t = d / s
