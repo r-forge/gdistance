@@ -59,7 +59,6 @@ The novel distances implemented in the package are used in geographical genetics
 
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 %% \SweaveOpts{concordance=TRUE}
 
 %% include your article here, just as usual
