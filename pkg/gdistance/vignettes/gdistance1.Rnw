@@ -140,24 +140,24 @@ y2 <- c(b, a)
 x <- cbind(x1,x2)
 y <- cbind(y1,y2)
 
-par(mfrow=c(1,3), oma = c(0,0,0,0) + 0.1)
+par(mfrow=c(1,3), mar= c(5,4,4,2) + 1 , oma = c(0,0,0,0) + 0.1, cex.main=2)
 
 x4 <- transition(rex, mean, 4)
 g4 <- graph.adjacency(transitionMatrix(x4), mode="undirected")
 gridLayout <- xyFromCell(x4, 1:ncell(x4))
-plot(g4,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="4 cells")
+plot(g4,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="4 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g4, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x8 <- transition(rex, mean, 8)
 g8 <- graph.adjacency(transitionMatrix(x8), mode="undirected")
-plot(g8,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="8 cells")
+plot(g8,layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, main="8 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g8, layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
 x16 <- transition(rex, mean, 16)
 g16 <- graph.adjacency(transitionMatrix(x16), mode="undirected")
-plot(g16, layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 cells")
+plot(g16, layout=gridLayout, edge.color="black", vertex.color="black", vertex.label=NA, , main="16 neighbours")
 for(i in 1:dim(x)[1]){lines(x[i,],y[i,], col="lightgray")}
 plot(g16,layout=gridLayout, add=TRUE, edge.color="black", vertex.color="black", vertex.label=NA)
 
@@ -338,7 +338,7 @@ the original \code{RasterLayer} object.
 tr1
 @
 
-To illustrate how to create a asymmetric matrix, we first create a non-commutative function, \code{ncdf}.
+To illustrate how to create a asymmetric matrix, we first create a non-commutative distance function, \code{ncdf}.
 We then use this function as an argument in the function \code{transition}.
 To make sure that the resulting transition matrix is indeed asymmetric, we set the \code{symm} argument in \code{transition} to \code{FALSE}.
 <<gdistance-5>>=
@@ -561,7 +561,8 @@ plot(rDiv, main="rDiv")
 With the function \code{pathInc} we can calculate measures of path overlap and non-overlap
 for a large number of points.
 These measures can be used to predict patterns of diversity if these are due to dispersal from a single common source.
-If the argument type contains two elements (divergent and joint), the result is a list of distances matrices.
+If the argument \code{type} contains two or more elements, the result is a list of distances matrices.
+The default for \code{type} is to calculate joint and divergent length of the dispersal paths. 
 
 <<gdistance-17>>=
 pathInc(tr3C, origin, sP)
@@ -572,7 +573,7 @@ The previous examples were somewhat theoretical, based on randomly generated val
 More realistic examples serve to illustrate the various uses that can be given to this package.
 
 Determining the fastest route between two points in complex terrain is useful for hikers.
-Tobler's Hiking Function provides a rough estimate of the maximum hiking speed (\emph{s}) given the slope of the terrain (\emph{m}) \citep{tobler1993}.
+Tobler's Hiking Function provides a rough estimate of the maximum hiking speed ($s$) given the slope of the terrain ($m$) \citep{tobler1993}.
 The maximum speed of off-path hiking (in m/s) is:
 
 \begin{math}
@@ -602,7 +603,7 @@ r <- raster(system.file("external/maungawhau.grd",
   package="gdistance"))
 @
 
-The Hiking Function requires the slope as input, which can be calculated from the altitude (\emph{z}) and distance between cell centres (\emph{d}).
+The Hiking Function requires the slope as input, which can be calculated from the altitude ($z$) and distance between cell centres ($d$).
 
 \begin{math}
 m_{ij} = (z_j - z_i) / d_{ij}
@@ -640,7 +641,7 @@ x <- geoCorrection(speed, scl=FALSE)
 \noindent This gives our final `conductance' values.
 What do these values mean?
 The function \code{geoCorrection} divides the values in the matrix between the distance between cell centres.
-So, with our last command we calculated conductance (\emph{C}) as follows:
+So, with our last command we calculated conductance ($C$) as follows:
 
 \begin{math}
 C = s / d
@@ -654,7 +655,7 @@ t = d / s
 \label{formula4}
 \end{math}
 
-In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time (\emph{1/t}).
+In fact, the conductance values we have calculated are the \emph{reciprocal} of travel time ($1/t$).
 
 \begin{math}
 1 / t = s / d = C
@@ -701,16 +702,10 @@ This is a consequence of the asymmetry of the Hiking Function.
 \clearpage
 \section{Example 2: Geographical Genetics}
 
-A correlation between genetic and geographic distances of individuals is expected due to a mechanism known as \emph{isolation by distance} \citep{wright1943}, based on simple models of random symmetric dispersal in homogeneous geographic spaces.
-Recent work has expanded this relationship to heterogeneous landscapes \citep{mcrae2006}.
-Also, the geography of dispersal routes can explain observed geospatial patterns of genetic diversity.
-For example, diffusion from a single origin (Africa) explains much of the current geographical patterns of human genetic diversity \citep{ram2005}.
-As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
-they share their prehistoric migration history.
-
-Within a single continent, however, human genetic diversity may have to do with more recent events.
-Let's look at diversity in Europe, using the data presented by \cite{bal2010}.
-Within Europe, genetic diversity is often thought to be a result of the migration of early Neolithic farmers from Anatolia (Turkey) to the west.
+A correlation between genetic differentiation and geographic distance of individuals and populations is expected due to a mechanism known as \emph{isolation by distance} \citep{wright1943}.
+This correlation is expected when random, symmetric dispersal occurs in homogeneous geographic spaces.
+For random dispersal in heterogeneous landscapes, recent work has shown that genetic differentiation correlates with the resistance distance between their locations \citep{mcrae2006}.
+Let's look at human genetic diversity in Europe, using the data presented by \cite{bal2010}.
 
 First, we read in the data: a map of Europe, the coordinates of the populations (see Figure~\ref{fig:nine}) and mutual genetic distances (see \code{?genDist} for more information on these data).
 
@@ -760,7 +755,14 @@ but do not improve the prediction.
 Presumably, the assumptions about geneflow incorporated in these distances are wrong. 
 Prehistoric people in Europe did not move like wolfs or drunkards...
 
-But how well does a geographic wave of expansion from Anatolia explain the spatial pattern?
+Another assumption behind these distance measures is that dispersal is symmetric.
+This is often not the case.
+For example, diffusion from a single origin (Africa) explains much of the current geographical patterns of human genetic diversity \citep{ram2005}.
+As a result, the mutual genetic distance between a pair of humans from different parts from the globe depends on the extent 
+they share their prehistoric migration history.
+Within Europe, genetic diversity is often thought to be a result of the migration of early Neolithic farmers from Anatolia (Turkey) to the west.
+
+How well does a geographic wave of expansion from Anatolia explain the spatial pattern?
 The function \code{pathInc} calculates the overlap (and non-overlap) of dispersal paths 
 from a common origin on the grid as a distance measure between points.
 
