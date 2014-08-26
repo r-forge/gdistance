@@ -1,5 +1,5 @@
-\documentclass[nojss,shortnames]{jss}
-%\documentclass[article,shortnames]{jss}
+%\documentclass[nojss,shortnames]{jss}
+\documentclass[article,shortnames]{jss}
 \usepackage[utf8]{inputenc}
 \usepackage{float}
 \restylefloat{figure}
@@ -82,26 +82,24 @@ The great-distance distance could be conceived of as the distance measured along
 a very efficient traveller who knows where to go and has no obstacles to deal with.
 In common language, this is referred to as a distance \emph{`as the crow flies'}.
 
-Other distances similarly imply a route across geographic space.
-When travel is affected by the environment, grid-based distances and routes become relevant.
+Other distance measures also imply a route across geographic space.
 The least-cost distance is implemented in most GIS software and mimics route finding \emph{`as the wolf runs'}\footnote{There are some variations on this expression, involving mostly other animals, or telecom cables.}, 
 taking into account obstacles and the local `friction' of the landscape. 
-The random walk, which is also called the \emph{drunkard's walk}, has no predetermined destination, so a destination point is hit by accident.
-The distance travelled to hit the destination point is a measure used to characterize dispersal processes in geography.
+Since least-cost distance is affected by the environment, grid-based calculations are necessary.
+Other grid-based distances have been developed based on the random walk or \emph{drunkard's walk}, in which route-finding is a stochastic process.
 
 Package \pkg{gdistance} was designed to determine such grid-based distances and routes 
 and to make it possible to use these measures in combination with other functionality available within \proglang{R}. 
 It has functionality that is comparable to other software such as ArcGIS Spatial Analyst \citep{mccoy2002}, 
 GRASS GIS \citep{grass}, and CircuitScape \citep{mcrae2008}.
 The gdistance package also contains specific functionality for geographical genetic analyses, not found in other software yet.
-The package implements measures to model dispersal histories first presented by \cite{etten2010}.
-Example 2 below introduces with an example how \pkg{gdistance} can be used in geographical genetics.
+The package implements measures to model dispersal histories first presented by \cite{etten2010} (see Section 7 and Example 2 below).
 
 \section{Theory}
 
 In \pkg{gdistance} calculations are done in various steps.
 At first, this tends to be somewhat confusing for those who are used to distance and route calculations in GIS software, 
-which tend to be done in a single step.
+which are usually done in a single step.
 However, an important goal of \pkg{gdistance} is to make the calculations of distances and routes more flexible, 
 which also makes the package somewhat more complicated to use.
 Users, therefore, need to have a basic understanding of the theory behind distance and route calculations.
@@ -115,7 +113,7 @@ Distance and route calculations on rasters rely on graph theory.
 So as a first step, rasters are converted into graphs by connecting cell centres to each other, which become the nodes in the graph.
 This can be done in various ways (Figure~\ref{fig:zero}).
 \begin{itemize}
-\item{Cells can be connected orthogonally to their four immediate neighbours, which is called the \emph{von Neumann neighbourhood}.}
+\item{Cells can be connected orthogonally to their four immediate neighbours, the \emph{von Neumann neighbourhood}.}
 \item{Cells can be connected with their eight orthogonal and diagonal nearest neighbours, the \emph{Moore neighbourhood}. 
 The resulting graph is called the \emph{king's graph}, because it reflects all the legal movements of the king in chess.
 This is the most common and often only way to connect grids in GIS software.}
@@ -181,8 +179,9 @@ In \pkg{gdistance}, we refer collectively to these matrices to represent graphs 
 These transition matrices are the central object in the package; all distance calculations need one or more transition matrices as an input.
 
 In \pkg{gdistance}, conductance rather than resistance values are expected in the transition matrix.
-An important advantage of using conductance is that it makes it possible to use computer memory very efficiently, using so-called \emph{sparse} matrices. 
-Conductance matrices are usually very sparse, because cells are connected only with adjacent cells, and the conductance for direct connections between remote cells is zero.
+An important advantage of using conductance is that it makes it possible to store values in computer memory very efficiently, using so-called \emph{sparse} matrices.
+Sparse matrices only store non-zero values and indices that locate these values in the rows and columns of the matrix. Zero values are not being stored in memory.
+Conductance matrices usually contain mainly zeros, because cells are connected only with adjacent cells, and the conductance for direct connections between remote cells is zero.
 This would not be the case if resistance matrices were used, as resistance is infinite ($\infty$) between unconnected cells and these values would fill up the matrix.
 
 The calculation of the edge weights or conductance values is usually based on the values of the pair of grid cells to be connected. 
@@ -215,8 +214,8 @@ For projected grids and small areas, we can safely ignore this distortion proble
 When the transition matrix has been constructed, different algorithms to calculate distances and routes are applied.
 \begin{itemize}
 \item{The least-cost distance mimics route finding `as the wolf runs', taking into account obstacles and the local `friction' 
-of the landscape. The least-cost path between two cells on the grid and the associated distance can be obtained with Dijkstra's algorithm 
-or more sophisticated ones. }
+of the landscape. The least-cost path between two cells on the grid and the associated distance can be obtained with Dijkstra's algorithm \citep{dijkstra1959} 
+or more sophisticated ones.}
 \item{A second type of route-finding is the random walk, which has no predetermined destination 
 (a `drunkard's walk'). 
 Commute distance represents the random walk commute time, 
@@ -226,7 +225,10 @@ When taken on the same graph these two measures differ only in their scaling \ci
 Commute and resistance distances 
 are calculated using the analogy with an electrical circuit \cite[see][for an introduction]{doyle1984}.
 The algorithm that \pkg{gdistance} uses to calculate commute distances was developed by \cite{fouss2007}}.
-\item{A third type of route-finding is by randomised shortest paths, which are an intermediate form between shortest paths and Brownian random walks, introduced by \cite{saerens2009}. 
+\item{A third type of route-finding is by randomised shortest paths, which are an intermediate form between shortest paths and Brownian random walks, introduced by \cite{saerens2009}.
+By setting a parameter, $\theta$ (theta), in the randomised shortest paths calculation, distances and routes can be made more randomised. 
+A lower value of $\theta$ means that walkers explore more around the shortest path.
+When $\theta$ approaches zero, the randomised shortest paths approach a random walk.   
 \cite{etten2010} applied randomised shortest paths in geospatial analysis (and see Example 2 below).}
 \end{itemize}
 
@@ -448,10 +450,10 @@ tr3R <- geoCorrection(tr3, type="r", multpl=FALSE, scl=TRUE)
 As mentioned in Section 2, the effect of these distortions and corrections needs more research.
 
 The argument \code{scl} is set to \code{TRUE} to scale the transition values to a reasonable range. 
-If the values are too large, commute distance and randomized shortest path functions will not work well.
-If the user wants to obtain absolute distances as output, no scaling should be done.
+If the transition values are too large, commute distance and randomized shortest path functions will not work well.
+No scaling should be done if the user wants to obtain absolute distance values as output.
 
-When similar \code{Transition*} objects with equal resolution and extent need to be corrected repetitively, 
+When \code{Transition*} objects with equal resolution and extent need to be corrected repetitively, 
 computational effort may be reduced by
 preparing an object that only needs to be multiplied with the \code{Transition*} object to produce a corrected version of it.
 The following chunk of code is equivalent to the previous one.
@@ -468,7 +470,7 @@ We need to take special care that the geo-correction multiplication matrix (\cod
 present in the \code{Transition*} object with which it will be multiplied (\code{tr3} in this case).
 
 \section{Calculating Distances}
-Now that we have the corrected \code{Transition*} object, we can calculate distances between points.
+After obtaining the geographically corrected \code{Transition*} object, as  we can calculate distances between points.
 It is important to note that all distance functions require a \code{Transition*} object with \emph{conductance} values,
 even though distances will be expressed in 1/conductance (friction or resistance) units (see Section 3).
 
@@ -493,11 +495,12 @@ It gives a symmetric or asymmetric distance matrix, depending on the \code{Trans
 
 Commute distance represents the random walk commute time, e.g. the number of cells traversed on the trip \citep{chandra1996}.
 
-\code{rSPDistance} gives the cost incurred during the same walk (theta approaches zero, so the walk is nearly random). 
-By summing the corresponding off-diagonal elements (Dij + Dji), we obtain the commute costs. 
-In this case, the commute costs are only slightly higher than (and proportional to) the commute distances. 
-This is because the TransitionLayer object has been scaled, so transition costs are close to unit for each step.
-So the total number of steps and the total distance are of the same order of magnitude.
+\code{rSPDistance} gives the cost incurred during the same walk ($\theta$ approaches zero, so this is the cost incurred during a random walk, see Section 2). 
+To obtain the commute costs we sum the corresponding off-diagonal elements: $d_{ij} + d_{ji}$. This is the distance of a commute from $i$ to $j$ and back from $j$ to $i$. 
+\footnote{In this case, the commute costs (resistance) are close to the commute distances (number of steps). 
+This is because the \code{TransitionLayer} object has been scaled, 
+so that transition costs are close to unit for each step and the total number of steps and the total distance are of the same order of magnitude.
+}
 
 \section{Dispersal Paths}
 
@@ -507,7 +510,7 @@ The function calculates the number of passages through cells before arriving in 
 Either the total or net number of passages can be calculated.
 The net number of passages is the number of passages that are not reciprocated by a passage in the opposite direction.
 
-Figure~\ref{fig:four} shows the probability of passage through each cell, assuming randomised shortest paths with the parameter theta set to 3.
+Figure~\ref{fig:four} shows the probability of passage through each cell, assuming randomised shortest paths with the parameter $\theta$ set to 3.
 
 <<gdistance-14>>=
 origin <- SpatialPoints(cbind(0, 0))
