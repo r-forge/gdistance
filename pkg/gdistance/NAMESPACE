@@ -1,7 +1,7 @@
 import(raster)
 import(methods)
 import(Matrix) 
-import(igraph)
+importFrom(igraph, graph.adjacency, E, shortest.paths)
 importClassesFrom(sp, SpatialPoints, SpatialPointsDataFrame,
 SpatialPixels, SpatialGrid, SpatialPixelsDataFrame, SpatialGridDataFrame)
 #importClassesFrom(raster, BasicRaster, Raster)
