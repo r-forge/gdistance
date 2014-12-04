@@ -199,14 +199,14 @@ A problem that arises in grid-based modelling is the choice of weights that shou
 For least-cost path distance and routes, this is fairly straightforward: weights are given in proportion to the distances between the cell centres.
 In a grid in which the orthogonal edges have a length of 1, 
 the diagonal edges are  $\sqrt[]{2}$ long.
-\cite{mcrae2006} also applies this same idea to random walks.
+\cite{mcrae2006} applies this same idea to random walks.
 However, as \cite{birch2006} explains, for random walks this is generally not the best discrete approximation of the dispersal process in continuous space. 
 Different orthogonal and diagonal weights could be considered based on his analytical results.
 
 For random walks on longitude-latitude grids, there is an additional consideration to be made.
 Considering the eight neighbouring cells in a Moore's neighbourhood, 
 the three cells that are located nearer to the equator are larger in area than the three cells 
-that are closer to the nearest pole, as the meridians coverge when moving from the equator to either pole. 
+that are closer to the nearest pole, as the meridians converge when moving from the equator to either pole. 
 So the cells closer to the poles should have a slightly lower probability of being reached during a random walk from the central cell.
 More theoretical work is needed to investigate possible solutions to this problem.
 For projected grids and small areas, we can safely ignore this distortion problem.
@@ -801,6 +801,9 @@ Comparing the results of grid-based calculations to continuous space simulations
 \section{Final Remarks}
 Questions about the use of \pkg{gdistance} can be posted on the r-sig-geo email list.
 Bug reports and requests for additional functionality can be mailed to jacobvanetten@yahoo.com.
+
+\section{Acknowledgements}
+Work on the \pkg{gdistance} package started during the project “Collective Action for the Rehabilitation of Global Public Goods in the CGIAR Genetic Resources System: Phase 2” (2007-2010), under the guidance of Dr Robert Hijmans. Finalizing the package was undertaken as part of the CGIAR Research Program on Climate Change, Agriculture and Food Security (CCAFS), which is a strategic partnership of CGIAR and Future Earth. The views expressed in this document cannot be taken to reflect the official opinions of CGIAR or Future Earth. 
 
 \bibliography{gdistance1}
 

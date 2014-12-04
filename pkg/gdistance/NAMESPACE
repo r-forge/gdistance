@@ -1,9 +1,10 @@
 import(raster)
 import(methods)
 import(Matrix) 
-importFrom(igraph, graph.adjacency, E, shortest.paths)
+importFrom(igraph, clusters, E, "E<-", get.shortest.paths, graph.adjacency, shortest.paths)
 importClassesFrom(sp, SpatialPoints, SpatialPointsDataFrame,
 SpatialPixels, SpatialGrid, SpatialPixelsDataFrame, SpatialGridDataFrame)
+importFrom(sp, coordinates, CRS, Line, Lines, SpatialLines)
 #importClassesFrom(raster, BasicRaster, Raster)
 #importFrom(methods, Ops, Arith, Compare, Logic)
 exportClasses(TransitionLayer, TransitionStack, Coords)
