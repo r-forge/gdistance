@@ -1,6 +1,8 @@
 --- version 1.1.6, February 2014
 
 Final touches for submission to JSS
+Correction in shorthestPath (bug reported by Sergei Petrov)
+Dependencies and imports reflect new CRAN rules
 
 --- version 1.1.5, February 2014
 
