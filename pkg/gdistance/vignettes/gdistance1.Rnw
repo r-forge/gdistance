@@ -98,7 +98,7 @@ The package implements measures to model dispersal histories first presented by 
 \section{Theory}
 
 In \pkg{gdistance} calculations are done in various steps.
-At first, this tends to be a little confusing for those who are used to distance and route calculations in GIS software, 
+This can be confusing at first for those who are used to distance and route calculations in GIS software, 
 which are usually done in a single step.
 However, an important goal of \pkg{gdistance} is to make the calculations of distances and routes more flexible, 
 which also makes the package more complicated to use.
